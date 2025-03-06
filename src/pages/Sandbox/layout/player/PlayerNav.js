@@ -29,6 +29,7 @@ const PlayerNav = () => {
           className={styles.navLeft}
         >
           <img src={URL + "editor/logo.svg"} alt="Screenity Logo" />
+          <img src={URL + "editor/icons/godam-logo.svg"} alt="GoDAM Logo" />
         </div>
         <div className={styles.navRight}>
           <button

@@ -531,6 +531,37 @@ const RightPanel = () => {
                   <ReactSVG src={URL + "editor/icons/right-arrow.svg"} />
                 </div>
               </div>
+            
+              {/* Sign in with GoDAM button */}
+              <div
+                role="button"
+                className={styles.button}
+                onClick={saveToDrive}
+                disabled={contentState.saveDrive}
+              >
+                <div className={styles.buttonLeft}>
+                  <ReactSVG fontSize={16} src={URL + "editor/icons/godam.svg"} />
+                </div>
+                <div className={styles.buttonMiddle}>
+                  <div className={styles.buttonTitle}>
+                    {contentState.saveDrive
+                      ? chrome.i18n.getMessage("savingGoDAMLabel")
+                      : contentState.driveEnabled
+                      ? chrome.i18n.getMessage("saveGoDAMButtonTitle")
+                      : chrome.i18n.getMessage("signInGoDAMLabel")}
+                  </div>
+                  <div className={styles.buttonDescription}>
+                    {contentState.offline
+                      ? chrome.i18n.getMessage("noConnectionLabel")
+                      : contentState.updateChrome
+                      ? chrome.i18n.getMessage("notAvailableLabel")
+                      : chrome.i18n.getMessage("saveGoDAMButtonDescription")}
+                  </div>
+                </div>
+                <div className={styles.buttonRight}>
+                  <ReactSVG src={URL + "editor/icons/right-arrow.svg"} />
+                </div>
+              </div>
             </div>
           </div>
           <div className={styles.section}>
