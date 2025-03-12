@@ -567,6 +567,26 @@
     "message": "Sign in and save to Drive",
     "description": "Sign in to Google Drive label"
   },
+  "signOutGoDAMLabel": {
+    "message": "Sign out of GoDAM",
+    "description": "Sign out of GoDAM label"
+  },
+  "savingGoDAMLabel": {
+    "message": "Saving...",
+    "description": "Saving to GoDAM label"
+  },
+  "saveGoDAMButtonTitle": {
+    "message": "Save to GoDAM",
+    "description": "Save to GoDAM button"
+  },
+  "saveGoDAMButtonDescription": {
+    "message": "Save the current version to GoDAM",
+    "description": "Save to GoDAM label"
+  },
+  "signInGoDAMLabel": {
+    "message": "Sign in and save to GoDAM",
+    "description": "Sign in to GoDAM label"
+  },
   "sandboxExportTitle": {
     "message": "Export",
     "description": "Export title in sandbox editor page"

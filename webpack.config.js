@@ -34,7 +34,7 @@ if (fileSystem.existsSync(secretsPath)) {
 }
 
 var options = {
-  mode: process.env.NODE_ENV || "production",
+  mode: process.env.NODE_ENV || "development",
   performance: {
     hints: false,
   },
