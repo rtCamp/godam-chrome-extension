@@ -5,7 +5,6 @@ import TrimUI from "./TrimUI";
 import { ContentStateContext } from "../../context/ContentState"; // Import the ContentState context
 
 import HelpButton from "../../components/player/HelpButton";
-import GoDAMLogin from "../player/GoDAMLogin";
 
 const Editor = ({ ffmpeg }) => {
   const [contentState, setContentState] = useContext(ContentStateContext); // Access the ContentState context
@@ -33,8 +32,6 @@ const Editor = ({ ffmpeg }) => {
       <VideoPlayer onSeek={handleSeek} />
       <TrimUI blob={contentState.blob} onSeek={handleSeek} />
       <HelpButton />
-
-      <GoDAMLogin />
     </div>
   );
 };

@@ -14,7 +14,6 @@ import AudioUI from "../editor/AudioUI";
 
 // Context
 import { ContentStateContext } from "../../context/ContentState"; // Import the ContentState context
-import GoDAMLogin from "./GoDAMLogin";
 
 const RightPanel = () => {
   const [contentState, setContentState] = useContext(ContentStateContext); // Access the ContentState context
@@ -90,20 +89,7 @@ const RightPanel = () => {
     }
   };
 
-  const saveToGoDAM = () => {
-    // Hide the modal after successful login
-    chrome.storage.local.get("godamUserToken", (result) => {
-      if(!result.godamUserToken) {
-        setContentState((prevContentState) => ({
-          ...prevContentState,
-          isLoggedIn: false,
-        }));
-      } else {
-        // Check if session id is still valid
-        const token = result.godamUserToken;
-      }
-    });
-  }
+  
 
   const signOutDrive = () => {
     chrome.runtime.sendMessage({ type: "sign-out-drive" });
@@ -776,8 +762,6 @@ const RightPanel = () => {
           </div>
         </div>
       )}
-
-      <GoDAMLogin />
     </div>
   );
 };
