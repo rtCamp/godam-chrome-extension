@@ -207,17 +207,25 @@ const ContentState = (props) => {
 
     // Check if token is present
     const { token } = await chrome.storage.local.get("token");
+    const { godamToken } = await chrome.storage.local.get("godamToken");
 
     let driveEnabled = false;
+    let godamEnabled = false;
 
     if (token && token !== null) {
       driveEnabled = true;
+    }
+
+    if (godamToken && godamToken !== null) {
+      godamEnabled = true;
     }
 
     setContentState((prevState) => ({
       ...prevState,
       rawBlob: blob,
       duration: recordingDuration / 1000,
+      driveEnabled: driveEnabled,
+      godamEnabled: godamEnabled
     }));
 
     // Check if user is in Windows 10
@@ -943,6 +951,21 @@ const ContentState = (props) => {
   contentState.downloadWEBM = downloadWEBM;
   contentState.addAudio = addAudio;
   contentState.loadFFmpeg = loadFFmpeg;
+
+  useEffect(() => {
+    const checkAuthStatus = async () => {
+      const { token } = await chrome.storage.local.get("token");
+      const { godamToken } = await chrome.storage.local.get("godamToken");
+
+      setContentState(prevState => ({
+        ...prevState,
+        driveEnabled: token && token !== null,
+        godamEnabled: godamToken && godamToken !== null
+      }));
+    };
+    
+    checkAuthStatus();
+  }, []);
 
   return (
     <ContentStateContext.Provider value={[contentState, setContentState]}>

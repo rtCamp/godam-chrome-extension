@@ -1580,6 +1580,69 @@ const checkAvailableMemory = (sendResponse) => {
   });
 };
 
+// Add this function to handle sign out from GoDAM
+const handleSignOutGoDAM = async () => {
+  const { godamToken } = await chrome.storage.local.get(["godamToken"]);
+  if (godamToken) {
+    // Revoke token on the server
+    try {
+      await fetch('https://frappe-transcoder-api.rt.gw/api/method/frappe.integrations.oauth2.revoke_token', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'Authorization': `Bearer ${godamToken}`
+        }
+      });
+    } catch (error) {
+      console.error("Error revoking GoDAM token:", error);
+    }
+  }
+  
+  // Clear token from storage
+  chrome.storage.local.set({ 
+    godamToken: null,
+    godamRefreshToken: null,
+    godamTokenExpiration: null
+  });
+};
+
+// Add this function to handle saving to GoDAM
+const handleSaveToGoDAM = async (sendResponse, request, fallback = false) => {
+  if (!fallback) {
+    const blob = base64ToUint8Array(request.base64);
+
+    // Specify the desired file name
+    const fileName = request.title + ".mp4";
+
+    // Call the saveToGoDAM function
+    const saveToGoDAM = require('./modules/saveToGoDAM').default;
+    saveToGoDAM(blob, fileName, sendResponse);
+  } else {
+    const chunks = [];
+    await chunksStore.iterate((value, key) => {
+      chunks.push(value);
+    });
+
+    // Build the video from chunks
+    let array = [];
+    let lastTimestamp = 0;
+    for (const chunk of chunks) {
+      // Check if chunk timestamp is smaller than last timestamp, if so, skip
+      if (chunk.timestamp < lastTimestamp) {
+        continue;
+      }
+      lastTimestamp = chunk.timestamp;
+      array.push(chunk.chunk);
+    }
+    const blob = new Blob(array, { type: "video/webm" });
+
+    const filename = request.title + ".webm";
+
+    const saveToGoDAM = require('./modules/saveToGoDAM').default;
+    saveToGoDAM(blob, filename, sendResponse);
+  }
+};
+
 // Listen for messages
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.type === "desktop-capture") {
@@ -1761,6 +1824,14 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     );
   } else if (request.type === "add-alarm-listener") {
     addAlarmListener();
+  } else if (request.type === "save-to-godam") {
+    handleSaveToGoDAM(sendResponse, request, false);
+    return true;
+  } else if (request.type === "save-to-godam-fallback") {
+    handleSaveToGoDAM(sendResponse, request, true);
+    return true;
+  } else if (request.type === "sign-out-godam") {
+    handleSignOutGoDAM();
   }
 });
 

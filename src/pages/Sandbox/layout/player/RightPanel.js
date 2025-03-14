@@ -89,13 +89,75 @@ const RightPanel = () => {
     }
   };
 
-  
+  const saveToGoDAM = () => {
+    setContentState((prevContentState) => ({
+      ...prevContentState,
+      saveGoDAM: true,
+    }));
+
+    if (contentState.noffmpeg || !contentState.mp4ready || !contentState.blob) {
+      chrome.runtime
+        .sendMessage({
+          type: "save-to-godam-fallback",
+          title: contentState.title,
+        })
+        .then((response) => {
+          if (response.status === "ew") {
+            // Cancel saving to GoDAM
+            setContentState((prevContentState) => ({
+              ...prevContentState,
+              saveGoDAM: false,
+            }));
+          }
+        });
+    } else {
+      // Blob to base64
+      const reader = new FileReader();
+      reader.onload = () => {
+        const dataUrl = reader.result;
+        const base64 = dataUrl.split(",")[1];
+
+        chrome.runtime
+          .sendMessage({
+            type: "save-to-godam",
+            base64: base64,
+            title: contentState.title,
+          })
+          .then((response) => {
+            if (response.status === "ew") {
+              // Cancel saving to GoDAM
+              setContentState((prevContentState) => ({
+                ...prevContentState,
+                saveGoDAM: false,
+              }));
+            }
+          });
+      };
+      if (
+        !contentState.noffmpeg &&
+        contentState.mp4ready &&
+        contentState.blob
+      ) {
+        reader.readAsDataURL(contentState.blob);
+      } else {
+        reader.readAsDataURL(contentState.webm);
+      }
+    }
+  };
 
   const signOutDrive = () => {
     chrome.runtime.sendMessage({ type: "sign-out-drive" });
     setContentState((prevContentState) => ({
       ...prevContentState,
       driveEnabled: false,
+    }));
+  };
+
+  const signOutGoDAM = () => {
+    chrome.runtime.sendMessage({ type: "sign-out-godam" });
+    setContentState((prevContentState) => ({
+      ...prevContentState,
+      godamEnabled: false
     }));
   };
 
@@ -539,16 +601,16 @@ const RightPanel = () => {
                 role="button"
                 className={styles.button}
                 onClick={saveToGoDAM}
-                disabled={contentState.saveDrive}
+                disabled={contentState.saveGoDAM}
               >
                 <div className={styles.buttonLeft}>
                   <ReactSVG fontSize={16} src={URL + "editor/icons/godam.svg"} />
                 </div>
                 <div className={styles.buttonMiddle}>
                   <div className={styles.buttonTitle}>
-                    {contentState.saveDrive
+                    {contentState.saveGoDAM
                       ? chrome.i18n.getMessage("savingGoDAMLabel")
-                      : contentState.driveEnabled
+                      : contentState.godamEnabled
                       ? chrome.i18n.getMessage("saveGoDAMButtonTitle")
                       : chrome.i18n.getMessage("signInGoDAMLabel")}
                   </div>

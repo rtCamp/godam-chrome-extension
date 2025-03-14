@@ -49,8 +49,8 @@
     }
   ],
   "oauth2": {
-    "client_id": "560517327251-m7n1k3kddknu7s9s4ejvrs1bj91gutd7.apps.googleusercontent.com",
-    "scopes": ["https://www.googleapis.com/auth/drive.file"]
+    "client_id": "habg22ul6k",
+    "scopes": ["all"]
   },
   "cross_origin_embedder_policy": {
     "value": "require-corp"
