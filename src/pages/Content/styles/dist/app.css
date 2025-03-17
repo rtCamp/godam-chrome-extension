@@ -41,7 +41,7 @@ iframe {
   box-sizing: border-box;
   width: 100%;
   height: 100%;
-  border: 10px solid #3080F8;
+  border: 10px solid #ab3a6c;
   pointer-events: none;
   transform: scale(1.2);
   opacity: 0;
@@ -322,7 +322,7 @@ iframe {
   background: rgba(56, 126, 247, 0.1);
 }
 .ToolbarModeItem[data-state=on] svg {
-  color: #3080F8;
+  color: #ab3a6c;
 }
 .ToolbarModeItem[data-state=on]::before {
   transform: translateY(0px) scale(1) !important;
@@ -352,7 +352,7 @@ iframe {
   margin-left: 0;
 }
 .ToolbarToggleItem[data-state=on] {
-  background: radial-gradient(117.41% 117.78% at 35.44% 0%, #2BAEF8 23.13%, #3582F6 46.35%, #486DEF 74.48%, #7B9AEA 100%);
+  background: linear-gradient(83.85deg,#ab3a6c -9.3%,#e6533a 120.31%);
   color: #FFF;
 }
 .ToolbarToggleItem[data-state=on] svg {
@@ -681,7 +681,7 @@ body {
 }
 
 .eye-active {
-  background-color: #3080F8 !important;
+  background-color: #ab3a6c !important;
 }
 .eye-active svg {
   color: #FFF !important;
@@ -1093,7 +1093,7 @@ body {
   display: block;
 }
 .stroke-width-item div[data-state=on] {
-  background: #3080F8 !important;
+  background: #ab3a6c !important;
 }
 .stroke-width-item div[data-state=on] svg {
   color: #FFF !important;
@@ -1292,14 +1292,19 @@ body {
   left: 0px;
   right: 0px;
   margin: auto;
+  padding: 2px;
+  background: #fff;
 }
 
 .popup-cutout img {
   text-align: center;
-  margin: auto;
-  display: inline-block;
-  width: 100%;
-  border-radius: 50%;
+    margin: auto;
+    display: inline-block;
+    width: 80%;
+    border-radius: 50%;
+    position: relative;
+    left: 2px;
+    bottom: 2px;
 }
 
 /* Recording nav area */
@@ -1345,7 +1350,7 @@ body {
   margin-bottom: 0.5rem;
 }
 .popup-warning .popup-warning-right {
-  color: #3080F8;
+  color: #ab3a6c;
   font-family: "Satoshi-Medium", sans-serif;
   width: 90px;
 }
@@ -1359,7 +1364,7 @@ body {
   justify-content: center;
 }
 .popup-warning-left svg, .popup-warning-right svg {
-  color: #3080F8;
+  color: #ab3a6c;
 }
 
 .popup-warning-right {
@@ -1382,7 +1387,7 @@ body {
 .permission-button {
   background: rgba(48, 128, 248, 0.1);
   border-radius: 30px;
-  color: #3080F8;
+  color: #ab3a6c;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1403,7 +1408,7 @@ body {
   cursor: pointer;
 }
 .permission-button svg {
-  color: #3080F8;
+  color: #ab3a6c;
 }
 
 .CollapsibleTrigger {
@@ -1661,7 +1666,7 @@ button {
   right: 12px;
   width: 24px;
   height: 24px;
-  background: #3080F8;
+  background: #ab3a6c;
   border-radius: 50%;
   display: inline-flex;
   align-items: center;
@@ -1884,7 +1889,7 @@ input {
   margin: auto;
   height: 2px;
   border-radius: 30px;
-  background: #3080F8;
+  background: #ab3a6c;
 }
 .recording-ui .TabsTrigger[data-state=active] > .TabsTriggerLabel {
   color: #29292F !important;
@@ -1971,7 +1976,7 @@ input {
   margin: auto;
   height: 2px;
   border-radius: 30px;
-  background: #3080F8;
+  background: #ab3a6c;
 }
 .video-ui .TabsTrigger[data-state=active] > .TabsTriggerLabel {
   color: #29292F !important;
@@ -2042,7 +2047,7 @@ button {
 }
 
 .SwitchRoot[data-state=checked] {
-  background-color: #3080F8;
+  background-color: #ab3a6c;
 }
 
 .SwitchRoot:hover {
@@ -2073,7 +2078,7 @@ button {
 .ExperimentalLabel {
   color: #FFF;
   font-size: 12px;
-  background-color: #3080F8;
+  background-color: #ab3a6c;
   border-radius: 15px;
   padding: 2px 8px;
   display: inline-block;
@@ -2242,8 +2247,8 @@ button {
   --x: 35.44%;
   --y: 0%;
   margin-top: 8px;
-  filter: drop-shadow(0px 4px 20px rgba(86, 123, 218, 0.5));
-  background: radial-gradient(127.41% 127.78% at var(--x) var(--y), #2BAEF8 23.13%, #3582F6 46.35%, #486DEF 74.48%, #7B9AEA 100%);
+  filter: drop-shadow(0px 4px 20px rgba(247, 52, 127, 0.25));
+  background: linear-gradient(83.85deg,#ab3a6c -9.3%,#e6533a 120.31%)!important;
   transition: --x 0.2s ease-in-out, --y 0.2s ease-in-out;
   animation: 0;
   animation: gradient-animation 15s linear infinite;
@@ -2270,21 +2275,21 @@ button {
 }
 
 .recording-button:hover:before {
-  box-shadow: 0px 0px 0px 4px rgba(52, 138, 247, 0.25);
+  box-shadow: 0px 0px 0px 4px rgba(247, 52, 127, 0.25);
 }
 
 @keyframes pulse-animation {
   0% {
-    box-shadow: 0px 0px 0px 2px rgba(52, 138, 247, 0.25);
+    box-shadow: 0px 0px 0px 2px rgba(247, 52, 127, 0.25);
   }
   25% {
-    box-shadow: 0px 0px 0px 6px rgba(52, 138, 247, 0.25);
+    box-shadow: 0px 0px 0px 6px rgba(247, 52, 127, 0.25);
   }
   50% {
-    box-shadow: 0px 0px 0px 2px rgba(52, 138, 247, 0.25);
+    box-shadow: 0px 0px 0px 2px rgba(247, 52, 127, 0.25);
   }
   100% {
-    box-shadow: 0px 0px 0px 2px rgba(52, 138, 247, 0.25);
+    box-shadow: 0px 0px 0px 2px rgba(247, 52, 127, 0.25);
   }
 }
 @keyframes gradient-animation {
@@ -2378,7 +2383,7 @@ button {
   width: 46px;
   height: 46px;
   position: absolute;
-  border: 2px solid #3080F8;
+  border: 2px solid #ab3a6c;
   box-sizing: border-box;
 }
 .background-effect img {
@@ -2399,7 +2404,7 @@ button {
   width: 46px;
   height: 46px;
   position: absolute;
-  border: 2px solid #3080F8;
+  border: 2px solid #ab3a6c;
   opacity: 0.5;
   box-sizing: border-box;
 }

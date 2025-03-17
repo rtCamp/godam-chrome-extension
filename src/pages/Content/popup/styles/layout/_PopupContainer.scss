@@ -139,13 +139,19 @@
   left: 0px;
   right: 0px;
   margin: auto;
+  padding: 2px;
+  background: #fff;
 }
+
 .popup-cutout img {
   text-align: center;
-  margin: auto;
-  display: inline-block;
-  width: 100%;
-  border-radius: 50%;
+    margin: auto;
+    display: inline-block;
+    width: 80%;
+    border-radius: 50%;
+    position: relative;
+    left: 2px;
+    bottom: 2px;
 }
 
 /* Recording nav area */

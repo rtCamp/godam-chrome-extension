@@ -57,7 +57,7 @@ const Backup = () => {
   const initLocalDirectory = async (directoryHandle, prompt = true) => {
     const permissions = await verifyFilePermissions(directoryHandle);
     if (permissions) {
-      let videoTitle = `Screenity video - ${new Date().toLocaleString("en-US", {
+      let videoTitle = `GoDAM video - ${new Date().toLocaleString("en-US", {
         month: "short",
         day: "numeric",
         year: "numeric",
