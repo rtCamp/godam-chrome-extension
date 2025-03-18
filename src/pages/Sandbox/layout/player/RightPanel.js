@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useState, useRef } from "react";
 import styles from "../../styles/player/_RightPanel.module.scss";
+import styless from "../../styles/player/_GoDAMModal.module.scss";
 
 import JSZip from "jszip";
 
@@ -11,6 +12,7 @@ const URL =
 // Components
 import CropUI from "../editor/CropUI";
 import AudioUI from "../editor/AudioUI";
+import { GoDAMModal } from "./GoDAMModal";
 
 // Context
 import { ContentStateContext } from "../../context/ContentState"; // Import the ContentState context
@@ -18,6 +20,7 @@ import { ContentStateContext } from "../../context/ContentState"; // Import the 
 const RightPanel = () => {
   const [contentState, setContentState] = useContext(ContentStateContext); // Access the ContentState context
   const [webmFallback, setWebmFallback] = useState(false);
+  const [videoModal, setVideoModal] = useState('');
   const contentStateRef = useRef(contentState);
   const consoleErrorRef = useRef([]);
 
@@ -32,63 +35,6 @@ const RightPanel = () => {
     contentStateRef.current = contentState;
   }, [contentState]);
 
-  const saveToDrive = () => {
-    //if (contentState.noffmpeg) return;
-    setContentState((prevContentState) => ({
-      ...prevContentState,
-      saveDrive: true,
-    }));
-
-    if (contentState.noffmpeg || !contentState.mp4ready || !contentState.blob) {
-      chrome.runtime
-        .sendMessage({
-          type: "save-to-drive-fallback",
-          title: contentState.title,
-        })
-        .then((response) => {
-          if (response.status === "ew") {
-            // Cancel saving to drive
-            setContentState((prevContentState) => ({
-              ...prevContentState,
-              saveDrive: false,
-            }));
-          }
-        });
-    } else {
-      // Blob to base64
-      const reader = new FileReader();
-      reader.onload = () => {
-        const dataUrl = reader.result;
-        const base64 = dataUrl.split(",")[1];
-
-        chrome.runtime
-          .sendMessage({
-            type: "save-to-drive",
-            base64: base64,
-            title: contentState.title,
-          })
-          .then((response) => {
-            if (response.status === "ew") {
-              // Cancel saving to drive
-              setContentState((prevContentState) => ({
-                ...prevContentState,
-                saveDrive: false,
-              }));
-            }
-          });
-      };
-      if (
-        !contentState.noffmpeg &&
-        contentState.mp4ready &&
-        contentState.blob
-      ) {
-        reader.readAsDataURL(contentState.blob);
-      } else {
-        reader.readAsDataURL(contentState.webm);
-      }
-    }
-  };
-
   const saveToGoDAM = () => {
     setContentState((prevContentState) => ({
       ...prevContentState,
@@ -102,13 +48,26 @@ const RightPanel = () => {
           title: contentState.title,
         })
         .then((response) => {
-          if (response.status === "ew") {
-            // Cancel saving to GoDAM
+          console.log(response);
+          // Cancel saving to GoDAM
+          if (response.status === "ok") {
             setContentState((prevContentState) => ({
               ...prevContentState,
+              uploaded: true,
+              videoUrl: response.url,
+              success: true,
+              saveGoDAM: false,
+            }));
+          } else {
+            setContentState((prevContentState) => ({
+              ...prevContentState,
+              uploaded: false,
+              videoUrl: '',
+              error: response.error,
               saveGoDAM: false,
             }));
           }
+          setVideoModal(true);
         });
     } else {
       // Blob to base64
@@ -124,13 +83,26 @@ const RightPanel = () => {
             title: contentState.title,
           })
           .then((response) => {
-            if (response.status === "ew") {
-              // Cancel saving to GoDAM
+            console.log(response);
+            // Cancel saving to GoDAM
+            if (response.status === "ok") {
               setContentState((prevContentState) => ({
                 ...prevContentState,
+                uploaded: true,
+                videoUrl: response.url,
+                success: true,
+                saveGoDAM: false,
+              }));
+            } else {
+              setContentState((prevContentState) => ({
+                ...prevContentState,
+                error: false,
+                videoUrl: '',
+                error: response.error,
                 saveGoDAM: false,
               }));
             }
+            setVideoModal(true);
           });
       };
       if (
@@ -143,14 +115,6 @@ const RightPanel = () => {
         reader.readAsDataURL(contentState.webm);
       }
     }
-  };
-
-  const signOutDrive = () => {
-    chrome.runtime.sendMessage({ type: "sign-out-drive" });
-    setContentState((prevContentState) => ({
-      ...prevContentState,
-      driveEnabled: false,
-    }));
   };
 
   const signOutGoDAM = () => {
@@ -555,46 +519,17 @@ const RightPanel = () => {
             <div className={styles.sectionTitle}>
               {chrome.i18n.getMessage("sandboxSaveTitle")}
             </div>
-            {contentState.driveEnabled && (
+            {contentState.godamEnabled && (
               <div
                 className={styles.buttonLogout}
                 onClick={() => {
-                  signOutDrive();
+                  signOutGoDAM();
                 }}
               >
-                {chrome.i18n.getMessage("signOutDriveLabel")}
+                {chrome.i18n.getMessage("signOutGoDAMLabel")}
               </div>
             )}
             <div className={styles.buttonWrap}>
-              <div
-                role="button"
-                className={styles.button}
-                onClick={saveToDrive}
-                disabled={contentState.saveDrive}
-              >
-                <div className={styles.buttonLeft}>
-                  <ReactSVG src={URL + "editor/icons/drive.svg"} />
-                </div>
-                <div className={styles.buttonMiddle}>
-                  <div className={styles.buttonTitle}>
-                    {contentState.saveDrive
-                      ? chrome.i18n.getMessage("savingDriveLabel")
-                      : contentState.driveEnabled
-                      ? chrome.i18n.getMessage("saveDriveButtonTitle")
-                      : chrome.i18n.getMessage("signInDriveLabel")}
-                  </div>
-                  <div className={styles.buttonDescription}>
-                    {contentState.offline
-                      ? chrome.i18n.getMessage("noConnectionLabel")
-                      : contentState.updateChrome
-                      ? chrome.i18n.getMessage("notAvailableLabel")
-                      : chrome.i18n.getMessage("saveDriveButtonDescription")}
-                  </div>
-                </div>
-                <div className={styles.buttonRight}>
-                  <ReactSVG src={URL + "editor/icons/right-arrow.svg"} />
-                </div>
-              </div>
             
               {/* Sign in with GoDAM button */}
               <div
@@ -822,6 +757,70 @@ const RightPanel = () => {
               </div>
             </div>
           </div>
+        </div>
+      )}
+
+      { videoModal  && (
+        <div className={styless.modal}>
+            <div className={styless.overlay}></div>
+            <div className={styless.modalContent}>
+                <div class={styless.godamVideoSaved}>
+
+                  {
+                    contentState?.uploaded && (
+                      <>
+                        <div className={styless.verifiedIcon}>
+                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-patch-check-fill" viewBox="0 0 16 16">
+                            <path d="M10.067.87a2.89 2.89 0 0 0-4.134 0l-.622.638-.89-.011a2.89 2.89 0 0 0-2.924 2.924l.01.89-.636.622a2.89 2.89 0 0 0 0 4.134l.637.622-.011.89a2.89 2.89 0 0 0 2.924 2.924l.89-.01.622.636a2.89 2.89 0 0 0 4.134 0l.622-.637.89.011a2.89 2.89 0 0 0 2.924-2.924l-.01-.89.636-.622a2.89 2.89 0 0 0 0-4.134l-.637-.622.011-.89a2.89 2.89 0 0 0-2.924-2.924l-.89.01zm.287 5.984-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 1 1 .708-.708L7 8.793l2.646-2.647a.5.5 0 0 1 .708.708"/>
+                          </svg>
+                        </div>
+
+                        <h2>Video saved successfully on GoDAM</h2>
+                      </>
+                    )
+                  }
+
+                  {
+                    contentState?.error && (
+                      <>
+                        <div className={styless.warningIcon}>
+                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-patch-check-fill" viewBox="0 0 16 16">
+                            <path d="M10.067.87a2.89 2.89 0 0 0-4.134 0l-.622.638-.89-.011a2.89 2.89 0 0 0-2.924 2.924l.01.89-.636.622a2.89 2.89 0 0 0 0 4.134l.637.622-.011.89a2.89 2.89 0 0 0 2.924 2.924l.89-.01.622.636a2.89 2.89 0 0 0 4.134 0l.622-.637.89.011a2.89 2.89 0 0 0 2.924-2.924l-.01-.89.636-.622a2.89 2.89 0 0 0 0-4.134l-.637-.622.011-.89a2.89 2.89 0 0 0-2.924-2.924l-.89.01zm.287 5.984-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 1 1 .708-.708L7 8.793l2.646-2.647a.5.5 0 0 1 .708.708"/>
+                          </svg>
+                        </div>
+
+                        <h2>Failed to upload video on GoDAM</h2>
+                      </>
+                    )
+                  }
+
+                  {
+                    contentState?.videoUrl && (
+                      <>
+                        <div>Video URL</div>
+                        <div className={styless.videoLink}>
+                          <input className={styless.link} value={contentState?.videoUrl} disabled />
+                          <button className={styless.copyBtn} onClick={() => {navigator.clipboard.writeText(contentState?.videoUrl)}}>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-copy" viewBox="0 0 16 16">
+                              <path fillRule="evenodd" d="M4 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2zm2-1a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1zM2 5a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1v-1h1v1a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h1v1z"/>
+                            </svg>
+                          </button>
+                        </div>
+
+                        <a href={contentState?.videoUrl} target="_blank" rel="noreferrer">
+                          Open video
+                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-box-arrow-up-right" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5"/>
+                            <path fill-rule="evenodd" d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0z"/>
+                          </svg>
+                        </a>
+                      </>
+                    )
+                  }
+
+                </div>
+
+            </div>
         </div>
       )}
     </div>

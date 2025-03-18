@@ -679,10 +679,12 @@ const Recorder = () => {
 
   return (
     <div className="wrap">
-      <img
-        className="logo"
-        src={chrome.runtime.getURL("assets/logo-text.svg")}
-      />
+      <div className="setupLogo">
+        <img
+          src={chrome.runtime.getURL("assets/logo-text.svg")}
+        />
+        <span>Powered by Screenity</span>
+      </div>
       <div className="middle-area">
         <img src={chrome.runtime.getURL("assets/record-tab-active.svg")} />
         <div className="title">
@@ -737,6 +739,29 @@ const Recorder = () => {
 					background-size: 62px 23.5px;
 					animation: moveBackground 138s linear infinite;
 					transform: rotate(0deg);
+				}
+
+        .setupLogo {
+					position: absolute;
+					bottom: 30px;
+					left: 0px;
+					right: 0px;
+					margin: auto;
+					display: flex;
+					justify-content: center;
+					align-items: end;
+					gap: 10px;
+				}
+
+				.setupLogo img {
+					max-width: 120px;
+					width: 100%;
+				}
+
+				.setupLogo span {
+					font-size: 12px;
+					color: #6E7684;
+					line-height: 2;
 				}
 				
 				@keyframes moveBackground {

@@ -24,10 +24,13 @@ const Setup = () => {
 
   return (
     <div className="setupBackground">
-      <img
-        src={chrome.runtime.getURL("assets/logo-text.svg")}
-        className="setupLogo"
-      />
+		<div className="setupLogo">
+			<img
+				src={chrome.runtime.getURL("assets/logo-text.svg")}
+			/>
+			<span>Powered by Screenity</span>
+		</div>
+
       <div className="setupBackgroundSVG"></div>
       <style>
         {`
@@ -66,16 +69,28 @@ const Setup = () => {
 					}
 				}
 
-
 				.setupLogo {
 					position: absolute;
 					bottom: 30px;
 					left: 0px;
 					right: 0px;
 					margin: auto;
-					width: 120px;
+					display: flex;
+					justify-content: center;
+					align-items: end;
+					gap: 10px;
 				}
 
+				.setupLogo img {
+					max-width: 120px;
+					width: 100%;
+				}
+
+				.setupLogo span {
+					font-size: 12px;
+					color: #6E7684;
+					line-height: 2;
+				}
 
 				.setupBackground {
 					background-color: #f5f5f5;

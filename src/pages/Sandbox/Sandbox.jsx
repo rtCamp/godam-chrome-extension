@@ -117,7 +117,12 @@ const Sandbox = () => {
       {contentState.mode != "edit" && contentState.ready && <Player />}
       {!contentState.ready && (
         <div className="wrap">
-          <img className="logo" src="/assets/logo-text.svg" />
+          <div className="setupLogo">
+            <img
+              src={chrome.runtime.getURL("assets/logo-text.svg")}
+            />
+            <span>Powered by Screenity</span>
+          </div>
           <div className="middle-area">
             <img src="/assets/record-tab-active.svg" />
             <div className="title">

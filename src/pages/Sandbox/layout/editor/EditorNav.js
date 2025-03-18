@@ -45,7 +45,10 @@ const EditorNav = () => {
             chrome.runtime.sendMessage({ type: "open-home" });
           }}
         >
-          <img src={URL + "editor/logo.svg"} alt="Logo" />
+          <div className={styles.godamLogo}>
+            <img src={URL + "editor/godam-logo.png"} alt="GoDAM Logo" />
+            <span>Powered by Screenity</span>
+          </div>
         </div>
         <div className={styles.editorNavCenter}>
           <div className={styles.editorNavTitle}>

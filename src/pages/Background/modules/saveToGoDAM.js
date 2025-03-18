@@ -89,20 +89,17 @@ const saveToGoDAM = async (videoBlob, fileName, sendResponse) => {
       if (!token) {
         throw new Error("GoDAM sign-in failed");
       }
-
-      // For this implementation, we'll just log the message
-      console.log("Video uploaded to GoDAM");
       
-      // In a real implementation, you would upload the video to GoDAM here
-      // using FormData and fetch API similar to the Google Drive implementation
-      
-      // Example of what the actual implementation might look like:
-      /*
       const formData = new FormData();
       formData.append('file', videoBlob, fileName);
+
+      const url = new URL( 'https://upload.godam.io/upload' );
+      url.searchParams.set('user_token', token);
+      url.searchParams.set('job_id', 'modulezp');
+
       
       const uploadResponse = await fetch(
-        "https://frappe-transcoder-api.rt.gw/api/method/upload_file",
+        url,
         {
           method: "POST",
           headers: {
@@ -113,27 +110,27 @@ const saveToGoDAM = async (videoBlob, fileName, sendResponse) => {
       );
 
       if (!uploadResponse.ok) {
+        // error message
+        const res = await uploadResponse.json();
+        console.log(res);
         throw new Error(`Error uploading to GoDAM: ${uploadResponse.status}`);
       }
 
       const responseData = await uploadResponse.json();
-      const fileId = responseData.file_id;
-      */
+      const filename = responseData.filename;
+      const location = responseData.location;
       
-      // For now, we'll simulate a successful upload
-      const fileId = "godam_" + Date.now();
-      
-      sendResponse({ status: "ok", url: fileId });
+      sendResponse({ status: "ok", url: `https://frappe-transcoder-api.rt.gw/${location}` });
       
       // Open the GoDAM file in a new tab (this would be the actual URL in production)
-      chrome.tabs.create({
-        url: `https://frappe-transcoder-api.rt.gw/desk#Form/File/${fileId}`,
-      });
+      // chrome.tabs.create({
+      //   url: `https://frappe-transcoder-api.rt.gw/${location}`,
+      // });
 
-      resolve(`https://frappe-transcoder-api.rt.gw/desk#Form/File/${fileId}`);
+      resolve(`https://frappe-transcoder-api.rt.gw/${location}`);
     } catch (error) {
       console.error("Error uploading to GoDAM:", error.message);
-      sendResponse({ status: "ew", url: null });
+      sendResponse({ status: "error", url: null, message: error.message });
       reject(error);
     }
   });

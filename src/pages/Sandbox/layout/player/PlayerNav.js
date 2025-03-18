@@ -60,7 +60,10 @@ const PlayerNav = () => {
           aria-label="home"
           className={styles.navLeft}
         >
-          <img src={URL + "editor/icons/godam-logo.png"} alt="GoDAM Logo" />
+          <div className={styles.godamLogo}>
+            <img src={URL + "editor/icons/godam-logo.png"} alt="GoDAM Logo" />
+            <span>Powered by Screenity</span>
+          </div>
         </div>
         <div className={styles.navRight}>
           <button

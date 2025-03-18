@@ -1606,7 +1606,7 @@ const handleSignOutGoDAM = async () => {
   });
 };
 
-// Add this function to handle saving to GoDAM
+// Function to handle saving to GoDAM
 const handleSaveToGoDAM = async (sendResponse, request, fallback = false) => {
   if (!fallback) {
     const blob = base64ToUint8Array(request.base64);
