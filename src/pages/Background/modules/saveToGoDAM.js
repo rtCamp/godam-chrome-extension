@@ -93,11 +93,8 @@ const saveToGoDAM = async (videoBlob, fileName, sendResponse) => {
       const formData = new FormData();
       formData.append('file', videoBlob, fileName);
 
-      const url = new URL( 'https://upload.godam.io/upload' );
-      url.searchParams.set('user_token', token);
-      url.searchParams.set('job_id', 'modulezp');
+      const url = 'https://upload.godam.io/upload';
 
-      
       const uploadResponse = await fetch(
         url,
         {
@@ -120,14 +117,14 @@ const saveToGoDAM = async (videoBlob, fileName, sendResponse) => {
       const filename = responseData.filename;
       const location = responseData.location;
       
-      sendResponse({ status: "ok", url: `https://frappe-transcoder-api.rt.gw/${location}` });
+      sendResponse({ status: "ok", url: `https://upload.godam.io/${location}` });
       
       // Open the GoDAM file in a new tab (this would be the actual URL in production)
       // chrome.tabs.create({
-      //   url: `https://frappe-transcoder-api.rt.gw/${location}`,
+      //   url: `https://upload.godam.io/${location}`,
       // });
 
-      resolve(`https://frappe-transcoder-api.rt.gw/${location}`);
+      resolve(`https://upload.godam.io/${location}`);
     } catch (error) {
       console.error("Error uploading to GoDAM:", error.message);
       sendResponse({ status: "error", url: null, message: error.message });
