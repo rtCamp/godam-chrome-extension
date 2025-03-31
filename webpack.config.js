@@ -61,6 +61,7 @@ var options = {
     ),
     setup: path.join(__dirname, "src", "pages", "Setup", "index.jsx"),
     playground: path.join(__dirname, "src", "pages", "Playground", "index.jsx"),
+    login: path.join(__dirname, "src", "pages", "Login", "index.jsx"),
     editor: path.join(__dirname, "src", "pages", "Editor", "index.jsx"),
     region: path.join(__dirname, "src", "pages", "Region", "index.jsx"),
     download: path.join(__dirname, "src", "pages", "Download", "index.jsx"),
@@ -267,6 +268,18 @@ var options = {
       ),
       filename: "playground.html",
       chunks: ["playground"],
+      cache: false,
+    }),
+    new HtmlWebpackPlugin({
+      template: path.join(
+        __dirname,
+        "src",
+        "pages",
+        "login",
+        "index.html"
+      ),
+      filename: "login.html",
+      chunks: ["login"],
       cache: false,
     }),
     new HtmlWebpackPlugin({

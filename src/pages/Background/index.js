@@ -569,6 +569,21 @@ chrome.runtime.onStartup.addListener(() => {
 
 // Check when action button is clicked
 chrome.action.onClicked.addListener(async (tab) => {
+
+  // Check if user is logged in to GoDAM
+  const { godamToken } = await chrome.storage.local.get(["godamToken"]);
+
+  console.log( 'godamToken', godamToken );
+
+  if ( !godamToken ) {
+    chrome.tabs.create({
+      url: "login.html",
+      active: true
+    });
+
+    return;
+  }
+
   // Check if recording
   const { recording } = await chrome.storage.local.get(["recording"]);
   if (recording) {
@@ -1643,6 +1658,18 @@ const handleSaveToGoDAM = async (sendResponse, request, fallback = false) => {
   }
 };
 
+const handleSignInGoDAM = async (sendResponse) => {
+  const signInGoDAM = require('./modules/signInGoDAM').default;
+
+  const token = await signInGoDAM();
+
+  if (token) {
+    sendResponse({ status: "ok", token: token });
+  } else {
+    sendResponse({ status: "error", message: "Failed to sign in to GoDAM" });
+  }
+};
+
 // Listen for messages
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.type === "desktop-capture") {
@@ -1824,6 +1851,9 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     );
   } else if (request.type === "add-alarm-listener") {
     addAlarmListener();
+  } else if (request.type === "sign-in-godam") {
+    handleSignInGoDAM(sendResponse);
+    return true;
   } else if (request.type === "save-to-godam") {
     handleSaveToGoDAM(sendResponse, request, false);
     return true;
@@ -1831,7 +1861,8 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     handleSaveToGoDAM(sendResponse, request, true);
     return true;
   } else if (request.type === "sign-out-godam") {
-    handleSignOutGoDAM();
+    handleSignOutGoDAM(sendResponse);
+    return true;
   }
 });
 
