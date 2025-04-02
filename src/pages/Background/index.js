@@ -533,19 +533,22 @@ const stopRecording = async () => {
   const chunks = await getChunks();
   console.log("chunks:", chunks);
   if (chunks.length > 0) {
+
+    // Build the video from chunks
+    // Rearrange chunks by timestamp
+    const sortedChunks = chunks.sort((a, b) => a.timestamp - b.timestamp);
+
     // Create a video blob from chunks
-    const videoBlob = new Blob(chunks, { type: 'video/webm' });
-    const fileName = `recording-${Date.now()}.webm`;
+    const videoBlob = new Blob(sortedChunks.map(chunk => chunk.chunk), { type: 'video/webm' });
+
+    const fileName = `recording-${Date.now()}.mp4`;
 
     // Save to GoDAM and get the URL
     try {
       await saveToGoDAM(videoBlob, fileName, (response) => {
         if (response.status === "ok") {
           // Redirect to GoDAM URL
-          console.log("response.url:", response.url);
-          setTimeout(() => {
-            chrome.tabs.create({ url: response.url, active: true });
-          }, 5000);
+          chrome.tabs.create({ url: response.url, active: true });
         } else {
           console.error("Error saving to GoDAM:", response.message);
         }
