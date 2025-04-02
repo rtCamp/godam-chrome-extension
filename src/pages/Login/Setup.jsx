@@ -57,12 +57,21 @@ const Setup = () => {
 
   return (
     <div className="setupBackground">
-      <div className="setupLogo">
+      {/* <div className="setupLogo">
         <img src={chrome.runtime.getURL("assets/logo-text.svg")} />
         <span>Powered by Screenity</span>
-      </div>
+      </div> */}
 
-      <h1>Login</h1>
+      <header className="loginHeader">
+        <div className="godamLogo">
+          <img src={chrome.runtime.getURL("assets/logo-text.svg")} />
+          <span>Powered by Screenity</span>
+        </div>
+
+        <a className="getGodamButton" href="https://godam.io" target="_blank">Get GoDAM</a>
+      </header>
+
+      <h1 className="loginTitle">Log in</h1>
 
       {/* Sign in with GoDAM button */}
       <div
@@ -75,9 +84,6 @@ const Setup = () => {
         </div>
         <div className="buttonMiddle">
           Login with GoDAM
-        </div>
-        <div className="buttonRight">
-          <ReactSVG src={URL + "editor/icons/right-arrow.svg"} />
         </div>
       </div>
 
@@ -95,6 +101,18 @@ const Setup = () => {
 					overflow: hidden;
 					margin: 0px;
 				}
+
+        .loginHeader {
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          padding: 1rem 2rem;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          z-index: 1000;
+        }
 
 				.setupInfo {
 					margin-top: 20px;
@@ -140,6 +158,28 @@ const Setup = () => {
           color: oklch(0.885 0.062 18.334);
         }
 
+        .getGodamButton {
+          background-color: #ab3a6c;
+          color: #fff;
+          border: none;
+          padding: 0.75rem 1.25rem;
+          border-radius: 0.75rem;
+          font-size: 14px;
+          cursor: pointer;
+          letter-spacing: 0.03em;
+          transition: background-color 0.3s ease;
+        }
+
+        .getGodamButton:hover { 
+          background-color: #9a2d5e;
+        }
+
+        .loginTitle {
+          font-size: 32px;
+          font-weight: 600;
+          margin-bottom: 20px;
+        }
+
         .loginButton {
           display: flex;
           align-items: center;
@@ -149,6 +189,8 @@ const Setup = () => {
           padding: 10px;
           border: 1px solid #E0E0E0;
           cursor: pointer;
+          gap: 16px;
+          padding: 10px 20px;
         }
         .loginButton:hover {
           background-color: #fff;
@@ -156,7 +198,6 @@ const Setup = () => {
 
         .buttonLeft,
         .buttonRight {
-          width: 60px;
           display: flex;
           align-items: center;
           text-align: center;
@@ -210,6 +251,24 @@ const Setup = () => {
 				}
 
 				.setupLogo span {
+					font-size: 12px;
+					color: #6E7684;
+					line-height: 2;
+				}
+
+        .godamLogo {
+          display: flex;
+					justify-content: center;
+					align-items: end;
+					gap: 10px;
+        }
+
+        .godamLogo img {
+					max-width: 120px;
+					width: 100%;
+				}
+
+				.godamLogo span {
 					font-size: 12px;
 					color: #6E7684;
 					line-height: 2;

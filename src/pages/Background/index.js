@@ -10,6 +10,8 @@ import {
 
 import localforage from "localforage";
 
+const saveToGoDAM = require('./modules/saveToGoDAM').default;
+
 localforage.config({
   driver: localforage.INDEXEDDB,
   name: "screenity",
@@ -448,10 +450,20 @@ const sendChunks = async (override = false) => {
     await chunksStore.iterate((value, key) => {
       chunks.push(value);
     });
+    
     handleChunks(chunks, override);
   } catch (error) {
     chrome.runtime.reload();
   }
+};
+
+const getChunks = async () => {
+  const chunks = [];
+  await chunksStore.iterate((value, key) => {
+    console.log("value", value);
+    chunks.push(value);
+  });
+  return chunks;
 };
 
 const stopRecording = async () => {
@@ -473,48 +485,74 @@ const stopRecording = async () => {
 
   chrome.storage.local.set({ recordingStartTime: 0 });
 
-  if (duration > maxDuration) {
-    // Close the sandbox tab, open a new one with fallback editor
-    chrome.tabs.create(
-      {
-        url: "editorfallback.html",
-        active: true,
-      },
-      (tab) => {
-        chrome.tabs.onUpdated.addListener(function _(
-          tabId,
-          changeInfo,
-          updatedTab
-        ) {
-          if (tabId === tab.id && changeInfo.status === "complete") {
-            chrome.tabs.onUpdated.removeListener(_);
-            chrome.storage.local.set({ sandboxTab: tab.id });
-            sendChunks();
-          }
-        });
-      }
-    );
-  } else {
-    // Close the sandbox tab, open a new one with normal editor
-    chrome.tabs.create(
-      {
-        url: "editor.html",
-        active: true,
-      },
-      (tab) => {
-        chrome.tabs.onUpdated.addListener(function _(
-          tabId,
-          changeInfo,
-          updatedTab
-        ) {
-          if (tabId === tab.id && changeInfo.status === "complete") {
-            chrome.tabs.onUpdated.removeListener(_);
-            chrome.storage.local.set({ sandboxTab: tab.id });
-            sendChunks();
-          }
-        });
-      }
-    );
+  // if (duration > maxDuration) {
+  //   // Close the sandbox tab, open a new one with fallback editor
+  //   chrome.tabs.create(
+  //     {
+  //       url: "editorfallback.html",
+  //       active: true,
+  //     },
+  //     (tab) => {
+  //       chrome.tabs.onUpdated.addListener(function _(
+  //         tabId,
+  //         changeInfo,
+  //         updatedTab
+  //       ) {
+  //         if (tabId === tab.id && changeInfo.status === "complete") {
+  //           chrome.tabs.onUpdated.removeListener(_);
+  //           chrome.storage.local.set({ sandboxTab: tab.id });
+  //           sendChunks();
+  //         }
+  //       });
+  //     }
+  //   );
+  // } else {
+  //   // Close the sandbox tab, open a new one with normal editor
+  //   chrome.tabs.create(
+  //     {
+  //       url: "editor.html",
+  //       active: true,
+  //     },
+  //     (tab) => {
+  //       chrome.tabs.onUpdated.addListener(function _(
+  //         tabId,
+  //         changeInfo,
+  //         updatedTab
+  //       ) {
+  //         if (tabId === tab.id && changeInfo.status === "complete") {
+  //           chrome.tabs.onUpdated.removeListener(_);
+  //           chrome.storage.local.set({ sandboxTab: tab.id });
+  //           sendChunks();
+  //         }
+  //       });
+  //     }
+  //   );
+  // }
+
+  // Get the recorded video chunks
+  const chunks = await getChunks();
+  console.log("chunks:", chunks);
+  if (chunks.length > 0) {
+    // Create a video blob from chunks
+    const videoBlob = new Blob(chunks, { type: 'video/webm' });
+    const fileName = `recording-${Date.now()}.webm`;
+
+    // Save to GoDAM and get the URL
+    try {
+      await saveToGoDAM(videoBlob, fileName, (response) => {
+        if (response.status === "ok") {
+          // Redirect to GoDAM URL
+          console.log("response.url:", response.url);
+          setTimeout(() => {
+            chrome.tabs.create({ url: response.url, active: true });
+          }, 5000);
+        } else {
+          console.error("Error saving to GoDAM:", response.message);
+        }
+      });
+    } catch (error) {
+      console.error("Error saving to GoDAM:", error);
+    }
   }
 
   chrome.action.setIcon({ path: "assets/icon-34.png" });
