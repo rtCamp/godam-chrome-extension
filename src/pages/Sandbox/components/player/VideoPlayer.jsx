@@ -173,7 +173,7 @@ const VideoPlayer = (props) => {
             options={options}
           />
         )}
-        {contentState.mode === "player" && <Title />}
+        {/* {contentState.mode === "player" && <Title />} */}
       </div>
       <style>
         {`

@@ -14,11 +14,11 @@ const Content = () => {
   return (
     <div className={styles.content}>
       <div className={styles.wrap}>
-        {contentState.mode === "audio" && <VideoPlayer />}
+        {/* {contentState.mode === "audio" && <VideoPlayer />} */}
         {contentState.mode === "player" && <VideoPlayer />}
-        {contentState.mode === "crop" && <CropperWrap />}
+        {/* {contentState.mode === "crop" && <CropperWrap />} */}
       </div>
-      <HelpButton />
+      {/* <HelpButton /> */}
     </div>
   );
 };
