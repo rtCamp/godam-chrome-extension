@@ -618,6 +618,9 @@ chrome.action.onClicked.addListener(async (tab) => {
   console.log( 'godamToken', godamToken );
 
   if ( !godamToken ) {
+    // Store the current tab ID before opening login page
+    chrome.storage.local.set({ previousTabId: tab.id });
+    
     chrome.tabs.create({
       url: "login.html",
       active: true

@@ -39,8 +39,17 @@ const Setup = () => {
 
         setTimeout(() => {
           setMessage(null);
-          // Redirect to the playground.html page
-          window.location.href = chrome.runtime.getURL("playground.html");
+          // Get the previous tab ID from storage and navigate back to it
+          chrome.storage.local.get(['previousTabId'], (result) => {
+            if (result.previousTabId) {
+              chrome.tabs.update(result.previousTabId, { active: true });
+              // Clear the stored tab ID
+              chrome.storage.local.remove('previousTabId');
+
+              // Close the current window
+              window.close();
+            }
+          });
         }, 3000);
       } else {
         setMessage({
