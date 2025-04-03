@@ -14,6 +14,7 @@ import { ContentStateContext } from "../../context/ContentState"; // Import the 
 
 const Player = () => {
   const [contentState, setContentState] = useContext(ContentStateContext); // Access the ContentState context
+  const [isSaving, setIsSaving] = useState(false);
 
   const saveToGoDAM = () => {
 
@@ -30,6 +31,7 @@ const Player = () => {
             chrome.tabs.getCurrent((tab) => {
               chrome.tabs.update(tab.id, { url: response.url });
             });
+            setIsSaving(false);
           } else {
             console.log('Error saving to GoDAM');
           }
@@ -55,6 +57,7 @@ const Player = () => {
               chrome.tabs.getCurrent((tab) => {
                 chrome.tabs.update(tab.id, { url: response.url });
               });
+              setIsSaving(false);
             } else {
               console.log('Error saving to GoDAM');
             }
@@ -74,7 +77,10 @@ const Player = () => {
 
 
   useEffect(() => {
-    saveToGoDAM();
+    if (!isSaving) {
+      setIsSaving(true);
+      saveToGoDAM();
+    }
   }, []);
 
   return (
@@ -83,7 +89,13 @@ const Player = () => {
       {contentState.mode === "player" && <PlayerNav />}
       {/* {contentState.mode === "audio" && <AudioNav />} */}
       <div className={styles.content}>
-        <Content />
+          {isSaving && (
+            <div className={styles.saving}>
+              <div className={styles.savingSpinner}></div>
+              <p className={styles.savingText}>Hold tight! We're setting up your video...</p>
+            </div>
+          )}
+          <Content />
         {/* <RightPanel /> */}
       </div>
     </div>
