@@ -22,6 +22,9 @@ const VideosTab = () => {
         `https://translate.google.com/translate?sl=en&tl=${locale}&u=https://tally.so/r/npojNV`
       );
     }
+
+    // Redirect to app.godam.io on blank tab
+    window.open("https://app.godam.io", "_blank");
   }, []);
 
   // Example temporary data

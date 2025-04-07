@@ -13,7 +13,6 @@ import {
   VideoTabActive,
   VideoTabInactive,
   TempLogo,
-  ProfilePic,
 } from "../images/popup/images";
 
 import { Rnd } from "react-rnd";
@@ -34,6 +33,7 @@ import SettingsMenu from "./layout/SettingsMenu";
 
 // Context
 import { contentStateContext } from "../context/ContentState";
+import GoDAMVideos from "./layout/GoDAMVideos";
 
 const PopupContainer = (props) => {
   const [contentState, setContentState] = useContext(contentStateContext);
@@ -50,32 +50,33 @@ const PopupContainer = (props) => {
   const recordTabRef = useRef(null);
   const videoTabRef = useRef(null);
   const pillRef = useRef(null);
-  const [URL, setURL] = useState("https://help.screenity.io/");
+  const [URL, setURL] = useState("https://godam.io/docs/getting-started/");
+  
 
-  useEffect(() => {
-    // Check chrome storage
-    chrome.storage.local.get(["updatingFromOld"], function (result) {
-      if (result.updatingFromOld) {
-        setOnboarding(true);
-      }
-    });
-  }, []);
+  // useEffect(() => {
+  //   // Check chrome storage
+  //   chrome.storage.local.get(["updatingFromOld"], function (result) {
+  //     if (result.updatingFromOld) {
+  //       setOnboarding(true);
+  //     }
+  //   });
+  // }, []);
 
-  useEffect(() => {
-    const locale = chrome.i18n.getMessage("@@ui_locale");
-    if (!locale.includes("en")) {
-      setURL(
-        `https://translate.google.com/translate?sl=en&tl=${locale}&u=https://help.screenity.io/`
-      );
-    }
-  }, []);
+  // useEffect(() => {
+  //   const locale = chrome.i18n.getMessage("@@ui_locale");
+  //   if (!locale.includes("en")) {
+  //     setURL(
+  //       `https://translate.google.com/translate?sl=en&tl=${locale}&u=https://help.screenity.io/`
+  //     );
+  //   }
+  // }, []);
 
   const onValueChange = (tab) => {
     setTab(tab);
     if (tab === "record") {
       setBadge(TempLogo);
     } else {
-      setBadge(ProfilePic);
+      setBadge(TempLogo);
     }
     setContentState((prevContentState) => ({
       ...prevContentState,
@@ -336,9 +337,8 @@ const PopupContainer = (props) => {
           </div>
           <div className="popup-nav"></div>
           <div className="popup-content">
-            {onboarding && <Announcement setOnboarding={setOnboarding} />}
-            {!onboarding && (
-              <Tabs.Root
+            {/* {onboarding && <Announcement setOnboarding={setOnboarding} />} */}
+            <Tabs.Root
                 className="TabsRoot tl"
                 defaultValue="record"
                 onValueChange={onValueChange}
@@ -387,10 +387,9 @@ const PopupContainer = (props) => {
                   <RecordingTab shadowRef={props.shadowRef} />
                 </Tabs.Content>
                 <Tabs.Content className="TabsContent tl" value="dashboard">
-                  <VideosTab />
+                  <GoDAMVideos />
                 </Tabs.Content>
               </Tabs.Root>
-            )}
           </div>
           {contentState.settingsOpen && (
             <div
