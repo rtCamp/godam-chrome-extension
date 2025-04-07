@@ -105,17 +105,6 @@ const ContentState = (props) => {
     }));
   }, []);
 
-  // Show a popup when attempting to close the tab if the user has not downloaded their video
-  useEffect(() => {
-    if (!contentState.saved) {
-      window.onbeforeunload = function () {
-        return true;
-      };
-    } else {
-      window.onbeforeunload = null;
-    }
-  }, [contentState.saved]);
-
   const addToHistory = useCallback(() => {
     setContentState((prevState) => ({
       ...prevState,
@@ -197,6 +186,8 @@ const ContentState = (props) => {
   }, [contentState.blob]);
 
   const reconstructVideo = async () => {
+    console.log("reconstructVideo");
+
     const blob = new Blob(videoChunks.current, {
       type: "video/webm; codecs=vp8, opus",
     });

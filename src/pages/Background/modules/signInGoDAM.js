@@ -101,16 +101,12 @@ const signInGoDAM = async () => {
     const expirationTime = Date.now() + expiresIn * 1000;
     const refreshToken = tokenData.refresh_token || (tokenData.message && tokenData.message.refresh_token);
     
-    await new Promise((resolve) =>
-      chrome.storage.local.set({ 
-        godamToken: token,
-        godamRefreshToken: refreshToken,
-        godamTokenExpiration: expirationTime
-      }, () => {
-        console.log("Token saved to storage");
-        resolve();
-      })
-    );
+    
+    await chrome.storage.local.set({ 
+      godamToken: token,
+      godamRefreshToken: refreshToken,
+      godamTokenExpiration: expirationTime
+    })
 
     return token;
   } catch (error) {

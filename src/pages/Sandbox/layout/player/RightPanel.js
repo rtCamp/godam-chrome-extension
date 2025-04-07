@@ -515,6 +515,7 @@ const RightPanel = () => {
               </div>
             </div>
           </div>
+
           <div className={styles.section}>
             <div className={styles.sectionTitle}>
               {chrome.i18n.getMessage("sandboxSaveTitle")}
@@ -564,6 +565,7 @@ const RightPanel = () => {
 
             </div>
           </div>
+
           <div className={styles.section}>
             <div className={styles.sectionTitle}>
               {chrome.i18n.getMessage("sandboxExportTitle")}

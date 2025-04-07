@@ -10,6 +10,8 @@ import {
 
 import localforage from "localforage";
 
+const saveToGoDAM = require('./modules/saveToGoDAM').default;
+
 localforage.config({
   driver: localforage.INDEXEDDB,
   name: "screenity",
@@ -448,10 +450,20 @@ const sendChunks = async (override = false) => {
     await chunksStore.iterate((value, key) => {
       chunks.push(value);
     });
+    
     handleChunks(chunks, override);
   } catch (error) {
     chrome.runtime.reload();
   }
+};
+
+const getChunks = async () => {
+  const chunks = [];
+  await chunksStore.iterate((value, key) => {
+    console.log("value", value);
+    chunks.push(value);
+  });
+  return chunks;
 };
 
 const stopRecording = async () => {
@@ -517,6 +529,36 @@ const stopRecording = async () => {
     );
   }
 
+  /* Commented out for now because we're not directly saving to GoDAM */
+  // Get the recorded video chunks
+  // const chunks = await getChunks();
+  // console.log("chunks:", chunks);
+  // if (chunks.length > 0) {
+
+  //   // Build the video from chunks
+  //   // Rearrange chunks by timestamp
+  //   const sortedChunks = chunks.sort((a, b) => a.timestamp - b.timestamp);
+
+  //   // Create a video blob from chunks
+  //   const videoBlob = new Blob(sortedChunks.map(chunk => chunk.chunk), { type: 'video/webm' });
+
+  //   const fileName = `recording-${Date.now()}.mp4`;
+
+  //   // Save to GoDAM and get the URL
+  //   try {
+  //     await saveToGoDAM(videoBlob, fileName, (response) => {
+  //       if (response.status === "ok") {
+  //         // Redirect to GoDAM URL
+  //         chrome.tabs.create({ url: response.url, active: true });
+  //       } else {
+  //         console.error("Error saving to GoDAM:", response.message);
+  //       }
+  //     });
+  //   } catch (error) {
+  //     console.error("Error saving to GoDAM:", error);
+  //   }
+  // }
+
   chrome.action.setIcon({ path: "assets/icon-34.png" });
 
   // Check if wasRegion is set
@@ -569,6 +611,24 @@ chrome.runtime.onStartup.addListener(() => {
 
 // Check when action button is clicked
 chrome.action.onClicked.addListener(async (tab) => {
+
+  // Check if user is logged in to GoDAM
+  const { godamToken } = await chrome.storage.local.get(["godamToken"]);
+
+  console.log( 'godamToken', godamToken );
+
+  if ( !godamToken ) {
+    // Store the current tab ID before opening login page
+    chrome.storage.local.set({ previousTabId: tab.id });
+    
+    chrome.tabs.create({
+      url: "login.html",
+      active: true
+    });
+
+    return;
+  }
+
   // Check if recording
   const { recording } = await chrome.storage.local.get(["recording"]);
   if (recording) {
@@ -1643,6 +1703,18 @@ const handleSaveToGoDAM = async (sendResponse, request, fallback = false) => {
   }
 };
 
+const handleSignInGoDAM = async (sendResponse) => {
+  const signInGoDAM = require('./modules/signInGoDAM').default;
+
+  const token = await signInGoDAM();
+
+  if (token) {
+    sendResponse({ status: "ok", token: token });
+  } else {
+    sendResponse({ status: "error", message: "Failed to sign in to GoDAM" });
+  }
+};
+
 // Listen for messages
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.type === "desktop-capture") {
@@ -1824,6 +1896,9 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     );
   } else if (request.type === "add-alarm-listener") {
     addAlarmListener();
+  } else if (request.type === "sign-in-godam") {
+    handleSignInGoDAM(sendResponse);
+    return true;
   } else if (request.type === "save-to-godam") {
     handleSaveToGoDAM(sendResponse, request, false);
     return true;
@@ -1831,7 +1906,8 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     handleSaveToGoDAM(sendResponse, request, true);
     return true;
   } else if (request.type === "sign-out-godam") {
-    handleSignOutGoDAM();
+    handleSignOutGoDAM(sendResponse);
+    return true;
   }
 });
 

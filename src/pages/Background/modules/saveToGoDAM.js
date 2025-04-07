@@ -93,7 +93,9 @@ const saveToGoDAM = async (videoBlob, fileName, sendResponse) => {
       const formData = new FormData();
       formData.append('file', videoBlob, fileName);
 
-      const url = 'https://upload.godam.io/upload';
+      const baseURL = 'https://godam-upload.rt.gw';
+
+      const url = baseURL + '/upload-file';
 
       const uploadResponse = await fetch(
         url,
@@ -117,14 +119,14 @@ const saveToGoDAM = async (videoBlob, fileName, sendResponse) => {
       const filename = responseData.filename;
       const location = responseData.location;
       
-      sendResponse({ status: "ok", url: `https://upload.godam.io/${location}` });
+      sendResponse({ status: "ok", url: `${baseURL}/${location}` });
       
       // Open the GoDAM file in a new tab (this would be the actual URL in production)
       // chrome.tabs.create({
       //   url: `https://upload.godam.io/${location}`,
       // });
 
-      resolve(`https://upload.godam.io/${location}`);
+      resolve(`${baseURL}/${location}`);
     } catch (error) {
       console.error("Error uploading to GoDAM:", error.message);
       sendResponse({ status: "error", url: null, message: error.message });
