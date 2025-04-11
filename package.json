@@ -1,7 +1,7 @@
 {
-  "name": "screenity",
-  "version": "3.0.0",
-  "description": "The free and privacy-friendly screen recorder with no limits",
+  "name": "godam-extension",
+  "version": "1.0.0",
+  "description": "GoDAM Chrome Extension",
   "scripts": {
     "build": "node utils/build.js",
     "start": "node utils/server.js",

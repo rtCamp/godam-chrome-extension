@@ -6,7 +6,7 @@ import "../styles/layout/_GoDAMVideos.scss";
 
 const GoDAMVideos = () => {
 
-  const redirectLink = 'https://frappe-transcoder-api.rt.gw/';
+  const redirectLink = 'https://frappe-transcoder-api.rt.gw/godam-core/media-library';
 
   useEffect(() => {
     // Redirect to the GoDAM website

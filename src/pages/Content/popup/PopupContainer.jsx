@@ -13,6 +13,8 @@ import {
   VideoTabActive,
   VideoTabInactive,
   TempLogo,
+  GoDAMLogo,
+  GoDAMIcon,
 } from "../images/popup/images";
 
 import { Rnd } from "react-rnd";
@@ -373,14 +375,15 @@ const PopupContainer = (props) => {
                   >
                     <div className="TabsTriggerIcon">
                       <img
+                        style={{ width: "16px", height: "16px", 'position': 'relative', 'bottom': '3px', 'marginRight': '-4px' }}
                         src={
                           tab === "dashboard"
-                            ? VideoTabActive
-                            : VideoTabInactive
+                            ? GoDAMIcon
+                            : GoDAMIcon
                         }
                       />
                     </div>
-                    {chrome.i18n.getMessage("videosTab")}
+                    GoDAM
                   </Tabs.Trigger>
                 </Tabs.List>
                 <Tabs.Content className="TabsContent tl" value="record">

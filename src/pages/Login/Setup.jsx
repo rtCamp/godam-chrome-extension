@@ -6,6 +6,8 @@ import { ReactSVG } from "react-svg";
 const Setup = () => {
 
   const [message, setMessage] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [loaderProgress, setLoaderProgress] = useState(100);
 
   useEffect(() => {
     // Inject content script
@@ -28,13 +30,33 @@ const Setup = () => {
     };
   }, []);
 
+  useEffect(() => {
+    if (message) {
+      setLoaderProgress(100);
+      const interval = setInterval(() => {
+        setLoaderProgress((prev) => {
+          if (prev <= 0) {
+            clearInterval(interval);
+            setMessage(null);
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 30); // Decrease progress every 30ms for a 3-second duration
+      return () => clearInterval(interval);
+    }
+  }, [message]);
+
   const LoginWithGoDAM = () => {
+
+    setLoading(true);
     chrome.runtime.sendMessage({ type: "sign-in-godam" }, (response) => {
       
       if (response.status === "ok") {
+        setLoading(false);
         setMessage({
           type: "success",
-          message: "Signed in to GoDAM successfully"
+          message: "Successfully signed in with GoDAM 🎉"
         });
 
         setTimeout(() => {
@@ -52,6 +74,7 @@ const Setup = () => {
           });
         }, 3000);
       } else {
+        setLoading(false);
         setMessage({
           type: "error",
           message: response.message
@@ -92,13 +115,22 @@ const Setup = () => {
           <ReactSVG fontSize={16} src={URL + "editor/icons/godam.svg"} />
         </div>
         <div className="buttonMiddle">
-          Login with GoDAM
+          {
+            loading ? 'Authenticating via GoDAM...' : 'Login with GoDAM'
+          }
         </div>
       </div>
+
+      <p className="noAccount">
+        No account yet? simplify your digital assets with <a href="https://godam.io" target="_blank">GoDAM</a>
+      </p>
 
       {message && (
         <div className={`message ${message.type}`}>
           {message.message}
+          <div className="loader-container">
+            <div className="loader" style={{ width: `${loaderProgress}%` }}></div>
+          </div>
         </div>
       )}
 
@@ -149,22 +181,42 @@ const Setup = () => {
           color: #6E7684;
           font-size: 16px;
           position: absolute;
-          top: 50%;
-          left: 50%;
-          transform: translate(-50%, -50%);
+          bottom: 1.25rem;
+          right: 1rem;
           margin: auto;
           text-align: center;
           width: 100%;
           z-index: 999;
           max-width: 300px;
+          padding: 1rem;
+          border-radius: 0.25rem;
+        }
+
+        .loader-container {
+          position: absolute;
+          bottom: 0;
+          left: 0;
+          width: 100%;
+          height: 3px;
+          background-color: rgba(0, 0, 0, 0.1);
+          border-radius: 0 0 0.25rem 0.25rem;
+          overflow: hidden;
+        }
+
+        .loader {
+          height: 100%;
+          background-color: currentColor;
+          transition: width 0.03s linear;
         }
 
         .message.success {
-          background-color: oklch(0.925 0.084 155.995);
+          background-color: oklch(96.2% 0.044 156.743);
+          color: oklch(72.3% 0.219 149.579);
         }
 
         .message.error {
-          color: oklch(0.885 0.062 18.334);
+          background-color: oklch(93.6% 0.032 17.717);
+          color: oklch(63.7% 0.237 25.331);
         }
 
         .getGodamButton {
@@ -232,6 +284,18 @@ const Setup = () => {
           font-weight: 600;
         }
         
+        .noAccount {
+          margin: 32px 0; 
+          font-size: 16px;
+        }
+        
+        .noAccount a {
+          color: #ab3a6c;
+        }
+        
+        .noAccount a:hover {
+          text-decoration: underline;
+        }
 				
 				@keyframes moveBackground {
 					0% {
