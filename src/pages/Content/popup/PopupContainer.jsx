@@ -256,6 +256,7 @@ const PopupContainer = (props) => {
   };
 
   useEffect(() => {
+
     let x = contentState.popupPosition.offsetX;
     let y = contentState.popupPosition.offsetY;
 

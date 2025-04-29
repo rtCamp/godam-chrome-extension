@@ -6,10 +6,12 @@ import "../styles/layout/_GoDAMVideos.scss";
 
 const GoDAMVideos = () => {
 
-  const redirectLink = 'https://frappe-transcoder-api.rt.gw/godam-core/media-library';
+  const baseUrl = process.env.GODAM_BASE_URL || 'https://app.godam.io';
+
+  const redirectLink = `${baseUrl}/web/media-library`;
 
   useEffect(() => {
-    // Redirect to the GoDAM website
+    // Redirect to the GoDAM website.
     window.open(redirectLink, "_blank");
   }, []);
 

@@ -1645,8 +1645,9 @@ const handleSignOutGoDAM = async () => {
   const { godamToken } = await chrome.storage.local.get(["godamToken"]);
   if (godamToken) {
     // Revoke token on the server
+    const baseUrl = process.env.GODAM_BASE_URL || 'https://app.godam.io';
     try {
-      await fetch('https://frappe-transcoder-api.rt.gw/api/method/frappe.integrations.oauth2.revoke_token', {
+      await fetch(`${baseUrl}/api/method/frappe.integrations.oauth2.revoke_token`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',

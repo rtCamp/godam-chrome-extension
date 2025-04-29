@@ -5,18 +5,17 @@ const signInGoDAM = async () => {
     
     // Get the redirect URL and remove any trailing slashes
     const redirectUrl = chrome.identity.getRedirectURL().replace(/\/$/, '');
-    console.log("Redirect URL:", redirectUrl);
+
+    const baseURL = process.env.GODAM_BASE_URL || 'https://app.godam.io';
     
     // Construct auth URL with state parameter for security
     const state = Math.random().toString(36).substring(7);
-    const authUrl = new URL('https://frappe-transcoder-api.rt.gw/api/method/frappe.integrations.oauth2.authorize');
+    const authUrl = new URL(`${baseURL}/api/method/frappe.integrations.oauth2.authorize`);
     authUrl.searchParams.append('client_id', clientId);
     authUrl.searchParams.append('response_type', 'code');
     authUrl.searchParams.append('redirect_uri', redirectUrl);
     authUrl.searchParams.append('scope', 'all');
     authUrl.searchParams.append('state', state);
-    
-    console.log("Auth URL:", authUrl.toString());
 
     // Launch OAuth flow with more detailed error handling
     const responseUrl = await new Promise((resolve, reject) => {
@@ -48,20 +47,15 @@ const signInGoDAM = async () => {
     const returnedState = url.searchParams.get('state');
 
     if (!code) {
-      console.error("No code found in response URL");
       throw new Error('Authorization code not found in the response');
     }
 
     if (returnedState !== state) {
-      console.error("State mismatch");
       throw new Error('State parameter mismatch');
     }
 
-    console.log("Obtained authorization code:", code);
-
-    // Exchange code for access token with more detailed logging
-    console.log("Exchanging code for token...");
-    const tokenResponse = await fetch('https://frappe-transcoder-api.rt.gw/api/method/frappe.integrations.oauth2.get_token', {
+    // Exchange code for access token with more detailed logging.
+    const tokenResponse = await fetch(`${baseURL}/api/method/frappe.integrations.oauth2.get_token`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
