@@ -1,7 +1,8 @@
 const signInGoDAM = async () => {
   try {
     // GoDAM OAuth configuration
-    const clientId = 'habg22ul6k';
+    const clientId = process.env.GODAM_OAUTH_CLIENT_ID || 'habg22ul6k';
+    const clientSecret = process.env.GODAM_OAUTH_CLIENT_SECRET || '05e0758f00';
     
     // Get the redirect URL and remove any trailing slashes
     const redirectUrl = chrome.identity.getRedirectURL().replace(/\/$/, '');
@@ -24,19 +25,14 @@ const signInGoDAM = async () => {
         interactive: true
       })
         .then( response => {
-          console.log("Response:", response);
-          
           if (chrome.runtime.lastError) {
-            console.error("WebAuthFlow Error:", chrome.runtime.lastError);
             reject(new Error(chrome.runtime.lastError.message));
             return;
           }
           if (!response) {
-            console.error("No response URL received");
             reject(new Error("No response URL received"));
             return;
           }
-          console.log("Response URL:", response);
           resolve(response);
         });
     });
@@ -65,7 +61,7 @@ const signInGoDAM = async () => {
         grant_type: 'authorization_code',
         code: code,
         client_id: clientId,
-        client_secret: '05e0758f00',
+        client_secret: clientSecret,
         redirect_uri: redirectUrl,
       }),
       credentials: 'include'
@@ -73,22 +69,17 @@ const signInGoDAM = async () => {
 
     if (!tokenResponse.ok) {
       const errorText = await tokenResponse.text();
-      console.error("Token exchange failed:", errorText);
       throw new Error(`Token exchange failed: ${tokenResponse.status} - ${errorText}`);
     }
 
     const tokenData = await tokenResponse.json();
-    console.log("Token response:", tokenData);
 
     // Check for token in both standard and Frappe-specific response formats
     const token = tokenData.access_token || (tokenData.message && tokenData.message.access_token);
 
     if (!token) {
-      console.error("No access token in response:", tokenData);
       throw new Error('Failed to get access token');
     }
-
-    console.log("Successfully obtained access token");
 
     // Save token to storage with expiration time
     const expiresIn = tokenData.expires_in || (tokenData.message && tokenData.message.expires_in) || 3600;
@@ -104,7 +95,6 @@ const signInGoDAM = async () => {
 
     return token;
   } catch (error) {
-    console.error('Error signing in to GoDAM:', error);
     return null;
   }
 };

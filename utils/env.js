@@ -3,5 +3,7 @@ module.exports = {
   NODE_ENV: process.env.NODE_ENV || 'development',
   PORT: process.env.PORT || 3000,
   GODAM_BASE_URL: process.env.GODAM_BASE_URL || 'https://frappe-transcoder-api.rt.gw',
-  GODAM_UPLOAD_URL: process.env.GODAM_UPLOAD_URL || 'https://godam-upload.rt.gw'
+  GODAM_UPLOAD_URL: process.env.GODAM_UPLOAD_URL || 'https://godam-upload.rt.gw',
+  GODAM_OAUTH_CLIENT_ID: process.env.GODAM_OAUTH_CLIENT_ID || 'habg22ul6k',
+  GODAM_OAUTH_CLIENT_SECRET: process.env.GODAM_OAUTH_CLIENT_SECRET || '05e0758f00',
 };
