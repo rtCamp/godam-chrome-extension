@@ -48,7 +48,7 @@
     "description": "Camera / microphone permissions warning modal title"
   },
   "permissionsModalDescription": {
-    "message": "Looks like Screenity can’t access your camera or microphone. Make sure to allow access by clicking on the camera icon in the address bar.",
+    "message": "Looks like GoDAM can’t access your camera or microphone. Make sure to allow access by clicking on the camera icon in the address bar.",
     "description": "Camera / microphone permissions warning modal description"
   },
   "permissionsModalDismiss": {
@@ -660,11 +660,11 @@
     "description": "Paused recording modal title"
   },
   "chromePermissionsModalTitle": {
-    "message": "Screenity doesn't have permission to record your screen",
+    "message": "GoDAM doesn't have permission to record your screen",
     "description": "Permission modal title"
   },
   "chromePermissionsModalDescription": {
-    "message": "To enable screen recording, you must grant Screenity permission to capture your screen when prompted.",
+    "message": "To enable screen recording, you must grant GoDAM permission to capture your screen when prompted.",
     "description": "Permission modal description"
   },
   "chromePermissionsModalAction": {
@@ -692,7 +692,7 @@
     "description": "Microphone muted modal cancel"
   },
   "setupTitle": {
-    "message": "Get started with Screenity in three simple steps:",
+    "message": "Get started with GoDAM in three simple steps:",
     "description": "Set up steps title"
   },
   "setupStep1Before": {
@@ -716,7 +716,7 @@
     "description": "Set up step 3, before the icon. It needs a space at the end."
   },
   "setupStep3After": {
-    "message": " Screenity icon to start",
+    "message": " GoDAM icon to start",
     "description": "Set up step 3, after the icon. It needs a space at the beginning."
   },
   "setupCompleteTitle": {
@@ -776,7 +776,7 @@
     "description": "Stop recording button in recording scren"
   },
   "updateAnnouncementTitle": {
-    "message": "Welcome to the new Screenity!",
+    "message": "Welcome to the new GoDAM chrome extension!",
     "description": "Update announcement title for existing users"
   },
   "updateAnnouncementDescription": {
@@ -796,7 +796,7 @@
     "description": "Stream error modal title"
   },
   "streamErrorModalDescription": {
-    "message": "Looks like there was an error starting the recording. Restart your browser and try again. If the issue persists, please contact us at support@screenity.io.",
+    "message": "Looks like there was an error starting the recording. Restart your browser and try again. If the issue persists, please contact us at https://app.godam.io/helpdesk/my-tickets.",
     "description": "Stream error modal description"
   },
   "highestQuality": {
@@ -848,7 +848,7 @@
     "description": "Not enough space title"
   },
   "notEnoughSpaceDescription": {
-    "message": "Screenity needs at least 1GB of free space to record. Please free up some space and try again.",
+    "message": "GoDAM needs at least 1GB of free space to record. Please free up some space and try again.",
     "description": "Not enough space description"
   },
   "clearSpaceButton": {
@@ -880,7 +880,7 @@
     "description": "Raw recording modal title"
   },
   "rawRecordingModalDescription": {
-    "message": "The raw video file is the original video file that was recorded by Screenity. This video is not processed or edited, so it may be very large and may not be playable on all devices. If you are having issues with the processed video, you can use this file to recover your video.",
+    "message": "The raw video file is the original video file that was recorded by GoDAM. This video is not processed or edited, so it may be very large and may not be playable on all devices. If you are having issues with the processed video, you can use this file to recover your video.",
     "description": "Raw recording modal description"
   },
   "rawRecordingModalButton": {
@@ -892,7 +892,7 @@
     "description": "Troubleshoot modal title"
   },
   "troubleshootModalDescription": {
-    "message": "After downloading, send the file to support@screenity.io with any relevant information. We will use this data to help you troubleshoot any issues you are having with the extension, and recover your video if possible.",
+    "message": "After downloading, send the file to https://app.godam.io/helpdesk/my-tickets with any relevant information. We will use this data to help you troubleshoot any issues you are having with the extension, and recover your video if possible.",
     "description": "Troubleshoot modal description"
   },
   "troubleshootModalButton": {
@@ -946,11 +946,11 @@
     "description": "Extension not supported on tab"
   },
   "extensionNotSupportedDescription": {
-    "message": "Screenity wasn't supported in your previous tab. You can still start your recording here and switch back to the tab, but your camera and toolbar won't be visible.",
+    "message": "GoDAM wasn't supported in your previous tab. You can still start your recording here and switch back to the tab, but your camera and toolbar won't be visible.",
     "description": "Extension not supported on tab description"
   },
   "backupsTitle": {
-    "message": "Set up a local backup for your Screenity recordings",
+    "message": "Set up a local backup for your GoDAM recordings",
     "description": "Backups title"
   },
   "backupsDescription1": {
@@ -986,7 +986,7 @@
     "description": "Stop backups button"
   },
   "backupsConfirmTitle": {
-    "message": "Please reconfirm access to your local Screenity backup folder",
+    "message": "Please reconfirm access to your local GoDAM backup folder",
     "description": "Backups confirm title"
   },
   "backupsConfirmDescription": {
@@ -994,7 +994,7 @@
     "description": "Backups confirm description"
   },
   "backupsConfirmAllow": {
-    "message": "Allow Screenity to keep backing up recordings",
+    "message": "Allow GoDAM to keep backing up recordings",
     "description": "Backups confirm allow button"
   },
   "backupsToggle": {

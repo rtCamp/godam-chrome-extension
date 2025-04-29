@@ -24,8 +24,9 @@ const saveToGoDAM = async (videoBlob, fileName, sendResponse) => {
             const currentTime = Date.now();
             if (currentTime >= godamTokenExpiration) {
               // Token has expired, refresh it
+              const baseUrl = process.env.GODAM_BASE_URL || 'https://app.godam.io';
               try {
-                const refreshResponse = await fetch('https://frappe-transcoder-api.rt.gw/api/method/frappe.integrations.oauth2.get_token', {
+                const refreshResponse = await fetch(`${baseUrl}/api/method/frappe.integrations.oauth2.get_token`, {
                   method: 'POST',
                   headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',
@@ -93,9 +94,9 @@ const saveToGoDAM = async (videoBlob, fileName, sendResponse) => {
       const formData = new FormData();
       formData.append('file', videoBlob, fileName);
 
-      const baseURL = 'https://godam-upload.rt.gw';
+      const uploadUrl =  process.env.GODAM_UPLOAD_URL || 'https://godam-upload.rt.gw'; // Todo: Replace the option with production URL
 
-      const url = baseURL + '/upload-file';
+      const url = uploadUrl + '/upload-file';
 
       const uploadResponse = await fetch(
         url,
@@ -118,13 +119,11 @@ const saveToGoDAM = async (videoBlob, fileName, sendResponse) => {
       const responseData = await uploadResponse.json();
       const filename = responseData.filename;
       const location = responseData.location;
-      
-      sendResponse({ status: "ok", url: `${baseURL}/${location}` });
-      
-      // Open the GoDAM file in a new tab (this would be the actual URL in production)
-      // chrome.tabs.create({
-      //   url: `https://upload.godam.io/${location}`,
-      // });
+      const videoName = responseData?.file_informations?.name;
+
+      const baseURL = process.env.GODAM_BASE_URL || 'https://app.godam.io';
+    
+      sendResponse({ status: "ok", url: `${baseURL}/web/video/${videoName}` }); 
 
       resolve(`${baseURL}/${location}`);
     } catch (error) {

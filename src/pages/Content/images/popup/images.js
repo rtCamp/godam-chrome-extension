@@ -10,6 +10,8 @@ const CameraOffIcon = `${URL}/camera-off.svg`;
 const CheckWhiteIcon = `${URL}/check-white.svg`;
 const Waveform = `${URL}/waveform.svg`;
 const RecordTabActive = `${URL}/record-tab-active.svg`;
+const GoDAMLogo = `${URL}/logo-text.svg`;
+const GoDAMIcon = `${URL}/godam-icon.png`;
 const RecordTabInactive = `${URL}/record-tab-inactive.svg`;
 const VideoTabActive = `${URL}/video-tab-active.svg`;
 const VideoTabInactive = `${URL}/video-tab-inactive.svg`;
@@ -80,4 +82,6 @@ export {
   CameraOffBlue,
   MicOffBlue,
   DropdownGroup,
+  GoDAMLogo,
+  GoDAMIcon,
 };

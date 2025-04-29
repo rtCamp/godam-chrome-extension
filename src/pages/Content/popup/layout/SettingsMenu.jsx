@@ -24,11 +24,18 @@ const SettingsMenu = (props) => {
   const [RAM, setRAM] = useState(0);
   const [width, setWidth] = useState(0);
   const [height, setHeight] = useState(0);
-
+  const [godamToken, setGodamToken] = useState(null);
   useEffect(() => {
     // Check chrome version
     const chromeVersion = navigator.userAgent.match(/Chrom(e|ium)\/([0-9]+)\./);
     const MIN_CHROME_VERSION = 110;
+
+    // Get godam token
+    chrome.storage.local.get("godamToken", (result) => {
+      if (result.godamToken) {
+        setGodamToken(result.godamToken);
+      }
+    });
 
     if (chromeVersion && parseInt(chromeVersion[2], 10) < MIN_CHROME_VERSION) {
       setOldChrome(true);
@@ -597,7 +604,7 @@ const SettingsMenu = (props) => {
               </DropdownMenu.ItemIndicator>
             </DropdownMenu.CheckboxItem>
           )}
-          <DropdownMenu.Item
+          {/* <DropdownMenu.Item
             className="DropdownMenuItem"
             onSelect={(e) => {
               e.preventDefault();
@@ -606,7 +613,7 @@ const SettingsMenu = (props) => {
             disabled={!restore}
           >
             {chrome.i18n.getMessage("restoreRecording")}
-          </DropdownMenu.Item>
+          </DropdownMenu.Item> */}
           <DropdownMenu.Item
             className="DropdownMenuItem"
             onSelect={(e) => {
@@ -616,6 +623,28 @@ const SettingsMenu = (props) => {
           >
             {chrome.i18n.getMessage("downloadForTroubleshootingOption")}
           </DropdownMenu.Item>
+
+          {godamToken && (
+            <DropdownMenu.Item
+              className="DropdownMenuItem"
+              onSelect={(e) => {
+                e.preventDefault();
+                chrome.runtime.sendMessage({ type: "sign-out-godam" });
+                // Close the dropdown
+                props.setOpen(false);
+                // Refresh the page
+                window.location.reload();
+              }}
+            >
+              <span style={{ marginRight: "8px" }}>
+                {chrome.i18n.getMessage("signOutGoDAMLabel")}
+              </span>
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#dc3545" class="bi bi-box-arrow-right" viewBox="0 0 16 16">
+                <path fill-rule="evenodd" d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v2a.5.5 0 0 0 1 0v-2A1.5 1.5 0 0 0 9.5 2h-8A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0z"/>
+                <path fill-rule="evenodd" d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708z"/>
+              </svg>
+            </DropdownMenu.Item>
+          )}
         </DropdownMenu.Content>
       </DropdownMenu.Portal>
     </DropdownMenu.Root>

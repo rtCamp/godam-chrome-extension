@@ -147,9 +147,11 @@ var options = {
     new webpack.ProgressPlugin(),
     // expose and write the allowed env vars on the compiled bundle
     new webpack.EnvironmentPlugin({
-      NODE_ENV: 'development',
-      GODAM_BASE_URL: 'https://frappe-transcoder-api.rt.gw',
-      GODAM_UPLOAD_URL: 'https://godam-upload.rt.gw'
+      NODE_ENV: env.NODE_ENV,
+      GODAM_BASE_URL: env.GODAM_BASE_URL,
+      GODAM_UPLOAD_URL: env.GODAM_UPLOAD_URL,
+      GODAM_OAUTH_CLIENT_ID: env.GODAM_OAUTH_CLIENT_ID,
+      GODAM_OAUTH_CLIENT_SECRET: env.GODAM_OAUTH_CLIENT_SECRET,
     }),
     new CopyWebpackPlugin({
       patterns: [
