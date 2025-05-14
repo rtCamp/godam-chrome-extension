@@ -41,7 +41,7 @@ const Setup = () => {
       {!setupComplete && (
         <div className="setupContainer">
           <div className="setupImage">
-            <img src={chrome.runtime.getURL("assets/helper/pin.gif")} />
+            <img src={chrome.runtime.getURL("assets/helper/pin.gif")} /> 
           </div>
           <div className="setupText">
             <div className="setupEmoji">👋</div>
@@ -70,7 +70,7 @@ const Setup = () => {
                 <span>
                   <img
                     src={chrome.runtime.getURL(
-                      "assets/helper/mini-screenity.png"
+                      "assets/helper/mini-godam.png"
                     )}
                   />
                 </span>

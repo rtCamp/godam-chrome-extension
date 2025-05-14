@@ -1092,19 +1092,20 @@ chrome.runtime.onInstalled.addListener(async (details) => {
     chrome.storage.local.clear();
 
     const locale = chrome.i18n.getMessage("@@ui_locale");
-    if (locale.includes("en")) {
-      chrome.runtime.setUninstallURL(
-        "https://tally.so/r/w8Zro5?version=" +
-          chrome.runtime.getManifest().version
-      );
-    } else {
-      chrome.runtime.setUninstallURL(
-        "http://translate.google.com/translate?js=n&sl=auto&tl=" +
-          locale +
-          "&u=https://tally.so/r/w8Zro5?version=" +
-          chrome.runtime.getManifest().version
-      );
-    }
+    // if (locale.includes("en")) {
+    //   chrome.runtime.setUninstallURL(
+    //     "https://tally.so/r/w8Zro5?version=" +
+    //       chrome.runtime.getManifest().version
+    //   );
+    // } else {
+    //   chrome.runtime.setUninstallURL(
+    //     "http://translate.google.com/translate?js=n&sl=auto&tl=" +
+    //       locale +
+    //       "&u=https://tally.so/r/w8Zro5?version=" +
+    //       chrome.runtime.getManifest().version
+    //   );
+    // }
+    chrome.runtime.setUninstallURL( 'https://godam-dev.rt.gw/godam-chrome-extension-deactivation-feedback/' );
     chrome.storage.local.set({ firstTime: true });
     chrome.tabs.create({
       url: "setup.html",
