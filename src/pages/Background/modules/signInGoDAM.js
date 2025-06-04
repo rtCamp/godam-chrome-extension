@@ -7,7 +7,7 @@ const signInGoDAM = async () => {
     // Get the redirect URL and remove any trailing slashes
     const redirectUrl = chrome.identity.getRedirectURL().replace(/\/$/, '');
 
-    const baseURL = process.env.GODAM_BASE_URL || 'https://app.godam.io';
+    const baseURL = process.env.GODAM_BASE_URL || 'https://app.godam.io';    
     
     // Construct auth URL with state parameter for security
     const state = Math.random().toString(36).substring(7);
@@ -64,7 +64,6 @@ const signInGoDAM = async () => {
         client_secret: clientSecret,
         redirect_uri: redirectUrl,
       }),
-      credentials: 'include'
     });
 
     if (!tokenResponse.ok) {

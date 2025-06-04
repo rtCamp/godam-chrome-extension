@@ -2,7 +2,7 @@
 
 .content {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   position: absolute;
   top: 80px;
   width: 100%;
@@ -20,6 +20,10 @@
   align-items: center;
 }
 
+.leftPanel {
+  flex: 1;
+}
+
 .player {
   position: absolute;
 }
@@ -32,6 +36,10 @@
   margin-bottom: -60px;
   gap: 24px;
 
+  @media screen and (max-width: 900px) {
+    margin-bottom: 0;
+  }
+
   .savingSpinner {
     width: 20px;
     height: 20px;
@@ -42,6 +50,35 @@
   }
 
   .savingText {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: $color-text-primary;
+  }
+}
+
+.error {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-top: 32px;
+  margin-bottom: -60px;
+  font-size: 16px;
+  padding: 0 16px;
+  text-align: center;
+
+  @media screen and (max-width: 900px) {
+    margin-bottom: 0;
+  }
+
+  svg {
+    color: #d6293d;
+    width: 24px;
+    height: 24px;
+    fill: #d6293d;
+  }
+
+  .errorText {
     font-size: 1.2rem;
     font-weight: 600;
     color: $color-text-primary;
