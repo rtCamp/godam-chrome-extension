@@ -29,9 +29,9 @@ const saveToGoDAM = async (videoBlob, fileName, sendResponse) => {
                 const refreshResponse = await fetch(`${baseUrl}/api/method/frappe.integrations.oauth2.get_token`, {
                   method: 'POST',
                   headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'Content-Type': 'application/json',
                   },
-                  body: new URLSearchParams({
+                  body: JSON.stringify({
                     grant_type: 'refresh_token',
                     refresh_token: godamRefreshToken,
                     client_id: 'habg22ul6k',
@@ -109,11 +109,15 @@ const saveToGoDAM = async (videoBlob, fileName, sendResponse) => {
         }
       );
 
+      let message = 'An error occurred while saving to GoDAM!';
       if (!uploadResponse.ok) {
         // error message
-        const res = await uploadResponse.json();
-        console.log(res);
-        throw new Error(`Error uploading to GoDAM: ${uploadResponse.status}`);
+        if (uploadResponse.status === 400) {
+          message = 'An error occurred while saving to GoDAM! <br> Looks like you are not logged in to GoDAM. Please log in again.';
+        } else {
+          message = 'An error occurred while saving to GoDAM! <br> Please try again later, if the problem persists, please contact <a href="https://app.godam.io/helpdesk/my-tickets" target="blank">support team</a>.';
+        }
+        throw new Error(message);
       }
 
       const responseData = await uploadResponse.json();
@@ -127,7 +131,6 @@ const saveToGoDAM = async (videoBlob, fileName, sendResponse) => {
 
       resolve(`${baseURL}/${location}`);
     } catch (error) {
-      console.error("Error uploading to GoDAM:", error.message);
       sendResponse({ status: "error", url: null, message: error.message });
       reject(error);
     }

@@ -165,7 +165,7 @@ const RecordingType = (props) => {
                   });
                 },
                 () => {},
-                chrome.runtime.getURL("assets/helper/permissions.webp"),
+                chrome.runtime.getURL("assets/helper/permissions.png"),
                 chrome.i18n.getMessage("learnMoreDot"),
                 URL2,
                 true,
@@ -215,7 +215,7 @@ const RecordingType = (props) => {
                   });
                 },
                 () => {},
-                chrome.runtime.getURL("assets/helper/permissions.webp"),
+                chrome.runtime.getURL("assets/helper/permissions.png"),
                 chrome.i18n.getMessage("learnMoreDot"),
                 URL2,
                 true,

@@ -2,17 +2,6 @@ import React from "react";
 import ReactDOM from "react-dom";
 import styles from "../../styles/player/_GoDAMModal.module.scss";
 
-// const Modal = ( { children } ) => {
-//     console.log(document.getElementById( 'godam-portal' ));
-
-//     return ReactDOM.createPortal(
-// 		<>
-// 			{ children }
-// 		</>,
-// 		document.getElementById( 'godam-portal' ),
-// 	);
-// };
-
 const Modal = ({ children }) => {
   return (
     <div className={styles.modal}>

@@ -460,7 +460,6 @@ const sendChunks = async (override = false) => {
 const getChunks = async () => {
   const chunks = [];
   await chunksStore.iterate((value, key) => {
-    console.log("value", value);
     chunks.push(value);
   });
   return chunks;
@@ -614,8 +613,6 @@ chrome.action.onClicked.addListener(async (tab) => {
 
   // Check if user is logged in to GoDAM
   const { godamToken } = await chrome.storage.local.get(["godamToken"]);
-
-  console.log( 'godamToken', godamToken );
 
   if ( !godamToken ) {
     // Store the current tab ID before opening login page
@@ -1091,20 +1088,6 @@ chrome.runtime.onInstalled.addListener(async (details) => {
     // Clear storage
     chrome.storage.local.clear();
 
-    const locale = chrome.i18n.getMessage("@@ui_locale");
-    // if (locale.includes("en")) {
-    //   chrome.runtime.setUninstallURL(
-    //     "https://tally.so/r/w8Zro5?version=" +
-    //       chrome.runtime.getManifest().version
-    //   );
-    // } else {
-    //   chrome.runtime.setUninstallURL(
-    //     "http://translate.google.com/translate?js=n&sl=auto&tl=" +
-    //       locale +
-    //       "&u=https://tally.so/r/w8Zro5?version=" +
-    //       chrome.runtime.getManifest().version
-    //   );
-    // }
     chrome.runtime.setUninstallURL( 'https://godam-dev.rt.gw/godam-chrome-extension-deactivation-feedback/' );
     chrome.storage.local.set({ firstTime: true });
     chrome.tabs.create({
@@ -1118,20 +1101,8 @@ chrome.runtime.onInstalled.addListener(async (details) => {
     } else {
       chrome.storage.local.set({ updatingFromOld: false });
     }
-    const locale = chrome.i18n.getMessage("@@ui_locale");
-    if (locale.includes("en")) {
-      chrome.runtime.setUninstallURL(
-        "https://tally.so/r/3Ex6kX?version=" +
-          chrome.runtime.getManifest().version
-      );
-    } else {
-      chrome.runtime.setUninstallURL(
-        "http://translate.google.com/translate?js=n&sl=auto&tl=" +
-          locale +
-          "&u=https://tally.so/r/3Ex6kX?version=" +
-          chrome.runtime.getManifest().version
-      );
-    }
+    
+    chrome.runtime.setUninstallURL( 'https://godam-dev.rt.gw/godam-chrome-extension-deactivation-feedback/' );
   }
   // Check chrome version, if 109 or below, disable backups
   if (navigator.userAgent.includes("Chrome/")) {

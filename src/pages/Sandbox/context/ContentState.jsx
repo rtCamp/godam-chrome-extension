@@ -186,8 +186,6 @@ const ContentState = (props) => {
   }, [contentState.blob]);
 
   const reconstructVideo = async () => {
-    console.log("reconstructVideo");
-
     const blob = new Blob(videoChunks.current, {
       type: "video/webm; codecs=vp8, opus",
     });
