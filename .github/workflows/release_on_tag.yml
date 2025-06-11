@@ -1,0 +1,49 @@
+name: Build and Release Chrome Extension
+on:
+  push:
+    tags:
+      - '*'
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Node
+      uses: actions/setup-node@v4
+      with:
+        node-version-file: '.nvmrc'
+    
+    - name: Install dependencies & build extension
+      shell: bash
+      run: |
+        npm install
+        npm run build:prod
+    
+    - name: Package Chrome Extension
+      id: package
+      run: |
+        mkdir -p dist
+        zip_path="godam-${{ github.ref_name }}.zip"
+        # Adjust the path below to wherever your build outputs files
+        zip -r "$zip_path" build/*
+        echo "zip-path=$zip_path" >> $GITHUB_OUTPUT
+    
+    - name: Upload Test Artifact
+      if: startsWith(github.ref, 'refs/tags/test-')
+      uses: actions/upload-artifact@v4.6.1
+      with:
+        name: godam-${{ github.ref_name }}
+        path: '${{ steps.package.outputs.zip-path }}'
+    
+    - name: Create GitHub Release Draft
+      if: "!startsWith(github.ref, 'refs/tags/test-')"
+      uses: softprops/action-gh-release@v2.2.1
+      with:
+        files: |
+          ${{ steps.package.outputs.zip-path }}
+        token: '${{ github.token }}'
+        tag_name: ${{ github.ref_name }}
+        name: "GoDAM ${{ github.ref_name }}"
+        draft: true
+        generate_release_notes: true
