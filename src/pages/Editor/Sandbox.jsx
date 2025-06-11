@@ -52,7 +52,7 @@ const Sandbox = () => {
   useEffect(() => {
     const script = document.createElement("script");
 
-    script.src = "assets/vendor/ffmpeg.min.js";
+    script.src = "assets/vendor/ffmpeg.js";
     script.async = true;
 
     // On load, set scriptLoaded to true
