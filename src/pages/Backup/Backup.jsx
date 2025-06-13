@@ -96,7 +96,7 @@ const Backup = () => {
       localSaving(prompt);
     } else {
       alert(
-        "Failed to set up local backup. Reach out to us at support@screenity.io for more help. You can still record your screen."
+        "Failed to set up local backup. Reach out to us at https://app.godam.io/helpdesk/my-tickets for more help. You can still record your screen."
       );
       chrome.storage.local.set({ backup: false });
       chrome.runtime.sendMessage({
@@ -196,7 +196,7 @@ const Backup = () => {
       });
     } else {
       alert(
-        "Your browser doesn't support local backups. Reach out to us at support@screenity.io for more help. You can still record your screen."
+        "Your browser doesn't support local backups. Reach out to us at https://app.godam.io/helpdesk/my-tickets for more help. You can still record your screen."
       );
       chrome.storage.local.set({ backup: false });
       chrome.runtime.sendMessage({

@@ -1,8 +1,9 @@
 const signInGoDAM = async () => {
   try {
+  
     // GoDAM OAuth configuration
-    const clientId = process.env.GODAM_OAUTH_CLIENT_ID || 'habg22ul6k';
-    const clientSecret = process.env.GODAM_OAUTH_CLIENT_SECRET || '05e0758f00';
+    const clientId = process.env.GODAM_OAUTH_CLIENT_ID;
+    const clientSecret = process.env.GODAM_OAUTH_CLIENT_SECRET;
     
     // Get the redirect URL and remove any trailing slashes
     const redirectUrl = chrome.identity.getRedirectURL().replace(/\/$/, '');
@@ -34,8 +35,14 @@ const signInGoDAM = async () => {
             return;
           }
           resolve(response);
-        });
+        })
     });
+
+    console.log("Response URL from OAuth flow:", responseUrl);
+    if (!responseUrl) {
+      throw new Error('No response URL received from OAuth flow');
+    }
+    
 
     // Extract authorization code from the redirect URL
     const url = new URL(responseUrl);

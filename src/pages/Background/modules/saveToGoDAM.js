@@ -1,5 +1,9 @@
 import signInGoDAM from "./signInGoDAM";
 
+// GoDAM OAuth configuration
+const clientId = process.env.GODAM_OAUTH_CLIENT_ID;
+const clientSecret = process.env.GODAM_OAUTH_CLIENT_SECRET;
+
 // Function to upload a video to GoDAM
 const saveToGoDAM = async (videoBlob, fileName, sendResponse) => {
   // Function to get an access token from Chrome storage
@@ -34,8 +38,8 @@ const saveToGoDAM = async (videoBlob, fileName, sendResponse) => {
                   body: JSON.stringify({
                     grant_type: 'refresh_token',
                     refresh_token: godamRefreshToken,
-                    client_id: 'habg22ul6k',
-                    client_secret: '05e0758f00',
+                    client_id: clientId,
+                    client_secret: clientSecret,
                   }),
                 });
 
@@ -94,7 +98,7 @@ const saveToGoDAM = async (videoBlob, fileName, sendResponse) => {
       const formData = new FormData();
       formData.append('file', videoBlob, fileName);
 
-      const uploadUrl =  process.env.GODAM_UPLOAD_URL || 'https://godam-upload.rt.gw'; // Todo: Replace the option with production URL
+      const uploadUrl =  process.env.GODAM_UPLOAD_URL || 'https://upload.godam.io'; // Todo: Replace the option with production URL
 
       const url = uploadUrl + '/upload-file';
 

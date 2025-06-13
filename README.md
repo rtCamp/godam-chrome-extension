@@ -32,13 +32,12 @@ GoDAM is a powerful privacy-friendly screen recorder and annotation tool to make
 
 ## Creating a development version
 
-1. Check if your [Node.js](https://nodejs.org/) version is >= **14**.
-2. Clone this repository.
-3. Run `npm install` to install the dependencies.
-4. Run `npm start`.
-5. Load the extension by going to `chrome://extensions/` , and [enabling developer mode](https://developer.chrome.com/docs/extensions/mv2/faq/#:~:text=You%20can%20start%20by%20turning,a%20packaged%20extension%2C%20and%20more.).
-6. Click on `Load unpacked extension`.
-7. Select the `build` folder.
+1. Clone this repository.
+2. Run `npm install` to install the dependencies.
+3. Run `npm start`.
+4. Load the extension by going to `chrome://extensions/` , and [enabling developer mode](https://developer.chrome.com/docs/extensions/mv2/faq/#:~:text=You%20can%20start%20by%20turning,a%20packaged%20extension%2C%20and%20more.).
+5. Click on `Load unpacked extension`.
+6. Select the `build` folder.
 
 
 ## Libraries used
