@@ -51,7 +51,7 @@
   ],
   "oauth2": {
     "client_id": "npicmvego1",
-    "scopes": ["openid"]
+    "scopes": ["all"]
   },
   "cross_origin_embedder_policy": {
     "value": "require-corp"
