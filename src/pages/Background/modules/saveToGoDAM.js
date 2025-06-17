@@ -35,7 +35,6 @@ const saveToGoDAM = async (videoBlob, fileName, sendResponse) => {
                     grant_type: 'refresh_token',
                     refresh_token: godamRefreshToken,
                     client_id: 'habg22ul6k',
-                    client_secret: '05e0758f00',
                   }),
                 });
 
