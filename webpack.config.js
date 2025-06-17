@@ -151,7 +151,6 @@ var options = {
       GODAM_BASE_URL: env.GODAM_BASE_URL,
       GODAM_UPLOAD_URL: env.GODAM_UPLOAD_URL,
       GODAM_OAUTH_CLIENT_ID: env.GODAM_OAUTH_CLIENT_ID,
-      GODAM_OAUTH_CLIENT_SECRET: env.GODAM_OAUTH_CLIENT_SECRET,
     }),
     new CopyWebpackPlugin({
       patterns: [
@@ -328,7 +327,7 @@ var options = {
   ],
 };
 
-if (env.NODE_ENV === "development") {
+if (process.env.NODE_ENV === "development") {
   options.devtool = "cheap-module-source-map";
 } else {
   options.optimization = {
