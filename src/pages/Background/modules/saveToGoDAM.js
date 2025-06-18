@@ -2,7 +2,6 @@ import signInGoDAM from "./signInGoDAM";
 
 // GoDAM OAuth configuration
 const clientId = process.env.GODAM_OAUTH_CLIENT_ID;
-const clientSecret = process.env.GODAM_OAUTH_CLIENT_SECRET;
 
 // Function to upload a video to GoDAM
 const saveToGoDAM = async (videoBlob, fileName, sendResponse) => {
@@ -39,7 +38,6 @@ const saveToGoDAM = async (videoBlob, fileName, sendResponse) => {
                     grant_type: 'refresh_token',
                     refresh_token: godamRefreshToken,
                     client_id: clientId,
-                    client_secret: clientSecret,
                   }),
                 });
 

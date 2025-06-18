@@ -2,8 +2,7 @@ const signInGoDAM = async () => {
   try {
   
     // GoDAM OAuth configuration
-    const clientId = process.env.GODAM_OAUTH_CLIENT_ID;
-    const clientSecret = process.env.GODAM_OAUTH_CLIENT_SECRET;
+    const clientId = process.env.GODAM_OAUTH_CLIENT_ID || 'habg22ul6k';
     
     // Get the redirect URL and remove any trailing slashes
     const redirectUrl = chrome.identity.getRedirectURL().replace(/\/$/, '');
@@ -19,45 +18,31 @@ const signInGoDAM = async () => {
     authUrl.searchParams.append('scope', 'all');
     authUrl.searchParams.append('state', state);
 
-    // Launch OAuth flow with more detailed error handling
-    const responseUrl = await new Promise((resolve, reject) => {
-      chrome.identity.launchWebAuthFlow({
+    const responseUrl = new URL(await chrome.identity.launchWebAuthFlow({
         url: authUrl.toString(),
         interactive: true
-      })
-        .then( response => {
-          if (chrome.runtime.lastError) {
-            reject(new Error(chrome.runtime.lastError.message));
-            return;
-          }
-          if (!response) {
-            reject(new Error("No response URL received"));
-            return;
-          }
-          resolve(response);
-        })
-    });
+    }))
 
-    console.log("Response URL from OAuth flow:", responseUrl);
-    if (!responseUrl) {
-      throw new Error('No response URL received from OAuth flow');
-    }
-    
 
-    // Extract authorization code from the redirect URL
     const url = new URL(responseUrl);
-    const code = url.searchParams.get('code');
-    const returnedState = url.searchParams.get('state');
 
-    if (!code) {
-      throw new Error('Authorization code not found in the response');
+    const error = url.searchParams.get('error');
+    const responseCode = url.searchParams.get('code');
+    const responseState = url.searchParams.get('state');
+
+    if (error){
+        throw new Error(error)
     }
 
-    if (returnedState !== state) {
-      throw new Error('State parameter mismatch');
+    if (!responseCode ){
+        throw new Error('Authorization code not found in the response')
     }
 
-    // Exchange code for access token with more detailed logging.
+    if (!responseState || responseState !== state  ){
+        throw new Error('State code mismatch')
+    }
+
+    // Get token with Auth code
     const tokenResponse = await fetch(`${baseURL}/api/method/frappe.integrations.oauth2.get_token`, {
       method: 'POST',
       headers: {
@@ -66,9 +51,8 @@ const signInGoDAM = async () => {
       },
       body: new URLSearchParams({
         grant_type: 'authorization_code',
-        code: code,
+        code: responseCode,
         client_id: clientId,
-        client_secret: clientSecret,
         redirect_uri: redirectUrl,
       }),
     });
@@ -91,8 +75,7 @@ const signInGoDAM = async () => {
     const expiresIn = tokenData.expires_in || (tokenData.message && tokenData.message.expires_in) || 3600;
     const expirationTime = Date.now() + expiresIn * 1000;
     const refreshToken = tokenData.refresh_token || (tokenData.message && tokenData.message.refresh_token);
-    
-    
+
     await chrome.storage.local.set({ 
       godamToken: token,
       godamRefreshToken: refreshToken,
