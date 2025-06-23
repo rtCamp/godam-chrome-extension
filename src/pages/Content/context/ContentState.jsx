@@ -17,10 +17,10 @@ const ContentState = (props) => {
   const [timer, setTimer] = React.useState(0);
   const contentStateRef = useRef();
   const [URL, setURL] = useState(
-    "https://help.screenity.io/getting-started/77KizPC8MHVGfpKpqdux9D/why-does-screenity-ask-for-permissions/9AAE8zJ6iiUtCAtjn4SUT1"
+    "https://godam.io/features/godam-screen-recorder/"
   );
   const [URL2, setURL2] = useState(
-    "https://help.screenity.io/troubleshooting/9Jy5RGjNrBB42hqUdREQ7W/how-to-grant-screenity-permission-to-record-your-camera-and-microphone/x6U69TnrbMjy5CQ96Er2E9"
+    "https://godam.io/features/godam-screen-recorder/"
   );
 
   useEffect(() => {
@@ -29,12 +29,12 @@ const ContentState = (props) => {
       setURL(
         "https://translate.google.com/translate?sl=en&tl=" +
           locale +
-          "&u=https://help.screenity.io/getting-started/77KizPC8MHVGfpKpqdux9D/why-does-screenity-ask-for-permissions/9AAE8zJ6iiUtCAtjn4SUT1"
+          "&u=https://godam.io/features/godam-screen-recorder/"
       );
       setURL2(
         "https://translate.google.com/translate?sl=en&tl=" +
           locale +
-          "&u=https://help.screenity.io/troubleshooting/9Jy5RGjNrBB42hqUdREQ7W/how-to-grant-screenity-permission-to-record-your-camera-and-microphone/x6U69TnrbMjy5CQ96Er2E9"
+          "&u=https://godam.io/features/godam-screen-recorder/"
       );
     }
   }, []);
@@ -237,13 +237,13 @@ const ContentState = (props) => {
             // Add help link to modal
             const locale = chrome.i18n.getMessage("@@ui_locale");
             let helpURL =
-              "https://help.screenity.io/troubleshooting/9Jy5RGjNrBB42hqUdREQ7W/what-does-%E2%80%9Cmemory-limit-reached%E2%80%9D-mean-when-recording/8WkwHbt3puuXunYqQnyPcb";
+              "https://godam.io/features/godam-screen-recorder/";
 
             if (!locale.includes("en")) {
               helpURL =
                 "https://translate.google.com/translate?sl=en&tl=" +
                 locale +
-                "&u=https://help.screenity.io/troubleshooting/9Jy5RGjNrBB42hqUdREQ7W/what-does-%E2%80%9Cmemory-limit-reached%E2%80%9D-mean-when-recording/8WkwHbt3puuXunYqQnyPcb";
+                "&u=https://godam.io/features/godam-screen-recorder/";
             }
 
             // Check if chunks collection exists and has data

@@ -68,7 +68,7 @@ const PlayerNav = () => {
         <div className={styles.navRight}>
           <button
             className="button simpleButton godamButton"
-            href="https://godam.io/docs"
+            href="https://godam.io/docs/godam-screen-recorder/"
           >
             <ReactSVG src={StarIcon} />
             {chrome.i18n.getMessage("getHelpNav")}

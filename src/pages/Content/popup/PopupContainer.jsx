@@ -52,7 +52,7 @@ const PopupContainer = (props) => {
   const recordTabRef = useRef(null);
   const videoTabRef = useRef(null);
   const pillRef = useRef(null);
-  const [URL, setURL] = useState("https://godam.io/docs/getting-started/");
+  const [URL, setURL] = useState("https://godam.io/docs/godam-screen-recorder/");
   
 
   // useEffect(() => {
