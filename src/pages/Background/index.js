@@ -114,7 +114,7 @@ const startRecording = async () => {
   } else {
     sendMessageRecord({ type: "start-recording-tab" });
   }
-  chrome.action.setIcon({ path: "assets/recording-logo.png" });
+  chrome.action.setIcon({ path: "assets/stop-recording.png" });
   // Set up alarm if set in storage
   const { alarm } = await chrome.storage.local.get(["alarm"]);
   const { alarmTime } = await chrome.storage.local.get(["alarmTime"]);

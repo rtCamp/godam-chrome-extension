@@ -1,10 +1,10 @@
-logs
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-node_modules/
-.DS_Store
-.vscode/
+
+# JS artifacts
 node_modules
-build/
+build
+
+# MacOS artifacts
+.DS_Store
+
+# VSCode artifacts
+.vscode

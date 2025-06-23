@@ -50,8 +50,8 @@
     }
   ],
   "oauth2": {
-    "client_id": "habg22ul6k",
-    "scopes": ["all openid"]
+    "client_id": "npicmvego1",
+    "scopes": ["all"]
   },
   "cross_origin_embedder_policy": {
     "value": "require-corp"

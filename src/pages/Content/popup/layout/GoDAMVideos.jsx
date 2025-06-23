@@ -10,11 +10,6 @@ const GoDAMVideos = () => {
 
   const redirectLink = `${baseUrl}/web/media-library`;
 
-  useEffect(() => {
-    // Redirect to the GoDAM website.
-    window.open(redirectLink, "_blank");
-  }, []);
-
   return (
     <div className="GoDAMVideos">
         <a href={redirectLink} target="_blank" className="GoDAMLink"
