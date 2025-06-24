@@ -1763,8 +1763,6 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       true,
       true
     );
-  } else if (request.type === "join-waitlist") {
-    createTab("https://tally.so/r/npojNV", true, true);
   } else if (request.type === "chrome-update-info") {
     createTab(
       "https://godam.io/docs/godam-screen-recorder/",
