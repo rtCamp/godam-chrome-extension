@@ -1745,8 +1745,6 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       false,
       true
     );
-  } else if (request.type === "follow-twitter") {
-    createTab("https://alyssax.substack.com/", false, true);
   } else if (request.type === "open-processing-info") {
     createTab(
       "https://godam.io/docs/godam-screen-recorder/",
