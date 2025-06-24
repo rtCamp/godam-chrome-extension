@@ -1088,7 +1088,7 @@ chrome.runtime.onInstalled.addListener(async (details) => {
     // Clear storage
     chrome.storage.local.clear();
 
-    chrome.runtime.setUninstallURL( 'https://godam-dev.rt.gw/godam-chrome-extension-deactivation-feedback/' );
+    chrome.runtime.setUninstallURL( 'https://godam.io/godam-chrome-extension-deactivation-feedback/' );
     chrome.storage.local.set({ firstTime: true });
     chrome.tabs.create({
       url: "setup.html",
@@ -1102,7 +1102,7 @@ chrome.runtime.onInstalled.addListener(async (details) => {
       chrome.storage.local.set({ updatingFromOld: false });
     }
     
-    chrome.runtime.setUninstallURL( 'https://godam-dev.rt.gw/godam-chrome-extension-deactivation-feedback/' );
+    chrome.runtime.setUninstallURL( 'https://godam.io/godam-chrome-extension-deactivation-feedback/' );
   }
   // Check chrome version, if 109 or below, disable backups
   if (navigator.userAgent.includes("Chrome/")) {
