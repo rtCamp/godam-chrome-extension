@@ -65,6 +65,7 @@
     "clean-webpack-plugin": "^4.0.0",
     "copy-webpack-plugin": "^7.0.0",
     "css-loader": "^6.7.2",
+    "dotenv": "^16.5.0",
     "fs-extra": "^10.1.0",
     "html-loader": "^3.1.0",
     "html-webpack-plugin": "^5.5.0",
