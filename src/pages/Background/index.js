@@ -1791,8 +1791,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     createTab("https://godam.io/features/godam-screen-recorder/", false, true);
   } else if (request.type === "report-bug") {
     createTab(
-      "https://tally.so/r/3ElpXq?version=" +
-        chrome.runtime.getManifest().version,
+      "https://app.godam.io/helpdesk/my-tickets",
       false,
       true
     );

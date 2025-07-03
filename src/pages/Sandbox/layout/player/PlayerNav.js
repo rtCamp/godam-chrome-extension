@@ -68,7 +68,9 @@ const PlayerNav = () => {
         <div className={styles.navRight}>
           <button
             className="button simpleButton godamButton"
-            href="https://godam.io/docs/godam-screen-recorder/"
+            onClick={() => {
+              chrome.runtime.sendMessage({ type: "open-help" });
+            }}
           >
             <ReactSVG src={StarIcon} />
             {chrome.i18n.getMessage("getHelpNav")}
