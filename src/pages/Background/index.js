@@ -1784,7 +1784,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   } else if (request.type === "sign-out-drive") {
     handleSignOutDrive();
   } else if (request.type === "open-help") {
-    createTab("https://help.screenity.io/", true, true);
+    createTab("https://app.godam.io/helpdesk/my-tickets", true, true);
   } else if (request.type === "memory-limit-help") {
     createTab(
       "https://help.screenity.io/troubleshooting/9Jy5RGjNrBB42hqUdREQ7W/what-does-%E2%80%9Cmemory-limit-reached%E2%80%9D-mean-when-recording/8WkwHbt3puuXunYqQnyPcb",
@@ -1795,8 +1795,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     createTab("https://screenity.io/", false, true);
   } else if (request.type === "report-bug") {
     createTab(
-      "https://tally.so/r/3ElpXq?version=" +
-        chrome.runtime.getManifest().version,
+      "https://app.godam.io/helpdesk/my-tickets",
       false,
       true
     );
