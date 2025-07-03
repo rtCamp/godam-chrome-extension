@@ -34,15 +34,6 @@ const ShareModal = ({ showShare, setShowShare }) => {
         <div className={styles.subtitle}>
           {chrome.i18n.getMessage("shareModalSandboxDescription")}
         </div>
-        <div
-          className={styles.button}
-          onClick={() => {
-            chrome.runtime.sendMessage({ type: "join-waitlist" });
-            setShowShare(false);
-          }}
-        >
-          {chrome.i18n.getMessage("shareModalSandboxButton")}
-        </div>
       </div>
       <div
         className={styles.modalBackground}
