@@ -89,15 +89,9 @@ const Setup = () => {
 
   return (
     <div className="setupBackground">
-      {/* <div className="setupLogo">
-        <img src={chrome.runtime.getURL("assets/logo-text.svg")} />
-        <span>Powered by Screenity</span>
-      </div> */}
-
       <header className="loginHeader">
         <div className="godamLogo">
           <img src={chrome.runtime.getURL("assets/logo-text.svg")} />
-          <span>Powered by Screenity</span>
         </div>
 
         <a className="getGodamButton" href="https://godam.io" target="_blank">Get GoDAM</a>
