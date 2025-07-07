@@ -28,7 +28,6 @@ const Setup = () => {
 			<img
 				src={chrome.runtime.getURL("assets/logo-text.svg")}
 			/>
-			<span>Powered by Screenity</span>
 		</div>
 
       <div className="setupBackgroundSVG"></div>

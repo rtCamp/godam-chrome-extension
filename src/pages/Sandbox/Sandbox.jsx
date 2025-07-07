@@ -121,7 +121,6 @@ const Sandbox = () => {
             <img
               src={chrome.runtime.getURL("assets/logo-text.svg")}
             />
-            <span>Powered by Screenity</span>
           </div>
           <div className="middle-area">
             <img src="/assets/record-tab-active.svg" />
