@@ -1088,7 +1088,7 @@ chrome.runtime.onInstalled.addListener(async (details) => {
     // Clear storage
     chrome.storage.local.clear();
 
-    chrome.runtime.setUninstallURL( 'https://godam-dev.rt.gw/godam-chrome-extension-deactivation-feedback/' );
+    chrome.runtime.setUninstallURL( 'https://godam.io/chrome-extension-feedback/' );
     chrome.storage.local.set({ firstTime: true });
     chrome.tabs.create({
       url: "setup.html",
@@ -1102,7 +1102,7 @@ chrome.runtime.onInstalled.addListener(async (details) => {
       chrome.storage.local.set({ updatingFromOld: false });
     }
     
-    chrome.runtime.setUninstallURL( 'https://godam-dev.rt.gw/godam-chrome-extension-deactivation-feedback/' );
+    chrome.runtime.setUninstallURL( 'https://godam.io/chrome-extension-feedback/' );
   }
   // Check chrome version, if 109 or below, disable backups
   if (navigator.userAgent.includes("Chrome/")) {
@@ -1745,31 +1745,27 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       false,
       true
     );
-  } else if (request.type === "follow-twitter") {
-    createTab("https://alyssax.substack.com/", false, true);
   } else if (request.type === "open-processing-info") {
     createTab(
-      "https://help.screenity.io/editing-and-exporting/dJRFpGq56JFKC7k8zEvsqb/why-is-there-a-5-minute-limit-for-editing/ddy4e4TpbnrFJ8VoRT37tQ",
+      "https://godam.io/docs/godam-screen-recorder/",
       true,
       true
     );
   } else if (request.type === "upgrade-info") {
     createTab(
-      "https://help.screenity.io/getting-started/77KizPC8MHVGfpKpqdux9D/what-are-the-technical-requirements-for-using-screenity/6kdB6qru6naVD8ZLFvX3m9",
+      "https://godam.io/docs/godam-screen-recorder/",
       true,
       true
     );
   } else if (request.type === "trim-info") {
     createTab(
-      "https://help.screenity.io/editing-and-exporting/dJRFpGq56JFKC7k8zEvsqb/how-to-cut-trim-or-mute-parts-of-your-video/svNbM7YHYY717MuSWXrKXH",
+      "https://godam.io/docs/godam-screen-recorder/",
       true,
       true
     );
-  } else if (request.type === "join-waitlist") {
-    createTab("https://tally.so/r/npojNV", true, true);
   } else if (request.type === "chrome-update-info") {
     createTab(
-      "https://help.screenity.io/getting-started/77KizPC8MHVGfpKpqdux9D/what-are-the-technical-requirements-for-using-screenity/6kdB6qru6naVD8ZLFvX3m9",
+      "https://godam.io/docs/godam-screen-recorder/",
       true,
       true
     );
@@ -1784,15 +1780,15 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   } else if (request.type === "sign-out-drive") {
     handleSignOutDrive();
   } else if (request.type === "open-help") {
-    createTab("https://app.godam.io/helpdesk/my-tickets", true, true);
+    createTab("https://godam.io/docs/godam-screen-recorder/", true, true);
   } else if (request.type === "memory-limit-help") {
     createTab(
-      "https://help.screenity.io/troubleshooting/9Jy5RGjNrBB42hqUdREQ7W/what-does-%E2%80%9Cmemory-limit-reached%E2%80%9D-mean-when-recording/8WkwHbt3puuXunYqQnyPcb",
+      "https://godam.io/docs/godam-screen-recorder/",
       true,
       true
     );
   } else if (request.type === "open-home") {
-    createTab("https://screenity.io/", false, true);
+    createTab("https://godam.io/features/godam-screen-recorder/", false, true);
   } else if (request.type === "report-bug") {
     createTab(
       "https://app.godam.io/helpdesk/my-tickets",

@@ -369,7 +369,7 @@ const Backup = () => {
               <br />
               {chrome.i18n.getMessage("backupsDescription2")}{" "}
               <a
-                href="https://help.screenity.io/getting-started/77KizPC8MHVGfpKpqdux9D/what-are-backups-how-can-i-set-them-up/waYArvSwybZkJKKDdMXw1o"
+                href=" https://godam.io/features/godam-screen-recorder/"
                 target="_blank"
               >
                 {chrome.i18n.getMessage("learnMoreDot")}
@@ -436,7 +436,7 @@ const Backup = () => {
             <div className="subtitle">
               {chrome.i18n.getMessage("backupsConfirmDescription")}{" "}
               <a
-                href="https://help.screenity.io/getting-started/77KizPC8MHVGfpKpqdux9D/what-are-backups-how-can-i-set-them-up/waYArvSwybZkJKKDdMXw1o"
+                href="https://godam.io/features/godam-screen-recorder/"
                 target="_blank"
               >
                 {chrome.i18n.getMessage("learnMoreDot")}

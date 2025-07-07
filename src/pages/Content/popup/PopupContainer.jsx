@@ -52,26 +52,7 @@ const PopupContainer = (props) => {
   const recordTabRef = useRef(null);
   const videoTabRef = useRef(null);
   const pillRef = useRef(null);
-  const [URL, setURL] = useState("https://godam.io/docs/getting-started/");
-  
-
-  // useEffect(() => {
-  //   // Check chrome storage
-  //   chrome.storage.local.get(["updatingFromOld"], function (result) {
-  //     if (result.updatingFromOld) {
-  //       setOnboarding(true);
-  //     }
-  //   });
-  // }, []);
-
-  // useEffect(() => {
-  //   const locale = chrome.i18n.getMessage("@@ui_locale");
-  //   if (!locale.includes("en")) {
-  //     setURL(
-  //       `https://translate.google.com/translate?sl=en&tl=${locale}&u=https://help.screenity.io/`
-  //     );
-  //   }
-  // }, []);
+  const [URL, setURL] = useState("https://godam.io/docs/godam-screen-recorder/");
 
   const onValueChange = (tab) => {
     setTab(tab);

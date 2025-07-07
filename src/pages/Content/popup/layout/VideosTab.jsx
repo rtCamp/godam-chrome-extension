@@ -13,16 +13,8 @@ import {
 } from "../../images/popup/images";
 
 const VideosTab = () => {
-  const [URL, SetURL] = useState("https://tally.so/r/npojNV");
 
   useEffect(() => {
-    const locale = chrome.i18n.getMessage("@@ui_locale");
-    if (!locale.includes("en")) {
-      SetURL(
-        `https://translate.google.com/translate?sl=en&tl=${locale}&u=https://tally.so/r/npojNV`
-      );
-    }
-
     // Redirect to app.godam.io on blank tab
     window.open("https://app.godam.io", "_blank");
   }, []);
@@ -50,9 +42,6 @@ const VideosTab = () => {
         <div className="ModalSoonDescription">
           {chrome.i18n.getMessage("shareModalSandboxDescription")}
         </div>
-        <a className="ModalSoonButton" href={URL} target="_blank">
-          {chrome.i18n.getMessage("shareModalSandboxButton")}
-        </a>
       </div>
       <Tabs.Root className="TabsRoot" defaultValue="personal">
         <Tabs.List className="TabsList" aria-label="Manage your account">
