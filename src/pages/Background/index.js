@@ -1624,7 +1624,10 @@ const handleSignOutGoDAM = async () => {
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
           'Authorization': `Bearer ${godamToken}`
-        }
+          },
+          body: JSON.stringify({
+              token: godamToken
+          })
       });
     } catch (error) {
       console.error("Error revoking GoDAM token:", error);
