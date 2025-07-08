@@ -44,17 +44,18 @@ const signInGoDAM = async () => {
 
     // Get token with Auth code
     const tokenResponse = await fetch(`${baseURL}/api/method/frappe.integrations.oauth2.get_token`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'Accept': 'application/json',
-      },
-      body: new URLSearchParams({
-        grant_type: 'authorization_code',
-        code: responseCode,
-        client_id: clientId,
-        redirect_uri: redirectUrl,
-      }),
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Accept': 'application/json',
+        },
+        credentials: 'omit',
+        body: new URLSearchParams({
+            grant_type: 'authorization_code',
+            code: responseCode,
+            client_id: clientId,
+            redirect_uri: redirectUrl,
+        }),
     });
 
     if (!tokenResponse.ok) {

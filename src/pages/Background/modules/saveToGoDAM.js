@@ -33,7 +33,9 @@ const saveToGoDAM = async (videoBlob, fileName, sendResponse) => {
                   method: 'POST',
                   headers: {
                     'Content-Type': 'application/json',
+                    'Accept': 'application/json',
                   },
+                  credentials: 'omit',
                   body: JSON.stringify({
                     grant_type: 'refresh_token',
                     refresh_token: godamRefreshToken,
