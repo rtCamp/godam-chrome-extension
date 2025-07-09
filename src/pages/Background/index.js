@@ -1618,14 +1618,19 @@ const handleSignOutGoDAM = async () => {
   if (godamToken) {
     // Revoke token on the server
     const baseUrl = process.env.GODAM_BASE_URL || 'https://app.godam.io';
+
     try {
-      await fetch(`${baseUrl}/api/method/frappe.integrations.oauth2.revoke_token`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-          'Authorization': `Bearer ${godamToken}`
-        }
-      });
+
+        await fetch(`${baseUrl}/api/method/frappe.integrations.oauth2.revoke_token`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            credentials: 'omit',
+            body: new URLSearchParams({
+                token:godamToken
+            }),
+        });
     } catch (error) {
       console.error("Error revoking GoDAM token:", error);
     }
