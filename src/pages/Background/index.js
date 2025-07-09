@@ -1642,7 +1642,7 @@ const handleSignOutGoDAM = async () => {
     godamRefreshToken: null,
     godamTokenExpiration: null
   });
-o};
+};
 
 // Function to handle saving to GoDAM
 const handleSaveToGoDAM = async (sendResponse, request, fallback = false) => {
