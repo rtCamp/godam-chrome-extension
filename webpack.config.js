@@ -1,20 +1,18 @@
-var webpack = require("webpack"),
-  path = require("path"),
-  fileSystem = require("fs-extra"),
-  env = require("./utils/env"),
-  CopyWebpackPlugin = require("copy-webpack-plugin"),
-  HtmlWebpackPlugin = require("html-webpack-plugin"),
-  TerserPlugin = require("terser-webpack-plugin");
+var webpack = require("webpack");
+var path = require("path");
+var fileSystem = require("fs-extra");
+var CopyWebpackPlugin = require("copy-webpack-plugin");
+var HtmlWebpackPlugin = require("html-webpack-plugin");
+var TerserPlugin = require("terser-webpack-plugin");
 var { CleanWebpackPlugin } = require("clean-webpack-plugin");
-
-const ASSET_PATH = process.env.ASSET_PATH || "/";
+var { ASSET_PATH, NODE_ENV, GODAM_BASE_URL, GODAM_OAUTH_CLIENT_ID, GODAM_UPLOAD_URL } = require("./utils/env");
 
 var alias = {
   "react-dom": "@hot-loader/react-dom",
 };
 
 // load the secrets
-var secretsPath = path.join(__dirname, "secrets." + env.NODE_ENV + ".js");
+var secretsPath = path.join(__dirname, "secrets." + NODE_ENV + ".js");
 
 var fileExtensions = [
   "jpg",
@@ -34,7 +32,7 @@ if (fileSystem.existsSync(secretsPath)) {
 }
 
 var options = {
-  mode: process.env.NODE_ENV || "development",
+  mode: NODE_ENV,
   performance: {
     hints: false,
   },
@@ -147,50 +145,11 @@ var options = {
     new webpack.ProgressPlugin(),
     // expose and write the allowed env vars on the compiled bundle
     new webpack.EnvironmentPlugin({
-      NODE_ENV: env.NODE_ENV,
-      GODAM_BASE_URL: env.GODAM_BASE_URL,
-      GODAM_UPLOAD_URL: env.GODAM_UPLOAD_URL,
-      GODAM_OAUTH_CLIENT_ID: env.GODAM_OAUTH_CLIENT_ID,
+      NODE_ENV,
+      GODAM_BASE_URL,
+      GODAM_UPLOAD_URL,
+      GODAM_OAUTH_CLIENT_ID,
     }),
-    new CopyWebpackPlugin({
-      patterns: [
-        {
-          from: "src/manifest.json",
-          to: path.join(__dirname, "build"),
-          force: true,
-          transform: function (content, path) {
-            // generates the manifest file using the package.json informations
-            return Buffer.from(
-              JSON.stringify({
-                description: process.env.npm_package_description,
-                version: process.env.npm_package_version,
-                ...JSON.parse(content.toString()),
-              })
-            );
-          },
-        },
-      ],
-    }),
-    /*
-    new CopyWebpackPlugin({
-      patterns: [
-        {
-          from: "src/assets/img/icon-128.png",
-          to: path.join(__dirname, "build"),
-          force: true,
-        },
-      ],
-    }),
-    new CopyWebpackPlugin({
-      patterns: [
-        {
-          from: "src/assets/img/icon-34.png",
-          to: path.join(__dirname, "build"),
-          force: true,
-        },
-      ],
-    }),
-		*/
     new CopyWebpackPlugin({
       patterns: [
         {
@@ -327,7 +286,7 @@ var options = {
   ],
 };
 
-if (process.env.NODE_ENV === "development") {
+if (NODE_ENV === "development") {
   options.devtool = "cheap-module-source-map";
 } else {
   options.optimization = {
