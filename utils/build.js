@@ -1,4 +1,6 @@
-import { NODE_ENV } from "./env";
+process.env.BABEL_ENV = "production";
+process.env.NODE_ENV = "production";
+process.env.ASSET_PATH = "/";
 
 var webpack = require("webpack"),
   config = require("../webpack.config");
@@ -6,7 +8,7 @@ var webpack = require("webpack"),
 //delete config.chromeExtensionBoilerplate;
 delete config.custom;
 
-config.mode = NODE_ENV;
+config.mode = "production";
 
 webpack(config, function (err) {
   if (err) throw err;
