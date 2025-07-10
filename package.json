@@ -4,6 +4,7 @@
   "description": "GoDAM Chrome Extension",
   "scripts": {
     "build": "node utils/build.js",
+    "build:prod": "NODE_ENV=production BABEL_ENV=production node utils/build.js",
     "start": "node utils/server.js",
     "dev": "concurrently \"npm run start\" \"npm run build:watch\"",
     "prettier": "prettier --write '**/*.{js,jsx,ts,tsx,json,css,scss,md}'",
