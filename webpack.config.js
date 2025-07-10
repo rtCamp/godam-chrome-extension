@@ -109,10 +109,6 @@ var options = {
         test: new RegExp(".(" + fileExtensions.join("|") + ")$"),
         type: "asset/resource",
         exclude: /node_modules/,
-        // loader: 'file-loader',
-        // options: {
-        //   name: '[name].[ext]',
-        // },
       },
       {
         test: /\.html$/,
@@ -149,6 +145,15 @@ var options = {
       GODAM_BASE_URL,
       GODAM_UPLOAD_URL,
       GODAM_OAUTH_CLIENT_ID,
+    }),
+    new CopyWebpackPlugin({
+      patterns: [
+        {
+          from: "src/manifest.json",
+          to: path.join(__dirname, "build"),
+          force: true,
+        },
+      ],
     }),
     new CopyWebpackPlugin({
       patterns: [
