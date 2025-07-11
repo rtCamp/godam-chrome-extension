@@ -28,18 +28,20 @@ const saveToGoDAM = async (videoBlob, fileName, sendResponse) => {
             if (currentTime >= godamTokenExpiration) {
               // Token has expired, refresh it
               const baseUrl = process.env.GODAM_BASE_URL || 'https://app.godam.io';
-              try {
-                const refreshResponse = await fetch(`${baseUrl}/api/method/frappe.integrations.oauth2.get_token`, {
-                  method: 'POST',
-                  headers: {
-                    'Content-Type': 'application/json',
-                  },
-                  body: JSON.stringify({
-                    grant_type: 'refresh_token',
-                    refresh_token: godamRefreshToken,
-                    client_id: clientId,
-                  }),
-                });
+                try {
+                    const refreshResponse = await fetch(`${baseUrl}/api/method/frappe.integrations.oauth2.get_token`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                            'Accept': 'application/json',
+                        },
+                        credentials: 'omit',
+                        body: new URLSearchParams({
+                            grant_type: 'authorization_code',
+                            refresh_token: godamRefreshToken,
+                            client_id: clientId,
+                        }),
+                    });
 
                 if (!refreshResponse.ok) {
                   // Refresh token failed, try to sign in again
