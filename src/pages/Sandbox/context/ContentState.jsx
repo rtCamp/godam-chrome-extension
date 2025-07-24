@@ -187,7 +187,7 @@ const ContentState = (props) => {
 
   const reconstructVideo = async () => {
     const blob = new Blob(videoChunks.current, {
-      type: "video/webm; codecs=vp8, opus",
+      type: "video/webm; codecs=vp8",
     });
 
     const { recordingDuration } = await chrome.storage.local.get(
@@ -259,7 +259,7 @@ const ContentState = (props) => {
           );
         } else {
           const fixedWebm = await fixWebmDurationFallback(blob, {
-            type: "video/webm; codecs=vp8, opus",
+            type: "video/webm; codecs=vp8",
           });
 
           if (
