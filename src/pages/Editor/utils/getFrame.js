@@ -15,7 +15,7 @@ async function getFrame(ffmpeg, videoBlob, time = 0) {
     "-frames:v",
     "1",
     "-preset",
-    "superfast",
+    "fast",
     "-threads",
     "0",
     "-r",

@@ -25,7 +25,7 @@ async function base64ToBlob(ffmpeg, base64) {
     "-max_muxing_queue_size",
     "512",
     "-preset",
-    "superfast",
+    "fast",
     "-threads",
     "0",
     "-r",
