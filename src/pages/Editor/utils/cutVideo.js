@@ -17,7 +17,7 @@ async function cutVideo(ffmpeg, videoBlob, start, end, cut, duration, encode) {
   if (encode) {
     encodeOptions = [
       "-preset",
-      "superfast",
+      "fast",
       "-threads",
       "0",
       "-r",

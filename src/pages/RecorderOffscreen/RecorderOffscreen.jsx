@@ -93,8 +93,6 @@ const RecorderOffscreen = () => {
       // List all mimeTypes
       const mimeTypes = [
         "video/webm;codecs=avc1",
-        "video/webm;codecs=vp8,opus",
-        "video/webm;codecs=vp9,opus",
         "video/webm;codecs=vp9",
         "video/webm;codecs=vp8",
         "video/webm;codecs=h264",
@@ -292,7 +290,7 @@ const RecorderOffscreen = () => {
 
   async function startAudioStream(id) {
     const audioStreamOptions = {
-      mimeType: "video/webm;codecs=vp8,opus",
+      mimeType: "video/webm;codecs=vp8",
       audio: {
         deviceId: {
           exact: id,
@@ -308,7 +306,7 @@ const RecorderOffscreen = () => {
       .catch((err) => {
         // Try again without the device ID
         const audioStreamOptions = {
-          mimeType: "video/webm;codecs=vp8,opus",
+          mimeType: "video/webm;codecs=vp8",
           audio: true,
         };
 

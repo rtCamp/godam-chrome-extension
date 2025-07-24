@@ -6,7 +6,7 @@ async function toGIF(ffmpeg, blob) {
     "-i",
     "input.mp4",
     "-preset",
-    "superfast",
+    "fast",
     "-threads",
     "0",
     "-r",

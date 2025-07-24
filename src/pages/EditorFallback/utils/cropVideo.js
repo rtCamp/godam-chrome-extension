@@ -16,7 +16,7 @@ async function cropVideo(ffmpeg, videoBlob, cropParameters) {
     "-c:a",
     "copy",
     "-preset",
-    "superfast",
+    "fast",
     "-threads",
     "0",
     "-r",
