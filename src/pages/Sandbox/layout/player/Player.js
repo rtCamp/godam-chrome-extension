@@ -174,7 +174,17 @@ const Player = () => {
     const saveToGoDAM = async () => {
         const blob = contentState.rawBlob;
         const token = await getGoDAMAuthToken()
-        const fileName = 'raw-recording.webm'
+
+        let fileName = `GoDAM video - ${new Date().toLocaleString("en-US", {
+            month: "short",
+            day: "numeric",
+            year: "numeric",
+            hour: "numeric",
+            minute: "numeric",
+            second: "numeric",
+            hour12: true,
+        })}.webm`;
+
         const formData = new FormData();
         formData.append('file', blob, fileName);
 
