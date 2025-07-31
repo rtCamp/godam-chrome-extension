@@ -1,11 +1,7 @@
 import React, { useContext, useState, useEffect } from "react";
 
-// Components
-import PlayerNav from "./PlayerNav";
-import CropNav from "../editor/CropNav";
-import AudioNav from "../editor/AudioNav";
-import RightPanel from "./RightPanel";
 import Content from "./Content";
+import PlayerNav from "./PlayerNav";
 
 import styles from "../../styles/player/_Player.module.scss";
 
@@ -13,111 +9,243 @@ import styles from "../../styles/player/_Player.module.scss";
 import { ContentStateContext } from "../../context/ContentState"; // Import the ContentState context
 
 const Player = () => {
-  const [contentState, setContentState] = useContext(ContentStateContext); // Access the ContentState context
-  const [isSaving, setIsSaving] = useState(false);
-  const [error, setError] = useState(null);
+    const [contentState, setContentState] = useContext(ContentStateContext); // Access the ContentState context
+    const [isSaving, setIsSaving] = useState(false);
 
-  const saveToGoDAM = () => {
+    const signInGoDAM = async () => {
+        try {
 
-    if (contentState.noffmpeg || !contentState.mp4ready || !contentState.blob) {
-      chrome.runtime
-        .sendMessage({
-          type: "save-to-godam-fallback",
-          title: contentState.title,
-        })
-        .then((response) => {
-          // Cancel saving to GoDAM
-          if (response.status === "ok") {
-            chrome.tabs.getCurrent((tab) => {
-              chrome.tabs.update(tab.id, { url: response.url });
-            });
-          } else {
-            setError(response.message || "An error occurred while saving to GoDAM");
-          }
-          setIsSaving(false);
-        });
-    } else {
-      // Blob to base64
-      const reader = new FileReader();
-      reader.onload = () => {
-        const dataUrl = reader.result;
-        const base64 = dataUrl.split(",")[1];
+            // GoDAM OAuth configuration
+            const clientId = process.env.GODAM_OAUTH_CLIENT_ID || 'habg22ul6k';
 
-        chrome.runtime
-          .sendMessage({
-            type: "save-to-godam",
-            base64: base64,
-            title: contentState.title,
-          })
-          .then((response) => {
-            // Cancel saving to GoDAM
-            if (response.status === "ok") {
-              // Close the current tab and open the GoDAM URL
-              chrome.tabs.getCurrent((tab) => {
-                chrome.tabs.update(tab.id, { url: response.url });
-              });
-            } else {
-              setError(response.message || "An error occurred while saving to GoDAM");
+            // Get the redirect URL and remove any trailing slashes
+            const redirectUrl = chrome.identity.getRedirectURL().replace(/\/$/, '');
+
+            const baseURL = process.env.GODAM_BASE_URL || 'https://app.godam.io';
+
+            // Construct auth URL with state parameter for security
+            const state = Math.random().toString(36).substring(7);
+            const authUrl = new URL(`${baseURL}/api/method/frappe.integrations.oauth2.authorize`);
+            authUrl.searchParams.append('client_id', clientId);
+            authUrl.searchParams.append('response_type', 'code');
+            authUrl.searchParams.append('redirect_uri', redirectUrl);
+            authUrl.searchParams.append('scope', 'all');
+            authUrl.searchParams.append('state', state);
+
+            const responseUrl = new URL(await chrome.identity.launchWebAuthFlow({
+                url: authUrl.toString(),
+                interactive: true
+            }))
+
+
+            const url = new URL(responseUrl);
+
+            const error = url.searchParams.get('error');
+            const responseCode = url.searchParams.get('code');
+            const responseState = url.searchParams.get('state');
+
+            if (error) {
+                throw new Error(error)
             }
-            setIsSaving(false);
-          });
-      };
-      if (
-        !contentState.noffmpeg &&
-        contentState.mp4ready &&
-        contentState.blob
-      ) {
-        reader.readAsDataURL(contentState.blob);
-      } else {
-        reader.readAsDataURL(contentState.webm);
-      }
-    }
-  };
+
+            if (!responseCode) {
+                throw new Error('Authorization code not found in the response')
+            }
+
+            if (!responseState || responseState !== state) {
+                throw new Error('State code mismatch')
+            }
+
+            // Get token with Auth code
+            const tokenResponse = await fetch(`${baseURL}/api/method/frappe.integrations.oauth2.get_token`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'Accept': 'application/json',
+                },
+                credentials: 'omit',
+                body: new URLSearchParams({
+                    grant_type: 'authorization_code',
+                    code: responseCode,
+                    client_id: clientId,
+                    redirect_uri: redirectUrl,
+                }),
+            });
+
+            if (!tokenResponse.ok) {
+                const errorText = await tokenResponse.text();
+                throw new Error(`Token exchange failed: ${tokenResponse.status} - ${errorText}`);
+            }
+
+            const tokenData = await tokenResponse.json();
+
+            // Check for token in both standard and Frappe-specific response formats
+            const token = tokenData.access_token || (tokenData.message && tokenData.message.access_token);
+
+            if (!token) {
+                throw new Error('Failed to get access token');
+            }
+
+            // Save token to storage with expiration time
+            const expiresIn = tokenData.expires_in || (tokenData.message && tokenData.message.expires_in) || 3600;
+            const expirationTime = Date.now() + expiresIn * 1000;
+            const refreshToken = tokenData.refresh_token || (tokenData.message && tokenData.message.refresh_token);
+
+            await chrome.storage.local.set({
+                godamToken: token,
+                godamRefreshToken: refreshToken,
+                godamTokenExpiration: expirationTime
+            })
+
+            return token;
+        } catch (error) {
+            return null;
+        }
+    };
+
+    const refreshToken = async () => {
+
+        const clientId = process.env.GODAM_OAUTH_CLIENT_ID || 'habg22ul6k';
+        const { godamRefreshToken } = await chrome.storage.local.get(["godamRefreshToken"]);
+
+        const baseUrl = process.env.GODAM_BASE_URL || 'https://app.godam.io';
+
+        let refreshResponse;
+
+        try {
+            refreshResponse = await fetch(`${baseUrl}/api/method/frappe.integrations.oauth2.get_token`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'Accept': 'application/json',
+                },
+                credentials: 'omit',
+                body: new URLSearchParams({
+                    grant_type: 'authorization_code',
+                    refresh_token: godamRefreshToken,
+                    client_id: clientId,
+                }),
+            });
+        } catch (error) {
+            console.error(error)
+        }
 
 
-  useEffect(() => {
-    if (!isSaving) {
-      setIsSaving(true);
-      saveToGoDAM();
-    }
-  }, []);
+        const tokenData = await refreshResponse.json();
 
-  return (
-    <div className={styles.layout}>
-      {/* {contentState.mode === "crop" && <CropNav />} */}
-      {contentState.mode === "player" && <PlayerNav />}
-      {/* {contentState.mode === "audio" && <AudioNav />} */}
-      <div className={styles.content}>
+        const newToken = tokenData.access_token;
+        const expiresIn = tokenData.expires_in || 3600;
+        const expirationTime = Date.now() + expiresIn * 1000;
 
-        <div className={styles.leftPanel}>
-          {isSaving && (
-            <div className={styles.saving}>
-              <div className={styles.savingSpinner}></div>
-              <p className={styles.savingText}>Hold tight! We're setting up your video...</p>
+        await chrome.storage.local.set({
+            godamToken: newToken,
+            godamRefreshToken: tokenData.refresh_token || godamRefreshToken,
+            godamTokenExpiration: expirationTime
+        })
+
+        return newToken;
+    };
+
+    const getGoDAMAuthToken = async () => {
+        const { godamToken, godamTokenExpiration } = await chrome.storage.local.get(["godamToken", "godamTokenExpiration"]);
+
+        const currentTime = Date.now();
+        const isExpired = currentTime >= godamTokenExpiration;
+
+        let token = undefined;
+
+        if (!godamToken) {
+            token = await signInGoDAM();
+            if (!token) {
+                throw new Error("GoDAM sign-in failed");
+            }
+        } else if (godamToken && isExpired) {
+            token = await refreshToken();
+            if (!newToken) {
+                throw new Error("GoDAM sign-in failed");
+            }
+        } else {
+            token = godamToken
+        }
+
+        return token
+    };
+
+    const saveToGoDAM = async () => {
+        const blob = contentState.rawBlob;
+        const token = await getGoDAMAuthToken()
+        const fileName = 'raw-recording.webm'
+        const formData = new FormData();
+        formData.append('file', blob, fileName);
+
+        const uploadUrl = process.env.GODAM_UPLOAD_URL || 'https://upload.godam.io'; // Todo: Replace the option with production URL
+
+        const url = uploadUrl + '/upload-file';
+
+        const uploadResponse = await fetch(
+            url,
+            {
+                method: "POST",
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+                body: formData,
+            }
+        );
+
+        let message = 'An error occurred while saving to GoDAM!';
+        if (!uploadResponse.ok) {
+            // error message
+            if (uploadResponse.status === 400) {
+                message = 'An error occurred while saving to GoDAM! <br> Looks like you are not logged in to GoDAM. Please log in again.';
+            } else {
+                message = 'An error occurred while saving to GoDAM! <br> Please try again later, if the problem persists, please contact <a href="https://app.godam.io/helpdesk/my-tickets" target="blank">support team</a>.';
+            }
+            throw new Error(message);
+        }
+
+        const responseData = await uploadResponse.json();
+
+    };
+
+    const handleRawRecording = () => {
+        const blob = contentState.rawBlob;
+        const url = window.URL.createObjectURL(blob);
+        chrome.downloads.download(
+            {
+                url: url,
+                filename: "raw-recording.webm",
+            },
+            () => {
+                window.URL.revokeObjectURL(url);
+            }
+        )
+    };
+
+    useEffect(() => {
+        if (!isSaving) {
+            saveToGoDAM();
+            handleRawRecording();
+            setIsSaving(true)
+        }
+    }, [])
+
+    return (
+        <div className={styles.layout}>
+            <PlayerNav />
+            <div className={styles.content}>
+                <div className={styles.leftPanel}>
+                    {isSaving && (
+                        <div className={styles.saving}>
+                            <div className={styles.savingSpinner}></div>
+                            <p className={styles.savingText}>Hold tight! We're setting up your video...</p>
+                        </div>
+                    )}
+                    <Content />
+                </div>
             </div>
-          )}
-          {
-            error && (
-              <div className={styles.error}>
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-exclamation-triangle-fill" viewBox="0 0 16 16">
-                  <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5m.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2"/>
-                </svg>
-                <p dangerouslySetInnerHTML={{ __html: error }}></p>
-              </div>
-            )
-          }
-
-          <Content />
         </div>
-
-          {
-            error && (
-              <RightPanel />
-            )
-          }
-      </div>
-    </div>
-  );
+    );
 };
 
 export default Player;
