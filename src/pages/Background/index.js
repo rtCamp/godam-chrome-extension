@@ -528,36 +528,6 @@ const stopRecording = async () => {
     );
   }
 
-  /* Commented out for now because we're not directly saving to GoDAM */
-  // Get the recorded video chunks
-  // const chunks = await getChunks();
-  // console.log("chunks:", chunks);
-  // if (chunks.length > 0) {
-
-  //   // Build the video from chunks
-  //   // Rearrange chunks by timestamp
-  //   const sortedChunks = chunks.sort((a, b) => a.timestamp - b.timestamp);
-
-  //   // Create a video blob from chunks
-  //   const videoBlob = new Blob(sortedChunks.map(chunk => chunk.chunk), { type: 'video/webm' });
-
-  //   const fileName = `recording-${Date.now()}.mp4`;
-
-  //   // Save to GoDAM and get the URL
-  //   try {
-  //     await saveToGoDAM(videoBlob, fileName, (response) => {
-  //       if (response.status === "ok") {
-  //         // Redirect to GoDAM URL
-  //         chrome.tabs.create({ url: response.url, active: true });
-  //       } else {
-  //         console.error("Error saving to GoDAM:", response.message);
-  //       }
-  //     });
-  //   } catch (error) {
-  //     console.error("Error saving to GoDAM:", error);
-  //   }
-  // }
-
   chrome.action.setIcon({ path: "assets/icon-34.png" });
 
   // Check if wasRegion is set

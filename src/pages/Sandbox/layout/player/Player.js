@@ -206,6 +206,13 @@ const Player = () => {
 
         const responseData = await uploadResponse.json();
 
+        console.log(responseData);
+
+        const videoName = responseData?.file_informations?.name;
+        const baseURL = process.env.GODAM_BASE_URL || 'https://app.godam.io';
+
+        return `${baseURL}/web/video/${videoName}`
+
     };
 
     const handleRawRecording = () => {
@@ -224,9 +231,15 @@ const Player = () => {
 
     useEffect(() => {
         if (!isSaving) {
-            saveToGoDAM();
+            (async()=>{
+
+            const url = await saveToGoDAM();
             handleRawRecording();
-            setIsSaving(true)
+            setIsSaving(true);
+
+            const currentTab = await chrome.tabs.getCurrent();
+            chrome.tabs.update(currentTab.id, { url });
+            })()
         }
     }, [])
 
