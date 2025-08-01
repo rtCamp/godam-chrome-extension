@@ -104,46 +104,8 @@ const Player = () => {
     };
 
     const refreshToken = async () => {
-
-        const clientId = process.env.GODAM_OAUTH_CLIENT_ID || 'habg22ul6k';
-        const { godamRefreshToken } = await chrome.storage.local.get(["godamRefreshToken"]);
-
-        const baseUrl = process.env.GODAM_BASE_URL || 'https://app.godam.io';
-
-        let refreshResponse;
-
-        try {
-            refreshResponse = await fetch(`${baseUrl}/api/method/frappe.integrations.oauth2.get_token`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                    'Accept': 'application/json',
-                },
-                credentials: 'omit',
-                body: new URLSearchParams({
-                    grant_type: 'authorization_code',
-                    refresh_token: godamRefreshToken,
-                    client_id: clientId,
-                }),
-            });
-        } catch (error) {
-            console.error(error)
-        }
-
-
-        const tokenData = await refreshResponse.json();
-
-        const newToken = tokenData.access_token;
-        const expiresIn = tokenData.expires_in || 3600;
-        const expirationTime = Date.now() + expiresIn * 1000;
-
-        await chrome.storage.local.set({
-            godamToken: newToken,
-            godamRefreshToken: tokenData.refresh_token || godamRefreshToken,
-            godamTokenExpiration: expirationTime
-        })
-
-        return newToken;
+        const token = await chrome.runtime.sendMessage({ type: "refresh-godam-token" })
+        return token
     };
 
     const getGoDAMAuthToken = async () => {
@@ -215,8 +177,6 @@ const Player = () => {
         }
 
         const responseData = await uploadResponse.json();
-
-        console.log(responseData);
 
         const videoName = responseData?.file_informations?.name;
         const baseURL = process.env.GODAM_BASE_URL || 'https://app.godam.io';
