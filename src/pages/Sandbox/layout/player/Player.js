@@ -225,6 +225,8 @@ const Player = () => {
 
     };
 
+    //  NOTE: This function can be usefull for debugging. Call it alongside saveToGoDAM to create a local copy
+    //  of the video in Downloads.
     const handleRawRecording = () => {
         const blob = contentState.rawBlob;
         const url = window.URL.createObjectURL(blob);
@@ -244,11 +246,10 @@ const Player = () => {
             (async()=>{
 
             const url = await saveToGoDAM();
-            handleRawRecording();
             setIsSaving(true);
 
             const currentTab = await chrome.tabs.getCurrent();
-            chrome.tabs.update(currentTab.id, { url });
+                chrome.tabs.update(currentTab.id, { url });
             })()
         }
     }, [])
