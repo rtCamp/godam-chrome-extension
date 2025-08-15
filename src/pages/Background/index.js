@@ -1,5 +1,3 @@
-import saveToDrive from "./modules/saveToDrive";
-
 import {
     sendMessageTab,
     focusTab,
@@ -9,8 +7,6 @@ import {
 } from "./modules/tabHelper";
 
 import localforage from "localforage";
-
-const saveToGoDAM = require('./modules/saveToGoDAM').default;
 
 localforage.config({
     driver: localforage.INDEXEDDB,
