@@ -457,14 +457,6 @@ const sendChunks = async (override = false) => {
     }
 };
 
-const getChunks = async () => {
-    const chunks = [];
-    await chunksStore.iterate((value, key) => {
-        chunks.push(value);
-    });
-    return chunks;
-};
-
 const stopRecording = async () => {
     chrome.storage.local.set({ restarting: false });
     const { recordingStartTime } = await chrome.storage.local.get([
@@ -540,37 +532,6 @@ const stopRecording = async () => {
     chrome.alarms.clear("recording-alarm");
 
     discardOffscreenDocuments();
-};
-
-const forceProcessing = async () => {
-    // Need to create a new sandbox tab
-    let editor_url = "editor.html";
-
-    // Get sandbox tab
-    const { sandboxTab } = await chrome.storage.local.get(["sandboxTab"]);
-
-    chrome.tabs.create(
-        {
-            url: editor_url,
-            active: true,
-        },
-        (tab) => {
-            chrome.tabs.onUpdated.addListener(function _(
-                tabId,
-                changeInfo,
-                updatedTab
-            ) {
-                if (tabId === tab.id && changeInfo.status === "complete") {
-                    chrome.tabs.onUpdated.removeListener(_);
-                    // Close the existing sandbox tab
-                    removeTab(sandboxTab);
-                    chrome.storage.local.set({ sandboxTab: tab.id });
-
-                    sendChunks(true);
-                }
-            });
-        }
-    );
 };
 
 // For some reason without this the service worker doesn't always work
@@ -652,11 +613,6 @@ chrome.action.onClicked.addListener(async (tab) => {
     }
 });
 
-const restartActiveTab = async () => {
-    const activeTab = await getCurrentTab();
-    sendMessageTab(activeTab.id, { type: "ready-to-record" });
-};
-
 const getStreamingData = async () => {
     const {
         micActive,
@@ -693,21 +649,6 @@ const handleDismiss = async () => {
         chrome.storage.local.set({ wasRegion: false, region: true });
     }
     chrome.action.setIcon({ path: "assets/icon-34.png" });
-};
-
-const handleRestart = async () => {
-    chrome.storage.local.set({ restarting: true });
-    let editor_url = "editor.html";
-
-    // Check if Chrome version is 109 or below
-    if (navigator.userAgent.includes("Chrome/")) {
-        const version = parseInt(navigator.userAgent.match(/Chrome\/([0-9]+)/)[1]);
-        if (version <= 109) {
-            editor_url = "editorfallback.html";
-        }
-    }
-
-    resetActiveTabRestart();
 };
 
 const sendMessageRecord = async (message) => {
@@ -1139,39 +1080,8 @@ const discardRecording = async () => {
     chrome.runtime.sendMessage({ type: "discard-backup" });
 };
 
-// Check if still (actually) recording by looking at recordingTab or offscreen document
-const checkRecording = async () => {
-    const { recordingTab } = await chrome.storage.local.get(["recordingTab"]);
-    const { offscreen } = await chrome.storage.local.get(["offscreen"]);
-    if (recordingTab && !offscreen) {
-        try {
-            chrome.tabs.get(recordingTab, (tab) => {
-                if (!tab) {
-                    discardRecording();
-                }
-            });
-        } catch (error) {
-            discardRecording();
-        }
-    } else if (offscreen) {
-        const existingContexts = await chrome.runtime.getContexts({});
-        const offDocument = existingContexts.find(
-            (c) => c.contextType === "OFFSCREEN_DOCUMENT"
-        );
-        if (!offDocument) {
-            discardRecording();
-        }
-    }
-};
-
 const newSandboxPageRestart = async () => {
     resetActiveTabRestart();
-};
-
-const isPinned = (sendResponse) => {
-    chrome.action.getUserSettings().then((userSettings) => {
-        sendResponse({ pinned: userSettings.isOnToolbar });
-    });
 };
 
 const requestDownload = async (base64, title) => {
@@ -1716,25 +1626,16 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         offscreenDocument(request.request, request.tabId);
     } else if (request.type === "write-file") {
         writeFile(request);
-    } else if (request.type === "handle-restart") {
-        handleRestart();
-    } else if (request.type === "handle-dismiss") {
+    }  else if (request.type === "handle-dismiss") {
         handleDismiss();
     } else if (request.type === "reset-active-tab") {
         resetActiveTab();
     } else if (request.type === "reset-active-tab-restart") {
         resetActiveTabRestart();
-    } else if (request.type === "start-rec") {
-        startRecording();
     } else if (request.type === "video-ready") {
         videoReady();
     } else if (request.type === "start-recording") {
         startRecording();
-    } else if (request.type === "restarted") {
-        restartActiveTab();
-    } else if (request.type === "new-chunk") {
-        newChunk(request);
-        return true;
     } else if (request.type === "get-streaming-data") {
         handleGetStreamingData();
     } else if (request.type === "cancel-recording") {
@@ -1753,22 +1654,12 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         setMicActiveTab(request);
     } else if (request.type === "recording-error") {
         handleRecordingError(request);
-    } else if (request.type === "on-get-permissions") {
-        handleOnGetPermissions(request);
     } else if (request.type === "recording-complete") {
         handleRecordingComplete();
-    } else if (request.type === "check-recording") {
-        checkRecording();
     } else if (request.type === "review-screenity") {
         createTab(
             "https://chrome.google.com/webstore/detail/screenity-screen-recorder/kbbdabhdfibnancpjfhlkhafgdilcnji/reviews",
             false,
-            true
-        );
-    } else if (request.type === "open-processing-info") {
-        createTab(
-            "https://godam.io/docs/godam-screen-recorder/",
-            true,
             true
         );
     } else if (request.type === "upgrade-info") {
@@ -1783,12 +1674,6 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
             true,
             true
         );
-    } else if (request.type === "chrome-update-info") {
-        createTab(
-            "https://godam.io/docs/godam-screen-recorder/",
-            true,
-            true
-        );
     } else if (request.type === "set-surface") {
         setSurface(request);
     } else if (request.type === "pip-ended") {
@@ -1797,8 +1682,6 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         handlePip(true);
     } else if (request.type === "new-sandbox-page-restart") {
         newSandboxPageRestart();
-    } else if (request.type === "sign-out-drive") {
-        handleSignOutDrive();
     } else if (request.type === "open-help") {
         createTab("https://godam.io/docs/godam-screen-recorder/", true, true);
     } else if (request.type === "memory-limit-help") {
@@ -1817,8 +1700,6 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         );
     } else if (request.type === "clear-recordings") {
         clearAllRecordings();
-    } else if (request.type === "force-processing") {
-        forceProcessing();
     } else if (request.type === "focus-this-tab") {
         focusTab(sender.tab.id);
     } else if (request.type === "stop-recording-tab-backup") {
@@ -1858,15 +1739,6 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
                 }
             }
         );
-        return true;
-    } else if (request.type === "is-pinned") {
-        isPinned(sendResponse);
-        return true;
-    } else if (request.type === "save-to-drive") {
-        handleSaveToDrive(sendResponse, request, false);
-        return true;
-    } else if (request.type === "save-to-drive-fallback") {
-        handleSaveToDrive(sendResponse, request, true);
         return true;
     } else if (request.type === "request-download") {
         requestDownload(request.base64, request.title);
