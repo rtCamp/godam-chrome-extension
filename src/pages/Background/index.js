@@ -1220,44 +1220,6 @@ const base64ToUint8Array = (base64) => {
     }
 };
 
-const handleSaveToDrive = async (sendResponse, request, fallback = false) => {
-    if (!fallback) {
-        const blob = base64ToUint8Array(request.base64);
-
-        // Specify the desired file name
-        const fileName = request.title + ".mp4";
-
-        // Call the saveToDrive function
-        saveToDrive(blob, fileName, sendResponse).then(() => {
-            savedToDrive();
-        });
-    } else {
-        const chunks = [];
-        await chunksStore.iterate((value, key) => {
-            chunks.push(value);
-        });
-
-        // Build the video from chunks
-        let array = [];
-        let lastTimestamp = 0;
-        for (const chunk of chunks) {
-            // Check if chunk timestamp is smaller than last timestamp, if so, skip
-            if (chunk.timestamp < lastTimestamp) {
-                continue;
-            }
-            lastTimestamp = chunk.timestamp;
-            array.push(chunk.chunk);
-        }
-        const blob = new Blob(array, { type: "video/webm" });
-
-        const filename = request.title + ".webm";
-
-        saveToDrive(blob, filename, sendResponse).then(() => {
-            savedToDrive();
-        });
-    }
-};
-
 const desktopCapture = async (request) => {
     const { backup } = await chrome.storage.local.get(["backup"]);
     const { backupSetup } = await chrome.storage.local.get(["backupSetup"]);
@@ -1303,17 +1265,6 @@ const videoReady = async () => {
     stopRecording();
 };
 
-const newChunk = async (request) => {
-    const { sandboxTab } = await chrome.storage.local.get(["sandboxTab"]);
-    sendMessageTab(sandboxTab, {
-        type: "new-chunk-tab",
-        chunk: request.chunk,
-        index: request.index,
-    });
-
-    sendResponse({ status: "ok" });
-};
-
 const handleGetStreamingData = async () => {
     const data = await getStreamingData();
     sendMessageRecord({ type: "streaming-data", data: JSON.stringify(data) });
@@ -1336,12 +1287,6 @@ const handleStopRecordingTab = async (request) => {
             memoryError: true,
         });
     }
-    // sendMessageRecord({
-    //   type: "loaded",
-    //   request: request,
-    //   backup: backup,
-    //   region: true,
-    // });
     sendMessageRecord({ type: "stop-recording-tab" });
 };
 
@@ -1391,16 +1336,6 @@ const handleRecordingError = async (request) => {
     discardOffscreenDocuments();
 };
 
-const handleOnGetPermissions = async (request) => {
-    // Send a message to (actual) active tab
-    const activeTab = await getCurrentTab();
-    if (activeTab) {
-        sendMessageTab(activeTab.id, {
-            type: "on-get-permissions",
-            data: request,
-        });
-    }
-};
 
 const handleRecordingComplete = async () => {
     // Close the recording tab
