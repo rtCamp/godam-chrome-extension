@@ -31,7 +31,7 @@ jobs:
         mkdir -p dist
         zip_path="godam-${{ github.ref_name }}.zip"
         # Adjust the path below to wherever your build outputs files
-        zip -r "$zip_path" build/*
+        zip -r "$zip_path" dist/*
         echo "zip-path=$zip_path" >> $GITHUB_OUTPUT
     
     - name: Upload Test Artifact
