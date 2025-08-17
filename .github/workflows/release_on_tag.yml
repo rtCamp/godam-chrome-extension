@@ -4,7 +4,7 @@ on:
     tags:
       - 'v*.*.*' 
       - 'test-*'
-      
+
 permissions:
   contents: write
 
