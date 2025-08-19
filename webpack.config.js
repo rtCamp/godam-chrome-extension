@@ -70,7 +70,6 @@ var options = {
       "EditorFallback",
       "index.jsx"
     ),
-    backup: path.join(__dirname, "src", "pages", "Backup", "index.jsx"),
   },
 
   custom: {
@@ -280,13 +279,6 @@ var options = {
       filename: "editorfallback.html",
       chunks: ["editorfallback"],
       cache: false,
-    }),
-    new HtmlWebpackPlugin({
-      template: path.join(__dirname, "src", "pages", "Backup", "index.html"),
-      filename: "backup.html",
-      chunks: ["backup"],
-      cache: false,
-      favicon: path.join(__dirname, "src", "assets", "backup-favicon.ico"),
     }),
   ],
 };
