@@ -9,5 +9,8 @@ build
 # VSCode artifacts
 .vscode
 
+# Webstorm artifacts
+.idea
+
 # Environment variables
 .env
