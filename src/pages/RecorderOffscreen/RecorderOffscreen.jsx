@@ -43,7 +43,6 @@ const RecorderOffscreen = () => {
   const tabID = useRef(null);
   const quality = useRef("1080p");
   const fps = useRef(30);
-  const backupRef = useRef(false);
 
   async function startRecording() {
     // Check that a recording is not already in progress
@@ -199,12 +198,6 @@ const RecorderOffscreen = () => {
             timestamp: timestamp,
           });
 
-          if (backupRef.current) {
-            chrome.runtime.sendMessage({
-              type: "write-file",
-              index: index.current,
-            });
-          }
           index.current++;
         } catch (err) {
           chrome.runtime.sendMessage({
@@ -551,7 +544,6 @@ const RecorderOffscreen = () => {
   const onMessage = useCallback(
     (request, sender, sendResponse) => {
       if (request.type === "loaded") {
-        backupRef.current = request.backup;
         isTab.current = request.isTab;
         quality.current = request.quality;
         fps.current = request.fps;

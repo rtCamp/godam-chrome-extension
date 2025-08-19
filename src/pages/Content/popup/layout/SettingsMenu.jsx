@@ -576,44 +576,6 @@ const SettingsMenu = (props) => {
               <img src={CheckWhiteIcon} />
             </DropdownMenu.ItemIndicator>
           </DropdownMenu.CheckboxItem>
-          {!oldChrome && (
-            <DropdownMenu.CheckboxItem
-              className="DropdownMenuItem"
-              onSelect={(e) => {
-                e.preventDefault();
-              }}
-              onCheckedChange={(checked) => {
-                if (!checked) {
-                  chrome.runtime.sendMessage({ type: "close-backup-tab" });
-                }
-                setContentState((prevContentState) => ({
-                  ...prevContentState,
-                  backup: checked,
-                  backupSetup: false,
-                }));
-                chrome.storage.local.set({
-                  backup: checked,
-                  backupSetup: false,
-                });
-              }}
-              checked={contentState.backup}
-            >
-              {chrome.i18n.getMessage("backupsToggle")}
-              <DropdownMenu.ItemIndicator className="ItemIndicator">
-                <img src={CheckWhiteIcon} />
-              </DropdownMenu.ItemIndicator>
-            </DropdownMenu.CheckboxItem>
-          )}
-          {/* <DropdownMenu.Item
-            className="DropdownMenuItem"
-            onSelect={(e) => {
-              e.preventDefault();
-              chrome.runtime.sendMessage({ type: "restore-recording" });
-            }}
-            disabled={!restore}
-          >
-            {chrome.i18n.getMessage("restoreRecording")}
-          </DropdownMenu.Item> */}
           <DropdownMenu.Item
             className="DropdownMenuItem"
             onSelect={(e) => {

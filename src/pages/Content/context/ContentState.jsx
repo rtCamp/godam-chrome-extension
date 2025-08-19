@@ -72,7 +72,6 @@ const ContentState = (props) => {
   const restartRecording = useCallback(() => {
     chrome.storage.local.set({ recording: false, restarting: true });
     setTimeout(() => {
-      chrome.runtime.sendMessage({ type: "discard-backup-restart" });
       chrome.runtime.sendMessage({ type: "restart-recording-tab" });
       // Check if custom region is set
       if (
@@ -683,8 +682,6 @@ const ContentState = (props) => {
     askDismiss: true,
     quality: "max",
     systemAudio: true,
-    backup: false,
-    backupSetup: false,
     openWarning: false,
     hasOpenedBefore: false,
     qualityValue: "720p",
@@ -974,19 +971,6 @@ const ContentState = (props) => {
         contentStateRef.current.openModal(
           chrome.i18n.getMessage("streamErrorModalTitle"),
           chrome.i18n.getMessage("streamErrorModalDescription"),
-          chrome.i18n.getMessage("permissionsModalDismiss"),
-          null,
-          () => {
-            contentStateRef.current.dismissRecording();
-          },
-          () => {
-            contentStateRef.current.dismissRecording();
-          }
-        );
-      } else if (request.type === "backup-error") {
-        contentStateRef.current.openModal(
-          chrome.i18n.getMessage("backupPermissionFailTitle"),
-          chrome.i18n.getMessage("backupPermissionFailDescription"),
           chrome.i18n.getMessage("permissionsModalDismiss"),
           null,
           () => {
@@ -1290,8 +1274,6 @@ const ContentState = (props) => {
         "strokeWidth",
         "quality",
         "systemAudio",
-        "backup",
-        "backupSetup",
         "qualityValue",
         "fpsValue",
       ],
@@ -1475,14 +1457,6 @@ const ContentState = (props) => {
             result.systemAudio !== undefined && result.systemAudio !== null
               ? result.systemAudio
               : prevContentState.systemAudio,
-          backup:
-            result.backup !== undefined && result.backup !== null
-              ? result.backup
-              : prevContentState.backup,
-          backupSetup:
-            result.backupSetup !== undefined && result.backupSetup !== null
-              ? result.backupSetup
-              : prevContentState.backupSetup,
           qualityValue:
             result.qualityValue !== undefined && result.qualityValue !== null
               ? result.qualityValue
@@ -1504,16 +1478,8 @@ const ContentState = (props) => {
           chrome.storage.local.set({ backgroundEffect: "blur" });
         }
 
-        if (result.backup === undefined || result.backup === null) {
-          chrome.storage.local.set({ backup: false });
-        }
-
         if (result.countdown === undefined || result.countdown === null) {
           chrome.storage.local.set({ countdown: true });
-        }
-
-        if (result.backupSetup === undefined || result.backupSetup === null) {
-          chrome.storage.local.set({ backupSetup: false });
         }
 
         if (result.backgroundEffectsActive) {

@@ -234,10 +234,9 @@ const onActivated = async (activeInfo) => {
         const { tabRecordedID } = await chrome.storage.local.get(["tabRecordedID"]);
         if (tabRecordedID && tabRecordedID != activeInfo.tabId) {
             sendMessageTab(activeInfo.tabId, { type: "hide-popup-recording" });
-            // Check if active tab is not backup.html + chrome-extension://
+            // Check if active tab is not chrome-extension://
         } else if (
             !(
-                tab.url.includes("backup.html") &&
                 tab.url.includes("chrome-extension://")
             )
         ) {
@@ -722,79 +721,7 @@ const sendMessageRecord = async (message) => {
     });
 };
 
-const initBackup = async (request, id) => {
-    const { backupTab } = await chrome.storage.local.get(["backupTab"]);
-    const backupURL = chrome.runtime.getURL("backup.html");
-
-    if (backupTab) {
-        chrome.tabs.get(backupTab, (tab) => {
-            if (tab) {
-                sendMessageTab(tab.id, {
-                    type: "init-backup",
-                    request: request,
-                    tabId: id,
-                });
-            } else {
-                chrome.tabs.create(
-                    {
-                        url: backupURL,
-                        active: true,
-                        pinned: true,
-                        index: 0,
-                    },
-                    (tab) => {
-                        chrome.storage.local.set({ backupTab: tab.id });
-                        chrome.tabs.onUpdated.addListener(function _(
-                            tabId,
-                            changeInfo,
-                            updatedTab
-                        ) {
-                            // Check if recorder tab has finished loading
-                            if (tabId === tab.id && changeInfo.status === "complete") {
-                                sendMessageTab(tab.id, {
-                                    type: "init-backup",
-                                    request: request,
-                                    tabId: id,
-                                });
-                                chrome.tabs.onUpdated.removeListener(_);
-                            }
-                        });
-                    }
-                );
-            }
-        });
-    } else {
-        chrome.tabs.create(
-            {
-                url: backupURL,
-                active: true,
-                pinned: true,
-                index: 0,
-            },
-            (tab) => {
-                chrome.storage.local.set({ backupTab: tab.id });
-                chrome.tabs.onUpdated.addListener(function _(
-                    tabId,
-                    changeInfo,
-                    updatedTab
-                ) {
-                    // Check if recorder tab has finished loading
-                    if (tabId === tab.id && changeInfo.status === "complete") {
-                        sendMessageTab(tab.id, {
-                            type: "init-backup",
-                            request: request,
-                            tabId: id,
-                        });
-                        chrome.tabs.onUpdated.removeListener(_);
-                    }
-                });
-            }
-        );
-    }
-};
-
 const offscreenDocument = async (request, tabId = null) => {
-    const { backup } = await chrome.storage.local.get(["backup"]);
     let activeTab = await getCurrentTab();
     if (tabId !== null) {
         activeTab = await chrome.tabs.get(tabId);
@@ -838,7 +765,6 @@ const offscreenDocument = async (request, tabId = null) => {
             sendMessageRecord({
                 type: "loaded",
                 request: request,
-                backup: backup,
                 region: true,
             });
         } else {
@@ -913,7 +839,6 @@ const offscreenDocument = async (request, tabId = null) => {
                                     type: "loaded",
                                     request: request,
                                     tabID: activeTab.id,
-                                    backup: backup,
                                     isTab: true,
                                 });
                             }
@@ -965,7 +890,6 @@ const offscreenDocument = async (request, tabId = null) => {
                 isTab: false,
                 quality: qualityValue,
                 fps: fpsValue,
-                backup: backup,
             });
         } catch (error) {
             // Open the recorder.html page as a normal tab.
@@ -998,7 +922,6 @@ const offscreenDocument = async (request, tabId = null) => {
                             sendMessageRecord({
                                 type: "loaded",
                                 request: request,
-                                backup: backup,
                             });
                         }
                     });
@@ -1074,21 +997,7 @@ chrome.runtime.onInstalled.addListener(async (details) => {
 
         chrome.runtime.setUninstallURL('https://godam.io/chrome-extension-feedback/');
     }
-    // Check chrome version, if 109 or below, disable backups
-    if (navigator.userAgent.includes("Chrome/")) {
-        const version = parseInt(navigator.userAgent.match(/Chrome\/([0-9]+)/)[1]);
-        if (version <= 109) {
-            chrome.storage.local.set({ backup: false });
-        }
-    }
-
     chrome.storage.local.set({ systemAudio: true });
-
-    // Check if the backup tab is open, if so close it
-    const { backupTab } = await chrome.storage.local.get(["backupTab"]);
-    if (backupTab) {
-        removeTab(backupTab);
-    }
 
     executeScripts();
 });
@@ -1136,7 +1045,6 @@ const discardRecording = async () => {
         sandboxTab: null,
         recording: false,
     });
-    chrome.runtime.sendMessage({ type: "discard-backup" });
 };
 
 // Check if still (actually) recording by looking at recordingTab or offscreen document
@@ -1349,47 +1257,15 @@ const handleSaveToDrive = async (sendResponse, request, fallback = false) => {
 };
 
 const desktopCapture = async (request) => {
-    const { backup } = await chrome.storage.local.get(["backup"]);
-    const { backupSetup } = await chrome.storage.local.get(["backupSetup"]);
     chrome.storage.local.set({ sendingChunks: false });
-    if (backup) {
-        if (!backupSetup) {
-            localDirectoryStore.clear();
-        }
-
-        let activeTab = await getCurrentTab();
-        initBackup(request, activeTab.id);
-    } else {
-        offscreenDocument(request);
-    }
+    offscreenDocument(request);
 };
 
 const writeFile = async (request) => {
-    // Need to add safety check here to make sure the tab is still open
-    const { backupTab } = await chrome.storage.local.get(["backupTab"]);
-
-    if (backupTab) {
-        sendMessageTab(
-            backupTab,
-            {
-                type: "write-file",
-                index: request.index,
-            },
-            null,
-            () => {
-                sendMessageRecord({ type: "stop-recording-tab" });
-            }
-        );
-    } else {
-        sendMessageRecord({ type: "stop-recording-tab" });
-    }
+    sendMessageRecord({ type: "stop-recording-tab" });
 };
 
 const videoReady = async () => {
-    const { backupTab } = await chrome.storage.local.get(["backupTab"]);
-    if (backupTab) {
-        sendMessageTab(backupTab, { type: "close-writable" });
-    }
     stopRecording();
 };
 
@@ -1426,12 +1302,6 @@ const handleStopRecordingTab = async (request) => {
             memoryError: true,
         });
     }
-    // sendMessageRecord({
-    //   type: "loaded",
-    //   request: request,
-    //   backup: backup,
-    //   region: true,
-    // });
     sendMessageRecord({ type: "stop-recording-tab" });
 };
 
@@ -1440,7 +1310,6 @@ const handleRestartRecordingTab = async () => {
 };
 
 const handleDismissRecordingTab = async () => {
-    chrome.runtime.sendMessage({ type: "discard-backup" });
     discardRecording();
 };
 
@@ -1465,9 +1334,7 @@ const handleRecordingError = async (request) => {
         focusTab(activeTab);
         if (request.error === "stream-error") {
             sendMessageTab(activeTab, { type: "stream-error" });
-        } else if (request.error === "backup-error") {
-            sendMessageTab(activeTab, { type: "backup-error" });
-        }
+        } 
     });
 
     // Close recording tab
@@ -1541,22 +1408,6 @@ const handleSignOutDrive = async () => {
 
     chrome.identity.removeCachedAuthToken({ token: token });
     chrome.storage.local.set({ token: false });
-};
-
-const handleStopRecordingTabBackup = async (request) => {
-    chrome.storage.local.set({
-        recording: false,
-        restarting: false,
-        tabRecordedID: null,
-        memoryError: true,
-    });
-    sendMessageRecord({ type: "stop-recording-tab" });
-
-    // Get active tab
-    const { activeTab } = await chrome.storage.local.get(["activeTab"]);
-    // Check if actual tab
-    sendMessageTab(activeTab, { type: "stop-pending" });
-    focusTab(activeTab);
 };
 
 const clearAllRecordings = async () => {
@@ -1712,8 +1563,6 @@ const refreshToken = async (sendResponse) => {
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     if (request.type === "desktop-capture") {
         desktopCapture(request);
-    } else if (request.type === "backup-created") {
-        offscreenDocument(request.request, request.tabId);
     } else if (request.type === "write-file") {
         writeFile(request);
     } else if (request.type === "handle-restart") {
@@ -1821,8 +1670,6 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         forceProcessing();
     } else if (request.type === "focus-this-tab") {
         focusTab(sender.tab.id);
-    } else if (request.type === "stop-recording-tab-backup") {
-        handleStopRecordingTabBackup(request);
     } else if (request.type === "indexed-db-download") {
         downloadIndexedDB();
     } else if (request.type === "get-platform-info") {

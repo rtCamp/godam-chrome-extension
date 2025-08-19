@@ -46,18 +46,6 @@ const Recorder = () => {
   const tabID = useRef(null);
   const tabPreferred = useRef(false);
 
-  const backupRef = useRef(false);
-
-  useEffect(() => {
-    chrome.storage.local.get(["backup"], (result) => {
-      if (result.backup) {
-        backupRef.current = true;
-      } else {
-        backupRef.current = false;
-      }
-    });
-  }, []);
-
   async function startRecording() {
     // Check that a recording is not already in progress
     if (recorder.current !== null) return;
@@ -218,12 +206,6 @@ const Recorder = () => {
             timestamp: timestamp,
           });
 
-          if (backupRef.current) {
-            chrome.runtime.sendMessage({
-              type: "write-file",
-              index: index.current,
-            });
-          }
           index.current++;
         } catch (err) {
           chrome.storage.local.set({
@@ -630,7 +612,6 @@ const Recorder = () => {
   const onMessage = useCallback(
     (request, sender, sendResponse) => {
       if (request.type === "loaded") {
-        backupRef.current = request.backup;
         if (!tabPreferred.current) {
           isTab.current = request.isTab;
           if (request.isTab) {

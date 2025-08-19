@@ -52,7 +52,6 @@ const Recorder = () => {
   // Recording ref
   const recordingRef = useRef();
   const regionRef = useRef();
-  const backupRef = useRef(false);
 
   useEffect(() => {
     window.parent.postMessage(
@@ -291,12 +290,6 @@ const Recorder = () => {
             timestamp: timestamp,
           });
 
-          if (backupRef.current) {
-            chrome.runtime.sendMessage({
-              type: "write-file",
-              index: index.current,
-            });
-          }
           index.current++;
         } catch (err) {
           chrome.storage.local.set({
@@ -675,7 +668,6 @@ const Recorder = () => {
   const onMessage = useCallback(
     (request, sender, sendResponse) => {
       if (request.type === "loaded") {
-        backupRef.current = request.backup;
         if (request.region) {
           chrome.runtime.sendMessage({ type: "get-streaming-data" });
         }
