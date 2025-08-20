@@ -17,7 +17,10 @@
     "48": "assets/img/icon-48.png",
     "128": "assets/img/icon-128.png"
   },
-  "host_permissions": ["<all_urls>"],
+  "host_permissions": [
+    "https://app.godam.io/*",
+    "https://app-godam.rt.gw/*"
+  ],
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
@@ -98,7 +101,8 @@
     "downloads",
     "tabs",
     "tabCapture",
-    "scripting"
+    "scripting",
+    "cookies"
   ],
   "optional_permissions": ["offscreen", "desktopCapture", "alarms"]
 }

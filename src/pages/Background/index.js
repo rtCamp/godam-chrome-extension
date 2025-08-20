@@ -1898,3 +1898,21 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         return true;
     }
 });
+
+chrome.cookies.onChanged.addListener((changeInfo) => {
+    const baseUrl = process.env.GODAM_BASE_URL || 'https://app.godam.io';
+    const domain = new URL(baseUrl).hostname; // Extract the domain part
+
+    const { cookie } = changeInfo;
+
+    console.log("Cookie changed:", cookie);
+
+    if (cookie.domain.includes(domain)) {
+        if ( (cookie.name === "sid" && cookie.value === "Guest") || (cookie.name === "user_id" && cookie.value === "Guest") ) {
+            // If sid is Guest, clear the godamToken and godamRefreshToken.
+            chrome.storage.local.remove(["godamToken", "godamRefreshToken"], () => {
+                console.log("Cleared godamToken and godamRefreshToken");
+            });
+        }
+    }
+});
