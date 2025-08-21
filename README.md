@@ -1,11 +1,7 @@
 # GoDAM Screen Recorder
 <img width="1280" height="800" alt="Image 1" src="https://github.com/user-attachments/assets/93b0ef91-8b5c-4acb-ac44-94415c3cc7f4" />
 
-The free and privacy-friendly screen recorder with no limits 🎥
-
-[Get it now - it's free!](https://godam.io)
-
-GoDAM is a powerful privacy-friendly screen recorder and annotation tool to make better videos for work, education, and more. You can create stunning product demos, tutorials, presentations, or share feedback with your team - all for free.
+With the GoDAM Chrome Extension, you can record your screen, explain clearly using the pen or highlighter tools, store videos directly in your GoDAM workspace, and share a link that collects timestamped comments and emoji reactions - turning feedback into a conversation, not a back-and-forth.
 
 ## Table of contents
 
@@ -15,16 +11,15 @@ GoDAM is a powerful privacy-friendly screen recorder and annotation tool to make
 
 ## Features
 
-🎥 Record your browser tab, a selected screen area, the entire desktop, any application window, or directly from your camera.<br>
-🎙️ Record your microphone or internal audio, and use features like push to talk<br>
-✏️ Annotate by drawing anywhere on the screen, adding text, arrows, shapes, and more<br>
-✨ Use AI-powered camera backgrounds or blur to enhance your recordings<br>
-🔎 Zoom in smoothly in your recordings to focus on specific areas<br>
-🪄 Blur out any sensitive content of any page to keep it private<br>
-👀 Highlight your clicks and cursor, and go in spotlight mode<br>
-⏱️ Set up alarms to automatically stop your recording<br>
-⚙️ Set a countdown, hide parts of the UI, or move it anywhere<br>
-…and much more - all for free & no sign in needed!
+- Record Screen, Tab, or Window - Easily capture your full screen, an app window, or a browser tab — ideal for walkthroughs, bug reports, or tutorials.
+- Draw While Recording - Use annotation tools like pen, highlighter, and shapes to guide attention and explain things visually — no editing needed later.
+- Automatic Upload to GoDAM - Once you're done, your video is automatically uploaded to your secure GoDAM workspace. No need to export or manage files.
+- One-Click Sharing - From GoDAM Central Media Manager, you can copy and share a link of the recorded video to teammates, clients, or stakeholders.
+- Get Feedback Like a Conversation - The shared video link opens a clean video page with feedback tools — viewers can react with emojis or leave timestamped comments, turning your video into a collaborative space.
+- Organized in Your Media Library - All recordings are saved in your central GoDAM dashboard for easy access, reuse, and sharing.
+
+You’ll need an active GoDAM account. Sign up here:  https://godam.io/pricing
+
 
 ## Creating a development version
 
