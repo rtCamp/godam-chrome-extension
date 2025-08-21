@@ -1908,8 +1908,7 @@ chrome.cookies.onChanged.addListener(async (changeInfo) => {
 
     if (!cookie.domain.includes(domain)) return;
 
-    if ( (cookie.name === "sid" && cookie.value === "Guest") || (cookie.name === "user_id" && cookie.value === "Guest") ) {
-        // If sid is Guest, clear the godamToken and godamRefreshToken.
+    if ( (cookie.name === "sid" || cookie.name === "user_id") && cookie.value === "Guest"  ) {
         await chrome.storage.local.remove(["godamToken", "godamRefreshToken", "godamTokenExpiration"]);
     }
 });
