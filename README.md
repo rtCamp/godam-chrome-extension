@@ -15,19 +15,16 @@ GoDAM is a powerful privacy-friendly screen recorder and annotation tool to make
 
 ## Features
 
-🎥 Make unlimited recordings of your tab, a specific area, desktop, any application, or camera<br>
+🎥 Record your browser tab, a selected screen area, the entire desktop, any application window, or directly from your camera.<br>
 🎙️ Record your microphone or internal audio, and use features like push to talk<br>
 ✏️ Annotate by drawing anywhere on the screen, adding text, arrows, shapes, and more<br>
 ✨ Use AI-powered camera backgrounds or blur to enhance your recordings<br>
 🔎 Zoom in smoothly in your recordings to focus on specific areas<br>
 🪄 Blur out any sensitive content of any page to keep it private<br>
-✂️ Remove or add audio, cut, trim, or crop your recordings with a comprehensive editor<br>
 👀 Highlight your clicks and cursor, and go in spotlight mode<br>
 ⏱️ Set up alarms to automatically stop your recording<br>
-💾 Export as mp4, gif, and webm, or save the video directly to Google Drive to share a link<br>
 ⚙️ Set a countdown, hide parts of the UI, or move it anywhere<br>
-🔒 Only you can see your videos, we don’t collect any of your data. You can even go offline!<br>
-💙 No limits, make as many videos as you want, for as long as you want<br> …and much more - all for free & no sign in needed!
+…and much more - all for free & no sign in needed!
 
 ## Creating a development version
 
