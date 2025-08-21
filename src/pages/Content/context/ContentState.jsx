@@ -687,7 +687,7 @@ const ContentState = (props) => {
     backupSetup: false,
     openWarning: false,
     hasOpenedBefore: false,
-    qualityValue: "1080p",
+    qualityValue: "720p",
     fpsValue: "30",
   });
   contentStateRef.current = contentState;
