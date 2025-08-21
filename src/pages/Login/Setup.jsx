@@ -116,7 +116,7 @@ const Setup = () => {
       </div>
 
       <p className="noAccount">
-        No account yet? simplify your digital assets with <a href="https://godam.io" target="_blank">GoDAM</a>
+        Start recording your screen with GoDAM. Need an account? <a href="https://godam.io/pricing/" target="_blank">Start a 7-day free trial.</a>
       </p>
 
       {message && (
