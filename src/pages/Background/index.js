@@ -1899,20 +1899,17 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     }
 });
 
-chrome.cookies.onChanged.addListener((changeInfo) => {
+// Listen for cookie changes on https://app.godam.io domain and logout from extension if user logout from application.
+chrome.cookies.onChanged.addListener(async (changeInfo) => {
     const baseUrl = process.env.GODAM_BASE_URL || 'https://app.godam.io';
     const domain = new URL(baseUrl).hostname; // Extract the domain part
 
     const { cookie } = changeInfo;
 
-    console.log("Cookie changed:", cookie);
+    if (!cookie.domain.includes(domain)) return;
 
-    if (cookie.domain.includes(domain)) {
-        if ( (cookie.name === "sid" && cookie.value === "Guest") || (cookie.name === "user_id" && cookie.value === "Guest") ) {
-            // If sid is Guest, clear the godamToken and godamRefreshToken.
-            chrome.storage.local.remove(["godamToken", "godamRefreshToken", "godamTokenExpiration"], () => {
-                console.log("User has been logged out since they logged out from https://app.godam.io");
-            });
-        }
+    if ( (cookie.name === "sid" && cookie.value === "Guest") || (cookie.name === "user_id" && cookie.value === "Guest") ) {
+        // If sid is Guest, clear the godamToken and godamRefreshToken.
+        await chrome.storage.local.remove(["godamToken", "godamRefreshToken", "godamTokenExpiration"]);
     }
 });
