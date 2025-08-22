@@ -10,10 +10,7 @@ import * as Tabs from "@radix-ui/react-tabs";
 import {
   RecordTabActive,
   RecordTabInactive,
-  VideoTabActive,
-  VideoTabInactive,
   TempLogo,
-  GoDAMLogo,
   GoDAMIcon,
 } from "../images/popup/images";
 
@@ -21,13 +18,11 @@ import { Rnd } from "react-rnd";
 
 import {
   CloseIconPopup,
-  GrabIconPopup,
   HelpIconPopup,
 } from "../toolbar/components/SVG";
 
 /* Component import */
 import RecordingTab from "./layout/RecordingTab";
-import VideosTab from "./layout/VideosTab";
 
 // Layouts
 import Announcement from "./layout/Announcement";
@@ -47,7 +42,6 @@ const PopupContainer = (props) => {
   const [elastic, setElastic] = React.useState("");
   const [shake, setShake] = React.useState("");
   const [dragging, setDragging] = React.useState("");
-  const [onboarding, setOnboarding] = useState(false);
   const [open, setOpen] = useState(false);
   const recordTabRef = useRef(null);
   const videoTabRef = useRef(null);
@@ -321,7 +315,6 @@ const PopupContainer = (props) => {
           </div>
           <div className="popup-nav"></div>
           <div className="popup-content">
-            {/* {onboarding && <Announcement setOnboarding={setOnboarding} />} */}
             <Tabs.Root
                 className="TabsRoot tl"
                 defaultValue="record"
