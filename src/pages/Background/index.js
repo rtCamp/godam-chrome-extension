@@ -1896,6 +1896,10 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     } else if (request.type === "sign-out-godam") {
         handleSignOutGoDAM(sendResponse);
         return true;
+    } else if (request.type === "set-organizations") {
+        const setOrgs = require('./modules/setOrgList').default;
+        setOrgs();
+        return true;
     }
 });
 

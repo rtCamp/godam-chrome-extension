@@ -252,6 +252,8 @@ const PopupContainer = (props) => {
     DragRef.current.updatePosition({ x: x, y: y });
 
     handleDrop(null, { x: x, y: y });
+
+    chrome.runtime.sendMessage({type:"set-organizations"})
   }, []);
 
   return (

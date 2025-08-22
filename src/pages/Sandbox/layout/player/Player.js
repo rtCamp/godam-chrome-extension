@@ -134,8 +134,14 @@ const Player = () => {
     };
 
     const saveToGoDAM = async () => {
+
         const blob = contentState.rawBlob;
         const token = await getGoDAMAuthToken()
+        const { selectedOrg } = await chrome.storage.local.get(["selectedOrg"]);
+
+        if(!selectedOrg){
+            throw new Error("unknown org");
+        }
 
         let fileName = `GoDAM video - ${new Date().toLocaleString("en-US", {
             month: "short",
@@ -160,10 +166,12 @@ const Player = () => {
                 method: "POST",
                 headers: {
                     Authorization: `Bearer ${token}`,
+                    Organization: selectedOrg
                 },
                 body: formData,
             }
         );
+
 
         let message = 'An error occurred while saving to GoDAM!';
         if (!uploadResponse.ok) {
