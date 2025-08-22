@@ -1,8 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import styles from "../../styles/player/_RightPanel.module.scss";
 
-// Components
-import Dropdown from "../../components/editor/Dropdown";
 
 import { ReactSVG } from "react-svg";
 
@@ -83,16 +81,6 @@ const CropUI = (props) => {
 
   return (
     <div>
-      {/*
-      <div className={styles.section}>
-        <div className={styles.sectionTitle}>Dimensions</div>
-        <div className={styles.inputSection}>
-          <div className={styles.inputSectionTitle}>Preset</div>
-          <Dropdown />
-        </div>
-      </div>
-							*/}
-
       <div className={styles.alert}>
         <div className={styles.buttonLeft}>
           <ReactSVG src={URL + "editor/icons/alert.svg"} />
