@@ -40,7 +40,7 @@ import GoDAMVideos from "./layout/GoDAMVideos";
 const PopupContainer = (props) => {
   const [contentState, setContentState] = useContext(contentStateContext);
   const contentStateRef = useRef(contentState);
-  const [tab, setTab] = useState("record");
+  const [tab, setTab] = useState("dashboard");
   const [badge, setBadge] = useState(TempLogo);
   const DragRef = useRef(null);
   const PopupRef = useRef(null);

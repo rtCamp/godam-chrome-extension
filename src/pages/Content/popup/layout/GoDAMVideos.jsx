@@ -1,35 +1,129 @@
 import React, { useEffect } from 'react'
 
-import { GoDAMLogo } from "../../images/popup/images";
+import * as Select from "@radix-ui/react-select";
+import {
+    CheckWhiteIcon,
+    DropdownIcon
+} from "../../images/popup/images";
+
+import {
+    Building2,
+    ArrowRight
+} from "lucide-react";
 
 import "../styles/layout/_GoDAMVideos.scss";
 
 const GoDAMVideos = () => {
 
-  const baseUrl = process.env.GODAM_BASE_URL || 'https://app.godam.io';
+    const baseUrl = process.env.GODAM_BASE_URL || 'https://app.godam.io';
 
-  const redirectLink = `${baseUrl}/web/media-library`;
+    const redirectLink = `${baseUrl}/web/media-library`;
 
-  return (
-    <div className="GoDAMVideos">
-        <a href={redirectLink} target="_blank" className="GoDAMLink"
-          style={{
-            display: 'flex',
-            justifyContent: 'center',
-            width: '100%',
-            margin: '24px auto',
-            cursor: 'pointer',
-          }}
-        >
-            <img src={GoDAMLogo} alt="GoDAM Logo"
-              style={{
-                width: '70%',
-                objectFit: 'contain',
-              }}
-            />
-        </a>
-    </div>
-  );
+    const [orgList, setOrgList] = React.useState([]);
+    const [selectedOrg, setSelectedOrg] = React.useState('');
+
+    useEffect(() => {
+        chrome.storage.local.get(['orgList', 'selectedOrg'], (result) => {
+            if (result.orgList) {
+                try {
+                    const parsedList = JSON.parse(result.orgList);
+                    setOrgList(Array.isArray(parsedList) ? parsedList : []);
+                } catch (e) {
+                    setOrgList([]);
+                }
+            }
+            if (result.selectedOrg) {
+                setSelectedOrg(result.selectedOrg);
+            }
+        });
+    }, []);
+
+    const handleOrgChange = (value) => {
+        setSelectedOrg(value);
+        chrome.storage.local.set({ selectedOrg: value });
+    };
+
+    console.log(selectedOrg);
+
+
+    return (
+        <div className="GoDAMVideos" style={{
+            padding: "1rem",
+            backgroundColor: "#F6F7FB", // color-light-gray in variables
+            marginTop: "1rem"
+        }}>
+            <Select.Root value={selectedOrg} onValueChange={handleOrgChange}>
+                <Select.Trigger className="SelectTrigger">
+                    <div className="SelectValue"
+                        style={{
+                            padding: "0rem 1rem",
+                            display: "flex",
+                            justifyContent: "space-between",
+                            alignItems: "space-between"
+                        }}
+                    >
+                        <div
+                            style={{
+                                display: "flex",
+                                alignItems: "center"
+                            }}
+                        >
+
+                            <Select.Icon className="SelectIconDrop" style={{height:"90%"}}>
+                                <Building2 style={{
+                                    width:"1rem",
+                                    height:"1rem",
+                                }} />
+                            </Select.Icon>
+                            <Select.Value
+                                placeholder={"Placeholder"}
+                            />
+                        </div>
+                        <Select.Icon>
+                            <img src={DropdownIcon} />
+                        </Select.Icon>
+                    </div>
+                </Select.Trigger>
+                <Select.Content position="popper" className="SelectContent">
+                    <Select.ScrollUpButton className="SelectScrollButton"></Select.ScrollUpButton>
+                    <Select.Viewport className="SelectViewport">
+                        {orgList.map((org) => (
+                            <SelectItem value={org.name}>
+                                {org.name}
+                            </SelectItem>
+                        ))}
+                    </Select.Viewport>
+                </Select.Content>
+            </Select.Root>
+            <a
+                role="button"
+                className="main-button recording-button"
+                href={redirectLink}
+                target="_blank"
+            >
+                <span className="main-button-label">
+                    Go to Dashboard
+                </span>
+                <span className="main-button-shortcut">
+                    <ArrowRight/>
+                </span>
+            </a>
+        </div>
+    );
 };
+
+const SelectItem = React.forwardRef(
+    ({ children, className, ...props }, forwardedRef) => {
+        return (
+            <Select.Item className="SelectItem" {...props} ref={forwardedRef}>
+                <Select.ItemText>{children}</Select.ItemText>
+                <Select.ItemIndicator className="SelectItemIndicator">
+                    <img src={CheckWhiteIcon} />
+                </Select.ItemIndicator>
+            </Select.Item>
+        );
+    }
+);
+
 
 export default GoDAMVideos

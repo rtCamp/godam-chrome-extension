@@ -1,3 +1,5 @@
+const ROLES_ALLOWED_TO_UPLOAD = ["owner", "manager", "creator"]
+
 const setOrgList = async () => {
     const { godamToken } = await chrome.storage.local.get(["godamToken"]);
     if (!godamToken) {
@@ -24,9 +26,10 @@ const setOrgList = async () => {
     if(!data && !data.message && !Array.isArray(data.message)){
         throw new Error('Got Unexpected data');
     }else{
-        // @todo: Filter by role. viewer role is not allowed to uplodad
-        await chrome.storage.local.set({orgList:JSON.stringify(data.message)})
-        await chrome.storage.local.set({selectedOrg:data.message[0]["organization_name"]})
+        const filteredOrgList = data.message.filter((org)=> ROLES_ALLOWED_TO_UPLOAD.includes(org.role.toLowerCase()))
+        
+        await chrome.storage.local.set({orgList:JSON.stringify(filteredOrgList)})
+        await chrome.storage.local.set({selectedOrg:filteredOrgList[0]["organization_name"]})
 
     }
     

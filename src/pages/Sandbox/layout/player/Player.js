@@ -172,7 +172,6 @@ const Player = () => {
             }
         );
 
-
         let message = 'An error occurred while saving to GoDAM!';
         if (!uploadResponse.ok) {
             // error message
@@ -213,10 +212,10 @@ const Player = () => {
         if (!isSaving) {
             (async()=>{
 
-            const url = await saveToGoDAM();
-            setIsSaving(true);
+                const url = await saveToGoDAM();
+                setIsSaving(true);
 
-            const currentTab = await chrome.tabs.getCurrent();
+                const currentTab = await chrome.tabs.getCurrent();
                 chrome.tabs.update(currentTab.id, { url });
             })()
         }
