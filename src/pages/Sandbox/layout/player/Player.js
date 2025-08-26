@@ -185,6 +185,10 @@ const Player = () => {
 
         const responseData = await uploadResponse.json();
 
+        if (!responseData?.file_informations?.name){
+            throw new Error(responseData.file_informations.error)
+        }
+
         const videoName = responseData?.file_informations?.name;
         const baseURL = process.env.GODAM_BASE_URL || 'https://app.godam.io';
 
@@ -214,9 +218,11 @@ const Player = () => {
 
                 const url = await saveToGoDAM();
                 setIsSaving(true);
+                if (url){
+                    const currentTab = await chrome.tabs.getCurrent();
+                    chrome.tabs.update(currentTab.id, { url });
+                }
 
-                const currentTab = await chrome.tabs.getCurrent();
-                chrome.tabs.update(currentTab.id, { url });
             })()
         }
     }, [])

@@ -1,6 +1,4 @@
 const signInGoDAM = async () => {
-  try {
-  
     // GoDAM OAuth configuration
     const clientId = process.env.GODAM_OAUTH_CLIENT_ID || 'habg22ul6k';
     
@@ -84,9 +82,6 @@ const signInGoDAM = async () => {
     })
 
     return token;
-  } catch (error) {
-    return null;
-  }
 };
 
 export default signInGoDAM;
