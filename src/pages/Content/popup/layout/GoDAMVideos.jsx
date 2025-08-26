@@ -43,9 +43,6 @@ const GoDAMVideos = () => {
         chrome.storage.local.set({ selectedOrg: value });
     };
 
-    console.log(selectedOrg);
-
-
     return (
         <div className="GoDAMVideos" style={{
             padding: "1rem",

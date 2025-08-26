@@ -21,8 +21,6 @@ const setOrgList = async () => {
 
     const data = await response.json();
 
-    console.log(!data, !data.message, !Array.isArray(data.message));
-
     if(!data && !data.message && !Array.isArray(data.message)){
         throw new Error('Got Unexpected data');
     }else{
