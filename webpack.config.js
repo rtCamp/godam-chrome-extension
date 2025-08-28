@@ -5,7 +5,7 @@ var CopyWebpackPlugin = require("copy-webpack-plugin");
 var HtmlWebpackPlugin = require("html-webpack-plugin");
 var TerserPlugin = require("terser-webpack-plugin");
 var { CleanWebpackPlugin } = require("clean-webpack-plugin");
-var { ASSET_PATH, NODE_ENV, GODAM_BASE_URL, GODAM_OAUTH_CLIENT_ID, GODAM_UPLOAD_URL } = require("./utils/env");
+var { ASSET_PATH, NODE_ENV, GODAM_BASE_URL, GODAM_OAUTH_CLIENT_ID, GODAM_UPLOAD_URL, GODAM_OAUTH_SCOPE } = require("./utils/env");
 
 var alias = {
   "react-dom": "@hot-loader/react-dom",
@@ -145,6 +145,7 @@ var options = {
       GODAM_BASE_URL,
       GODAM_UPLOAD_URL,
       GODAM_OAUTH_CLIENT_ID,
+      GODAM_OAUTH_SCOPE
     }),
     new CopyWebpackPlugin({
       patterns: [

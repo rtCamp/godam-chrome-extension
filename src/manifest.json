@@ -57,8 +57,8 @@
     }
   ],
   "oauth2": {
-    "client_id": "t6aunrb4bv",
-    "scopes": ["all"]
+    "client_id": "ha6ehpppiu",
+    "scopes": ["all openid"]
   },
   "cross_origin_embedder_policy": {
     "value": "require-corp"

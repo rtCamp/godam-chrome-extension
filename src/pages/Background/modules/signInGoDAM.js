@@ -1,6 +1,7 @@
 const signInGoDAM = async () => {
     // GoDAM OAuth configuration
     const clientId = process.env.GODAM_OAUTH_CLIENT_ID || 'habg22ul6k';
+    const scope = process.env.GODAM_OAUTH_SCOPE || 'all openid';
     
     // Get the redirect URL and remove any trailing slashes
     const redirectUrl = chrome.identity.getRedirectURL().replace(/\/$/, '');
@@ -13,8 +14,10 @@ const signInGoDAM = async () => {
     authUrl.searchParams.append('client_id', clientId);
     authUrl.searchParams.append('response_type', 'code');
     authUrl.searchParams.append('redirect_uri', redirectUrl);
-    authUrl.searchParams.append('scope', 'all');
+    authUrl.searchParams.append('scope', scope);
     authUrl.searchParams.append('state', state);
+
+    console.log(authUrl.toString());
 
     const responseUrl = new URL(await chrome.identity.launchWebAuthFlow({
         url: authUrl.toString(),
