@@ -17,8 +17,6 @@ const signInGoDAM = async () => {
     authUrl.searchParams.append('scope', scope);
     authUrl.searchParams.append('state', state);
 
-    console.log(authUrl.toString());
-
     const responseUrl = new URL(await chrome.identity.launchWebAuthFlow({
         url: authUrl.toString(),
         interactive: true
