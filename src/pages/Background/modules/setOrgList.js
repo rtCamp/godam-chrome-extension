@@ -26,11 +26,15 @@ const setOrgList = async () => {
     }else{
         const filteredOrgList = data.message.filter((org)=> ROLES_ALLOWED_TO_UPLOAD.includes(org.role.toLowerCase()))
         
-        await chrome.storage.local.set({orgList:JSON.stringify(filteredOrgList)})
-        const { selectedOrg } = await chrome.storage.local.get(["selectedOrg"])
 
-        if (!selectedOrg){
-            await chrome.storage.local.set({selectedOrg:filteredOrgList[0]["organization_name"]})
+        if (filteredOrgList.length === 0){
+            await chrome.storage.local.remove(["selectedOrg","orgList"])
+        } else {
+            await chrome.storage.local.set({orgList:JSON.stringify(filteredOrgList)})
+            const { selectedOrg } = await chrome.storage.local.get(["selectedOrg"])
+            if (!selectedOrg){
+                await chrome.storage.local.set({selectedOrg:filteredOrgList[0]["organization_name"]})
+            }
         }
 
     }
