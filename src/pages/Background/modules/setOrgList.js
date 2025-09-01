@@ -6,7 +6,9 @@ const setOrgList = async () => {
         throw new Error('Auth token not found');
     }
 
-    const response = await fetch('https://app-godam-preprod.rt.gw/api/method/frappe_organization.api.manage.list_organizations', {
+    const baseURL = process.env.GODAM_BASE_URL || 'https://app.godam.io';    
+
+    const response = await fetch(`${baseURL}/api/method/frappe_organization.api.manage.list_organizations`, {
         method: 'GET',
         headers: {
             'Authorization': `Bearer ${godamToken}`,

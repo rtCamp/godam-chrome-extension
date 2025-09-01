@@ -4,7 +4,7 @@
   "name": "__MSG_extName__",
   "description": "__MSG_extDesc__",
   "default_locale": "en",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "background": {
     "service_worker": "background.bundle.js"
   },
@@ -56,10 +56,6 @@
       "matches": ["<all_urls>"]
     }
   ],
-  "oauth2": {
-    "client_id": "ha6ehpppiu",
-    "scopes": ["all openid"]
-  },
   "cross_origin_embedder_policy": {
     "value": "require-corp"
   },
