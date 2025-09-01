@@ -10,24 +10,17 @@ const Setup = () => {
   const [loaderProgress, setLoaderProgress] = useState(100);
 
   useEffect(() => {
-    // Inject content script
-    const script = document.createElement("script");
-    script.src = chrome.runtime.getURL("contentScript.bundle.js");
-    script.async = true;
-    document.body.appendChild(script);
-
-    // Also inject CSS
-    const style = document.createElement("link");
-    style.rel = "stylesheet";
-    style.type = "text/css";
-    style.href = chrome.runtime.getURL("assets/fonts/fonts.css");
-    document.body.appendChild(style);
-
-    // Return
-    return () => {
-      document.body.removeChild(script);
-      document.body.removeChild(style);
-    };
+    const checkLogin = async () => {
+    
+      // Check if user is logged in to GoDAM
+      const { godamToken } = await chrome.storage.local.get(["godamToken"]);
+    
+      if (godamToken) {
+        // Redirect to playground page if user is logged in
+        window.location.href = chrome.runtime.getURL("playground.html");
+      }
+    }
+    checkLogin();
   }, []);
 
   useEffect(() => {
@@ -64,12 +57,17 @@ const Setup = () => {
           // Get the previous tab ID from storage and navigate back to it
           chrome.storage.local.get(['previousTabId'], (result) => {
             if (result.previousTabId) {
+              console.log(result);
+              
               chrome.tabs.update(result.previousTabId, { active: true });
               // Clear the stored tab ID
               chrome.storage.local.remove('previousTabId');
 
               // Close the current window
               window.close();
+            } else {
+              // If no previous tab ID is found, redirect to the default page
+              window.location.href = chrome.runtime.getURL("playground.html");
             }
           });
         }, 3000);

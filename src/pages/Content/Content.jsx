@@ -8,6 +8,20 @@ import ContentState from "./context/ContentState";
 
 const Content = () => {
 
+  // Check if user is logged in to GoDAM
+  useEffect(() => {
+    const checkLogin = async () => {
+      // Check if user is logged in to GoDAM.
+      const { godamToken } = await chrome.storage.local.get(["godamToken"]);
+
+      if (!godamToken) {
+          // Store the current tab ID before opening login page.
+          window.location.href = chrome.runtime.getURL("login.html");
+      }
+    }
+    checkLogin();
+  }, []);
+
   return (
     <div className="screenity-shadow-dom">
       <ContentState>

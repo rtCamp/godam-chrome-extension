@@ -632,8 +632,10 @@ const SettingsMenu = (props) => {
                 chrome.runtime.sendMessage({ type: "sign-out-godam" });
                 // Close the dropdown
                 props.setOpen(false);
-                // Refresh the page
-                window.location.reload();
+                // Refresh the page, and wait for the sign-out process to complete
+                setTimeout(() => {
+                  window.location.reload();
+                }, 1000);
               }}
             >
               <span style={{ marginRight: "8px" }}>
