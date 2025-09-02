@@ -627,15 +627,17 @@ const SettingsMenu = (props) => {
           {godamToken && (
             <DropdownMenu.Item
               className="DropdownMenuItem"
-              onSelect={(e) => {
+              onSelect={ async (e) => {
                 e.preventDefault();
-                chrome.runtime.sendMessage({ type: "sign-out-godam" });
-                // Close the dropdown
+                
+                // Close the dropdown.
                 props.setOpen(false);
-                // Refresh the page, and wait for the sign-out process to complete
-                setTimeout(() => {
+
+                const result = await chrome.runtime.sendMessage({ type: "sign-out-godam" });
+                
+                if ( result.status && result.status === 'success' ) {
                   window.location.reload();
-                }, 1000);
+                }
               }}
             >
               <span style={{ marginRight: "8px" }}>
