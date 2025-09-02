@@ -1,8 +1,8 @@
+import getGoDAMAuthToken from "./getGoDAMAuthToken";
+
 const setOrgList = async () => {
-    const { godamToken } = await chrome.storage.local.get(["godamToken"]);
-    if (!godamToken) {
-        throw new Error('Auth token not found');
-    }
+
+    const godamToken = await getGoDAMAuthToken();
 
     const baseURL = process.env.GODAM_BASE_URL || 'https://app.godam.io';    
 
@@ -24,7 +24,6 @@ const setOrgList = async () => {
     if(!data && !data.message && !Array.isArray(data.message)){
         throw new Error('Got Unexpected data');
     }else{
-
         if (data.message.length === 0){
             await chrome.storage.local.remove(["selectedOrg","orgList"])
         } else {
@@ -34,7 +33,7 @@ const setOrgList = async () => {
             // If there is an Org is already selected dont override that choice.
             const { selectedOrg } = await chrome.storage.local.get(["selectedOrg"])
             if (!selectedOrg){
-                await chrome.storage.local.set({selectedOrg:filteredOrgList[0]["organization_name"]})
+                await chrome.storage.local.set({selectedOrg:data.message[0]["organization_name"]})
             }
         }
 
