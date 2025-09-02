@@ -57,32 +57,33 @@ const PopupContainer = (props) => {
     const [noticeBtnText, setNoticeBtnText] = useState("");
     const [noticeBtnUrl, setNoticeBtnUrl] = useState("#");
 
+    const updateNotice = async () => {
+
+        const orgList = await chrome.runtime.sendMessage({ type: "get-organisations" })
+
+        if (!orgList || !Array.isArray(orgList) || orgList.length === 0) {
+            // User is connected to no orgs
+            setShowNotice(true);
+            setNoticeMessage("")
+            setNoticeBtnText("Create your own orgainzation")
+            setNoticeBtnUrl(`${baseUrl}/web/billing?tab=Plans&ref=createOrg`)
+
+        } else if (orgList && Array.isArray(orgList) && orgList.filter(({ role }) => role.toLowerCase() !== "viewer").length === 0) {
+            // User is connected to orgs with none without the viewer role
+            setShowNotice(true);
+            setNoticeMessage("You are a viewer in all your Organizations. Only Creators, managers, and owners can record. You can ask your organisation manager to update your role.")
+            setNoticeBtnText("Create your own orgainzation")
+            setNoticeBtnUrl(`${baseUrl}/web/billing?tab=Plans&ref=createOrg`)
+        } else {
+            setShowNotice(false);
+            setNoticeMessage("")
+            setNoticeBtnText("")
+            setNoticeBtnUrl("#")
+        }
+    }
+
     useEffect(() => {
-
-        (async() => {
-            const orgList = await chrome.runtime.sendMessage({type:"get-organisations"})
-
-            if (!orgList || !Array.isArray(orgList) || orgList.length === 0){
-                // User is connected to no orgs
-                setShowNotice(true);
-                setNoticeMessage("")
-                setNoticeBtnText("Create your own orgainzation")
-                setNoticeBtnUrl(`${baseUrl}/web/billing?tab=Plans&ref=createOrg`)
-
-            } else if (orgList && Array.isArray(orgList) && orgList.filter(({role})=>role.toLowerCase() !== "viewer").length === 0){
-                // User is connected to orgs with none without the viewer role
-                setShowNotice(true);
-                setNoticeMessage("You are a viewer in all your Organizations. Only Creators, managers, and owners can record. You can ask your organisation manager to update your role.")
-                setNoticeBtnText("Create your own orgainzation")
-                setNoticeBtnUrl(`${baseUrl}/web/billing?tab=Plans&ref=createOrg`)
-            }else{
-                setShowNotice(false);
-                setNoticeMessage("")
-                setNoticeBtnText("")
-                setNoticeBtnUrl("#")
-            }
-        })()
-
+        updateNotice()
     }, []);
 
     const onValueChange = (tab) => {
@@ -413,13 +414,13 @@ const PopupContainer = (props) => {
                                 <div style={{
                                     padding: "1rem",
                                 }}>
-                                    <h2 style={{ textAlign: "center" }}>
+                                    <p style={{ textAlign: "center" }}>
                                         {noticeMessage}
-                                    </h2>
+                                    </p>
                                     <a
                                         role="button"
                                         className="main-button recording-button"
-                                        href={ noticeBtnUrl}
+                                        href={noticeBtnUrl}
                                         target="_blank"
                                     >
                                         <span className="main-button-label">
