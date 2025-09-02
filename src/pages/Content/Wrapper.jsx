@@ -82,6 +82,24 @@ const Wrapper = () => {
     contentState.permissionsLoaded,
   ]);
 
+    // Check if user is logged in to GoDAM
+  useEffect(() => {
+    const checkLogin = async () => {
+      // Check if user is logged in to GoDAM.
+      const { godamToken } = await chrome.storage.local.get(["godamToken"]);
+
+      if (!godamToken) {
+          // Store the current tab ID before opening login page.
+          window.location.href = chrome.runtime.getURL("login.html");
+      }
+    }
+
+    // Check if user is logged in to GoDAM when show extension is true
+    if (contentState && contentState.showExtension) {
+      checkLogin();
+    }
+  }, [contentState.showExtension]);
+
   return (
     <div ref={parentRef}>
       {contentState.showExtension && (
