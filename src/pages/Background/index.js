@@ -1653,8 +1653,10 @@ const handleSaveToGoDAM = async (sendResponse, request, fallback = false) => {
 
 const handleSignInGoDAM = async (sendResponse) => {
     const signInGoDAM = require('./modules/signInGoDAM').default;
+    const setOrgList = require('./modules/setOrgList').default;
 
     const token = await signInGoDAM();
+    await setOrgList();
 
     if (token) {
         sendResponse({ status: "ok", token: token });
