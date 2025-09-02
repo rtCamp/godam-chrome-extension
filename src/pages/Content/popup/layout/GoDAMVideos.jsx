@@ -79,8 +79,8 @@ const GoDAMVideos = () => {
                 <Select.Content position="popper" className="SelectContent">
                     <Select.ScrollUpButton className="SelectScrollButton"></Select.ScrollUpButton>
                     <Select.Viewport className="SelectViewport">
-                        {orgList.map(({name}) => (
-                            <SelectItem value={name} key={name}>
+                        {orgList.map(({name,role}) => (
+                            <SelectItem value={name} key={name} disabled={role.toLowerCase()==="viewer"}>
                                 {name}
                             </SelectItem>
                         ))}
