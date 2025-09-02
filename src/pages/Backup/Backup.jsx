@@ -142,14 +142,14 @@ const Backup = () => {
 
     let directoryHandle = directoryPicker;
 
-    // Check if the selected directory is the "GoDAM recordings" folder
-    if (directoryPicker.name === "GoDAM Recordings") {
+    // Check if the selected directory is the "Screenity recordings" folder
+    if (directoryPicker.name === "Screenity Recordings") {
       // Use the selected directory directly
       directoryHandle = directoryPicker;
     } else {
-      // If not, create the "GoDAM recordings" folder within it
+      // If not, create the "Screenity recordings" folder within it
       directoryHandle = await directoryPicker.getDirectoryHandle(
-        "GoDAM Recordings",
+        "Screenity Recordings",
         { create: true }
       );
     }
