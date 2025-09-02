@@ -23,19 +23,14 @@ const GoDAMVideos = () => {
     const [selectedOrg, setSelectedOrg] = React.useState('');
 
     useEffect(() => {
-        chrome.storage.local.get(['orgList', 'selectedOrg'], (result) => {
-            if (result.orgList) {
-                try {
-                    const parsedList = JSON.parse(result.orgList);
-                    setOrgList(Array.isArray(parsedList) ? parsedList : []);
-                } catch (e) {
-                    setOrgList([]);
-                }
-            }
-            if (result.selectedOrg) {
-                setSelectedOrg(result.selectedOrg);
-            }
-        });
+        (async()=>{
+            const orgList = await chrome.runtime.sendMessage({type:"get-organisations"})
+            const { selectedOrg } = await chrome.storage.local.get(['selectedOrg'])
+
+            setOrgList(orgList)
+            setSelectedOrg(selectedOrg)
+
+        })()
     }, []);
 
     const handleOrgChange = (value) => {
@@ -84,9 +79,9 @@ const GoDAMVideos = () => {
                 <Select.Content position="popper" className="SelectContent">
                     <Select.ScrollUpButton className="SelectScrollButton"></Select.ScrollUpButton>
                     <Select.Viewport className="SelectViewport">
-                        {orgList.map((org) => (
-                            <SelectItem value={org.name}>
-                                {org.name}
+                        {orgList.map(({name}) => (
+                            <SelectItem value={name} key={name}>
+                                {name}
                             </SelectItem>
                         ))}
                     </Select.Viewport>

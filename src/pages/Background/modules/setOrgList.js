@@ -1,5 +1,3 @@
-const ROLES_ALLOWED_TO_UPLOAD = ["owner", "manager", "creator"]
-
 const setOrgList = async () => {
     const { godamToken } = await chrome.storage.local.get(["godamToken"]);
     if (!godamToken) {
@@ -26,13 +24,14 @@ const setOrgList = async () => {
     if(!data && !data.message && !Array.isArray(data.message)){
         throw new Error('Got Unexpected data');
     }else{
-        const filteredOrgList = data.message.filter((org)=> ROLES_ALLOWED_TO_UPLOAD.includes(org.role.toLowerCase()))
-        
 
-        if (filteredOrgList.length === 0){
+        if (data.message.length === 0){
             await chrome.storage.local.remove(["selectedOrg","orgList"])
         } else {
-            await chrome.storage.local.set({orgList:JSON.stringify(filteredOrgList)})
+            // setOrgList
+            await chrome.storage.local.set({orgList:JSON.stringify(data.message)})
+
+            // If there is an Org is already selected dont override that choice.
             const { selectedOrg } = await chrome.storage.local.get(["selectedOrg"])
             if (!selectedOrg){
                 await chrome.storage.local.set({selectedOrg:filteredOrgList[0]["organization_name"]})

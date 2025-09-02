@@ -1900,6 +1900,10 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         const setOrgs = require('./modules/setOrgList').default;
         setOrgs();
         return true;
+    } else if (request.type === "get-organisations") {
+        const getOrgList = require('./modules/getOrgList').default;
+        getOrgList(sendResponse);
+        return true;
     }
 });
 

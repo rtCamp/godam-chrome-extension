@@ -52,40 +52,36 @@ const PopupContainer = (props) => {
     const videoTabRef = useRef(null);
     const pillRef = useRef(null);
     const [URL, setURL] = useState("https://godam.io/docs/godam-screen-recorder/");
-    const [hasOrgs, setHasOrgs] = useState(false);
-
-    const handleHasOrgs = (orgListObject) => {
-        if (orgListObject && Array.isArray(orgListObject) && orgListObject.length > 0) {
-            setHasOrgs(true)
-        } else {
-            setHasOrgs(false)
-        }
-    }
-
-    const orgListListener = (changedValues,scope) =>{
-            if (scope !== "local") {
-                return;
-            }
-            if (!Object.keys(changedValues).includes("orgList")) {
-                return;
-            }
-            handleHasOrgs(changedValues.orgList && JSON.parse(changedValues.orgList))
-
-    }
+    const [showNotice, setShowNotice] = useState(false);
+    const [noticeMessage, setNoticeMessage] = useState("");
+    const [noticeBtnText, setNoticeBtnText] = useState("");
+    const [noticeBtnUrl, setNoticeBtnUrl] = useState("#");
 
     useEffect(() => {
 
         (async() => {
-            const {orgList} = await chrome.storage.local.get(["orgList"])
-            handleHasOrgs(orgList && JSON.parse(orgList))
+            const orgList = await chrome.runtime.sendMessage({type:"get-organisations"})
+
+            if (!orgList || !Array.isArray(orgList) || orgList.length === 0){
+                // User is connected to no orgs
+                setShowNotice(true);
+                setNoticeMessage("")
+                setNoticeBtnText("Create your own orgainzation")
+                setNoticeBtnUrl(`${baseUrl}/web/billing?tab=Plans&ref=createOrg`)
+
+            } else if (orgList && Array.isArray(orgList) && orgList.filter(({role})=>role.toLowerCase() !== "viewer").length === 0){
+                // User is connected to orgs with none without the viewer role
+                setShowNotice(true);
+                setNoticeMessage("You are a viewer in all your Organizations. Only Creators, managers, and owners can record. You can ask your organisation manager to update your role.")
+                setNoticeBtnText("Create your own orgainzation")
+                setNoticeBtnUrl(`${baseUrl}/web/billing?tab=Plans&ref=createOrg`)
+            }else{
+                setShowNotice(false);
+                setNoticeMessage("")
+                setNoticeBtnText("")
+                setNoticeBtnUrl("#")
+            }
         })()
-
-
-        chrome.storage.onChanged.addListener(orgListListener);
-
-        return () => {
-            chrome.storage.onChanged.removeListener(orgListListener);
-        }
 
     }, []);
 
@@ -363,7 +359,7 @@ const PopupContainer = (props) => {
                             defaultValue="record"
                             onValueChange={onValueChange}
                         >
-                            {hasOrgs ? (
+                            {!showNotice ? (
                                 <>
                                     <Tabs.List
                                         className="TabsList tl"
@@ -418,16 +414,16 @@ const PopupContainer = (props) => {
                                     padding: "1rem",
                                 }}>
                                     <h2 style={{ textAlign: "center" }}>
-                                        Your Account is not linked to any organizations
+                                        {noticeMessage}
                                     </h2>
                                     <a
                                         role="button"
                                         className="main-button recording-button"
-                                        href={`${baseUrl}/web/billing?tab=Plans&ref=createOrg`}
+                                        href={ noticeBtnUrl}
                                         target="_blank"
                                     >
                                         <span className="main-button-label">
-                                            Create Organisation
+                                            {noticeBtnText}
                                         </span>
                                         <span className="main-button-shortcut">
                                             <ArrowRight />
