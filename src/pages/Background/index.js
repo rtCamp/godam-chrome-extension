@@ -1604,7 +1604,7 @@ const handleSignOutGoDAM = async (sendResponse) => {
 
             revokeToken = true;
         } catch (error) {
-            refreshToken = false;
+            revokeToken = false;
             console.error("Error revoking GoDAM token:", error);
         } finally {
             await chrome.storage.local.remove([
