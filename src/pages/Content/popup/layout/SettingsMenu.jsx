@@ -158,6 +158,19 @@ const SettingsMenu = (props) => {
     setHeight(Math.round(window.screen.height * window.devicePixelRatio));
   }, []);
 
+  const handleGoDAMSignOut = async (e) => {
+    e.preventDefault();
+                
+    // Close the dropdown.
+    props.setOpen(false);
+
+    const result = await chrome.runtime.sendMessage({ type: "sign-out-godam" });
+                
+    if ( result.status && result.status === 'success' ) {
+      window.location.reload();
+    }          
+  }
+
   return (
     <DropdownMenu.Root
       open={props.open}
@@ -627,18 +640,7 @@ const SettingsMenu = (props) => {
           {godamToken && (
             <DropdownMenu.Item
               className="DropdownMenuItem"
-              onSelect={ async (e) => {
-                e.preventDefault();
-                
-                // Close the dropdown.
-                props.setOpen(false);
-
-                const result = await chrome.runtime.sendMessage({ type: "sign-out-godam" });
-                
-                if ( result.status && result.status === 'success' ) {
-                  window.location.reload();
-                }
-              }}
+              onSelect={handleGoDAMSignOut}
             >
               <span style={{ marginRight: "8px" }}>
                 {chrome.i18n.getMessage("signOutGoDAMLabel")}

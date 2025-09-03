@@ -9,9 +9,10 @@ const Setup = () => {
   const [loading, setLoading] = useState(false);
   const [loaderProgress, setLoaderProgress] = useState(100);
 
-  useEffect(() => {
-    const checkLogin = async () => {
-    
+  /**
+   * Check if user is logged in to GoDAM, if already logged in redirect to playground
+   */
+  const checkLogin = async () => {
       // Check if user is logged in to GoDAM
       const { godamToken } = await chrome.storage.local.get(["godamToken"]);
     
@@ -19,7 +20,9 @@ const Setup = () => {
         // Redirect to playground page if user is logged in
         window.location.href = chrome.runtime.getURL("playground.html");
       }
-    }
+  }
+
+  useEffect(() => {
     checkLogin();
   }, []);
 
@@ -57,8 +60,6 @@ const Setup = () => {
           // Get the previous tab ID from storage and navigate back to it
           chrome.storage.local.get(['previousTabId'], (result) => {
             if (result.previousTabId) {
-              console.log(result);
-              
               chrome.tabs.update(result.previousTabId, { active: true });
               // Clear the stored tab ID
               chrome.storage.local.remove('previousTabId');

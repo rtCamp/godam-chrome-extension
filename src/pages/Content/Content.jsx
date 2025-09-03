@@ -8,7 +8,6 @@ import ContentState from "./context/ContentState";
 
 const Content = () => {
 
-
   return (
     <div className="screenity-shadow-dom">
       <ContentState>
