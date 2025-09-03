@@ -414,9 +414,14 @@ const PopupContainer = (props) => {
                                 <div style={{
                                     padding: "1rem",
                                 }}>
-                                    <p style={{ textAlign: "center" }}>
-                                        {noticeMessage}
-                                    </p>
+                                    {noticeMessage && (
+                                        <>
+                                            <p style={{ textAlign: "center" }}>
+                                                {noticeMessage}
+                                            </p>
+                                            <h2 style={{ textAlign: "center" }}> OR </h2>
+                                        </>
+                                    )}
                                     <a
                                         role="button"
                                         className="main-button recording-button"
