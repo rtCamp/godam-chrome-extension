@@ -65,14 +65,14 @@ const PopupContainer = (props) => {
             // User is connected to no orgs
             setShowNotice(true);
             setNoticeMessage("")
-            setNoticeBtnText("Create your own orgainzation")
+            setNoticeBtnText("Create your own Organization")
             setNoticeBtnUrl(`${baseUrl}/web/billing?tab=Plans&ref=createOrg`)
 
         } else if (orgList && Array.isArray(orgList) && orgList.filter(({ role }) => role.toLowerCase() !== "viewer").length === 0) {
             // User is connected to orgs with none without the viewer role
             setShowNotice(true);
-            setNoticeMessage("You are a viewer in all your Organizations. Only Creators, managers, and owners can record. You can ask your organisation manager to update your role.")
-            setNoticeBtnText("Create your own orgainzation")
+            setNoticeMessage("You are a viewer in all your Organizations. Only creators, managers, and owners can record. You can ask your organization manager to update your role.")
+            setNoticeBtnText("Create your own Organization")
             setNoticeBtnUrl(`${baseUrl}/web/billing?tab=Plans&ref=createOrg`)
         } else {
             setShowNotice(false);
