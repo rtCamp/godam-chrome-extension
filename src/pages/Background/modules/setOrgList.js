@@ -39,7 +39,7 @@ const setOrgList = async () => {
         return
     }
     // Take the first Non Viewer choice and select it. 
-    const firstNonViewerOrg = data.message.find(org => org.role.toLowerCase !== "viewer");
+    const firstNonViewerOrg = data.message.find(org => org.role.toLowerCase() !== "viewer");
 
     if (firstNonViewerOrg) {
         await chrome.storage.local.set({ selectedOrg: firstNonViewerOrg["organization_name"] });
