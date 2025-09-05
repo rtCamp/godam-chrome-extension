@@ -138,7 +138,7 @@ const SettingsMenu = (props) => {
                 // Download file
                 const a = document.createElement("a");
                 a.href = url;
-                a.download = "screenity-troubleshooting.zip";
+                a.download = "godam-troubleshooting.zip";
                 a.click();
                 window.URL.revokeObjectURL(url);
 
@@ -165,7 +165,6 @@ const SettingsMenu = (props) => {
     props.setOpen(false);
 
     const result = await chrome.runtime.sendMessage({ type: "sign-out-godam" });
-                
     if ( result.status && result.status === 'success' ) {
       window.location.reload();
     }          
