@@ -464,7 +464,6 @@ const stopRecording = async () => {
         "recordingStartTime",
     ]);
     let duration = Date.now() - recordingStartTime;
-    const maxDuration = 7 * 60 * 1000;
 
     if (recordingStartTime === 0) {
         duration = 0;
