@@ -49,7 +49,6 @@
         "region.html",
         "waveform.html",
         "playground.html",
-        "editorfallback.html",
         "download.html",
         "*"
       ],
