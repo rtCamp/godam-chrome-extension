@@ -42,13 +42,6 @@ const startAfterCountdown = async () => {
 const resetActiveTab = async () => {
     let editor_url = "editor.html";
 
-    // Check if Chrome version is 109 or below
-    if (navigator.userAgent.includes("Chrome/")) {
-        const version = parseInt(navigator.userAgent.match(/Chrome\/([0-9]+)/)[1]);
-        if (version <= 109) {
-            editor_url = "editorfallback.html";
-        }
-    }
     const { activeTab } = await chrome.storage.local.get(["activeTab"]);
 
     // Check if activeTab exists
@@ -483,50 +476,26 @@ const stopRecording = async () => {
     });
 
     chrome.storage.local.set({ recordingStartTime: 0 });
-
-    if (duration > maxDuration) {
-        // Close the sandbox tab, open a new one with fallback editor
-        chrome.tabs.create(
-            {
-                url: "editorfallback.html",
-                active: true,
-            },
-            (tab) => {
-                chrome.tabs.onUpdated.addListener(function _(
-                    tabId,
-                    changeInfo,
-                    updatedTab
-                ) {
-                    if (tabId === tab.id && changeInfo.status === "complete") {
-                        chrome.tabs.onUpdated.removeListener(_);
-                        chrome.storage.local.set({ sandboxTab: tab.id });
-                        sendChunks();
-                    }
-                });
-            }
-        );
-    } else {
-        // Close the sandbox tab, open a new one with normal editor
-        chrome.tabs.create(
-            {
-                url: "editor.html",
-                active: true,
-            },
-            (tab) => {
-                chrome.tabs.onUpdated.addListener(function _(
-                    tabId,
-                    changeInfo,
-                    updatedTab
-                ) {
-                    if (tabId === tab.id && changeInfo.status === "complete") {
-                        chrome.tabs.onUpdated.removeListener(_);
-                        chrome.storage.local.set({ sandboxTab: tab.id });
-                        sendChunks();
-                    }
-                });
-            }
-        );
-    }
+    // Close the sandbox tab, open a new one with normal editor
+    chrome.tabs.create(
+      {
+        url: "editor.html",
+        active: true,
+      },
+      (tab) => {
+        chrome.tabs.onUpdated.addListener(function _(
+          tabId,
+          changeInfo,
+          updatedTab
+        ) {
+          if (tabId === tab.id && changeInfo.status === "complete") {
+            chrome.tabs.onUpdated.removeListener(_);
+            chrome.storage.local.set({ sandboxTab: tab.id });
+            sendChunks();
+          }
+        });
+      }
+    );
 
     chrome.action.setIcon({ path: "assets/icon-34.png" });
 
@@ -697,16 +666,6 @@ const handleDismiss = async () => {
 
 const handleRestart = async () => {
     chrome.storage.local.set({ restarting: true });
-    let editor_url = "editor.html";
-
-    // Check if Chrome version is 109 or below
-    if (navigator.userAgent.includes("Chrome/")) {
-        const version = parseInt(navigator.userAgent.match(/Chrome\/([0-9]+)/)[1]);
-        if (version <= 109) {
-            editor_url = "editorfallback.html";
-        }
-    }
-
     resetActiveTabRestart();
 };
 
@@ -1231,15 +1190,7 @@ const getPlatformInfo = (sendResponse) => {
 };
 
 const restoreRecording = async () => {
-    let editor_url = "editorfallback.html";
-
-    // Check if Chrome version is 109 or below
-    if (navigator.userAgent.includes("Chrome/")) {
-        const version = parseInt(navigator.userAgent.match(/Chrome\/([0-9]+)/)[1]);
-        if (version <= 109) {
-            editor_url = "editorfallback.html";
-        }
-    }
+    let editor_url = "editor.html";
 
     let chunks = [];
     await chunksStore.iterate((value, key) => {
