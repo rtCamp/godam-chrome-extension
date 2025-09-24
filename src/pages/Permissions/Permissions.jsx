@@ -28,6 +28,10 @@ const Recorder = () => {
         checkPermissions();
       };
 
+      navigator.mediaDevices.ondevicechange = () => {
+        checkPermissions();
+      }
+      
       // If the permissions are granted, enumerate devices
       if (
         cameraPermission.state === "granted" ||
@@ -66,7 +70,7 @@ const Recorder = () => {
       stream.getTracks().forEach(function (track) {
         track.stop();
       });
-        
+
     } catch (error) {
         console.error("Error ending stream")
         console.error(error)
