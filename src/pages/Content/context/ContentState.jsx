@@ -506,6 +506,17 @@ const ContentState = (props) => {
             micActive: true,
           });
         }
+        else{
+          setContentState((prevContentState) => ({
+            ...prevContentState,
+            defaultAudioInput: "none",
+            micActive: false,
+          }));
+          chrome.storage.local.set({
+            defaultAudioInput: "none",
+            micActive: false,
+          });
+        }
         if (videoInput.length > 0) {
           setContentState((prevContentState) => ({
             ...prevContentState,
@@ -517,6 +528,17 @@ const ContentState = (props) => {
             cameraActive: true,
           });
         }
+        else {
+          setContentState((prevContentState) => ({
+            ...prevContentState,
+            defaultVideoInput: "none",
+            cameraActive: false,
+          }));
+          chrome.storage.local.set({
+            defaultVideoInput: "none",
+            cameraActive: false,
+          });
+        }
         if (audioInput.length > 0 || videoInput.length > 0) {
           setContentState((prevContentState) => ({
             ...prevContentState,
@@ -524,6 +546,15 @@ const ContentState = (props) => {
           }));
           chrome.storage.local.set({
             setDevices: true,
+          });
+        }
+        else{
+          setContentState((prevContentState) => ({
+            ...prevContentState,
+            setDevices: false,
+          }));
+          chrome.storage.local.set({
+            setDevices: false,
           });
         }
       }
