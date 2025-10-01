@@ -37,7 +37,10 @@ const Recorder = () => {
         cameraPermission.state === "granted" ||
         microphonePermission.state === "granted"
       ) {
-        await endStream();
+        await endStream(
+          cameraPermission.state === "granted",
+          microphonePermission.state === "granted"
+        );
         await enumerateDevices(
           cameraPermission.state === "granted",
           microphonePermission.state === "granted"
@@ -60,7 +63,7 @@ const Recorder = () => {
     }
   };
 
-  const endStream = async () =>{
+  const endStream = async (micGranted = true, camGranted = true) => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
         audio: micGranted,
@@ -72,10 +75,10 @@ const Recorder = () => {
       });
 
     } catch (error) {
-        console.error("Error ending stream")
-        console.error(error)
+      console.error("Error ending stream");
+      console.error(error);
     }
-  }
+  };
 
   // Enumerate devices
   const enumerateDevices = async (camGranted = true, micGranted = true) => {
