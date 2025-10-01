@@ -28,12 +28,20 @@ const Recorder = () => {
         checkPermissions();
       };
 
+      navigator.mediaDevices.ondevicechange = () => {
+        checkPermissions();
+      }
+      
       // If the permissions are granted, enumerate devices
       if (
         cameraPermission.state === "granted" ||
         microphonePermission.state === "granted"
       ) {
-        enumerateDevices(
+        await endStream(
+          cameraPermission.state === "granted",
+          microphonePermission.state === "granted"
+        );
+        await enumerateDevices(
           cameraPermission.state === "granted",
           microphonePermission.state === "granted"
         );
@@ -50,17 +58,31 @@ const Recorder = () => {
         // sendResponse({ success: false, error: err.name });
       }
     } catch (err) {
-      enumerateDevices();
+      await endStream();
+      await enumerateDevices();
+    }
+  };
+
+  const endStream = async (micGranted = true, camGranted = true) => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        audio: micGranted,
+        video: camGranted,
+      });
+
+      stream.getTracks().forEach(function (track) {
+        track.stop();
+      });
+
+    } catch (error) {
+      console.error("Error ending stream");
+      console.error(error);
     }
   };
 
   // Enumerate devices
   const enumerateDevices = async (camGranted = true, micGranted = true) => {
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({
-        audio: micGranted,
-        video: camGranted,
-      });
 
       const devicesInfo = await navigator.mediaDevices.enumerateDevices();
 
@@ -122,10 +144,6 @@ const Recorder = () => {
 
       //sendResponse({ success: true, audioinput, audiooutput, videoinput });
 
-      // End the stream
-      stream.getTracks().forEach(function (track) {
-        track.stop();
-      });
     } catch (err) {
       // Post message to parent window
       window.parent.postMessage(
