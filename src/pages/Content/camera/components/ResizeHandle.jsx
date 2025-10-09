@@ -1,13 +1,13 @@
-import React from "react";
+import React from 'react'
 
-import { CameraResizeIcon } from "../../toolbar/components/SVG";
+import { CameraResizeIcon } from '../../toolbar/components/SVG'
 
 const ResizeHandle = ({ position }) => {
-  return (
-    <div className="camera-resize">
-      <CameraResizeIcon />
-    </div>
-  );
-};
+    return (
+        <div className="camera-resize">
+            <CameraResizeIcon />
+        </div>
+    )
+}
 
-export default ResizeHandle;
+export default ResizeHandle

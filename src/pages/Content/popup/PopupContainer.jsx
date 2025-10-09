@@ -4,165 +4,169 @@ import React, {
     useContext,
     useLayoutEffect,
     useRef,
-} from "react";
-import * as Tabs from "@radix-ui/react-tabs";
+} from 'react'
+import * as Tabs from '@radix-ui/react-tabs'
 
 import {
     RecordTabActive,
     RecordTabInactive,
     TempLogo,
     GoDAMIcon,
-} from "../images/popup/images";
+} from '../images/popup/images'
 
-import {
-    ArrowRight
-} from "lucide-react";
+import { ArrowRight } from 'lucide-react'
 
-import { Rnd } from "react-rnd";
+import { Rnd } from 'react-rnd'
 
-import {
-    CloseIconPopup,
-    HelpIconPopup,
-} from "../toolbar/components/SVG";
+import { CloseIconPopup, HelpIconPopup } from '../toolbar/components/SVG'
 
 /* Component import */
-import RecordingTab from "./layout/RecordingTab";
+import RecordingTab from './layout/RecordingTab'
 
 // Layouts
-import SettingsMenu from "./layout/SettingsMenu";
+import SettingsMenu from './layout/SettingsMenu'
 
 // Context
-import { contentStateContext } from "../context/ContentState";
-import GoDAMVideos from "./layout/GoDAMVideos";
+import { contentStateContext } from '../context/ContentState'
+import GoDAMVideos from './layout/GoDAMVideos'
 
 const PopupContainer = (props) => {
-    const baseUrl = process.env.GODAM_BASE_URL || 'https://app.godam.io';
+    const baseUrl = process.env.GODAM_BASE_URL || 'https://app.godam.io'
 
-    const [contentState, setContentState] = useContext(contentStateContext);
-    const contentStateRef = useRef(contentState);
-    const [tab, setTab] = useState("dashboard");
-    const [badge, setBadge] = useState(TempLogo);
-    const DragRef = useRef(null);
-    const PopupRef = useRef(null);
-    const [elastic, setElastic] = React.useState("");
-    const [shake, setShake] = React.useState("");
-    const [dragging, setDragging] = React.useState("");
-    const [open, setOpen] = useState(false);
-    const recordTabRef = useRef(null);
-    const videoTabRef = useRef(null);
-    const pillRef = useRef(null);
-    const [URL, setURL] = useState("https://godam.io/docs/godam-screen-recorder/");
-    const [showNotice, setShowNotice] = useState(false);
-    const [noticeMessage, setNoticeMessage] = useState("");
-    const [noticeBtnText, setNoticeBtnText] = useState("");
-    const [noticeBtnUrl, setNoticeBtnUrl] = useState("#");
+    const [contentState, setContentState] = useContext(contentStateContext)
+    const contentStateRef = useRef(contentState)
+    const [tab, setTab] = useState('dashboard')
+    const [badge, setBadge] = useState(TempLogo)
+    const DragRef = useRef(null)
+    const PopupRef = useRef(null)
+    const [elastic, setElastic] = React.useState('')
+    const [shake, setShake] = React.useState('')
+    const [dragging, setDragging] = React.useState('')
+    const [open, setOpen] = useState(false)
+    const recordTabRef = useRef(null)
+    const videoTabRef = useRef(null)
+    const pillRef = useRef(null)
+    const [URL, setURL] = useState(
+        'https://godam.io/docs/godam-screen-recorder/'
+    )
+    const [showNotice, setShowNotice] = useState(false)
+    const [noticeMessage, setNoticeMessage] = useState('')
+    const [noticeBtnText, setNoticeBtnText] = useState('')
+    const [noticeBtnUrl, setNoticeBtnUrl] = useState('#')
 
     const updateNotice = async () => {
-
-        const orgList = await chrome.runtime.sendMessage({ type: "get-organisations" })
+        const orgList = await chrome.runtime.sendMessage({
+            type: 'get-organisations',
+        })
 
         if (!orgList || !Array.isArray(orgList) || orgList.length === 0) {
             // User is connected to no orgs
-            setShowNotice(true);
-            setNoticeMessage("")
-            setNoticeBtnText("Get Your GoDAM Pro")
+            setShowNotice(true)
+            setNoticeMessage('')
+            setNoticeBtnText('Get Your GoDAM Pro')
             setNoticeBtnUrl(`${baseUrl}/web/billing?tab=Plans&ref=createOrg`)
-
-        } else if (orgList && Array.isArray(orgList) && orgList.filter(({ role }) => role.toLowerCase() !== "viewer").length === 0) {
+        } else if (
+            orgList &&
+            Array.isArray(orgList) &&
+            orgList.filter(({ role }) => role.toLowerCase() !== 'viewer')
+                .length === 0
+        ) {
             // User is connected to orgs with none without the viewer role
-            setShowNotice(true);
-            setNoticeMessage("You are a viewer in all your Organizations. Only creators, managers, and owners can record. You can ask your organization manager to update your role.")
-            setNoticeBtnText("Create your own Organization")
+            setShowNotice(true)
+            setNoticeMessage(
+                'You are a viewer in all your Organizations. Only creators, managers, and owners can record. You can ask your organization manager to update your role.'
+            )
+            setNoticeBtnText('Create your own Organization')
             setNoticeBtnUrl(`${baseUrl}/web/billing?tab=Plans&ref=createOrg`)
         } else {
-            setShowNotice(false);
-            setNoticeMessage("")
-            setNoticeBtnText("")
-            setNoticeBtnUrl("#")
+            setShowNotice(false)
+            setNoticeMessage('')
+            setNoticeBtnText('')
+            setNoticeBtnUrl('#')
         }
     }
 
     useEffect(() => {
         updateNotice()
-    }, []);
+    }, [])
 
     const onValueChange = (tab) => {
-        setTab(tab);
-        if (tab === "record") {
-            setBadge(TempLogo);
+        setTab(tab)
+        if (tab === 'record') {
+            setBadge(TempLogo)
         } else {
-            setBadge(TempLogo);
+            setBadge(TempLogo)
         }
         setContentState((prevContentState) => ({
             ...prevContentState,
             bigTab: tab,
-        }));
-    };
+        }))
+    }
 
     useEffect(() => {
-        setTab(contentState.bigTab);
-    }, []);
+        setTab(contentState.bigTab)
+    }, [])
 
     useEffect(() => {
-        if (!recordTabRef.current) return;
-        if (!videoTabRef.current) return;
-        if (!pillRef.current) return;
+        if (!recordTabRef.current) return
+        if (!videoTabRef.current) return
+        if (!pillRef.current) return
 
-        if (tab === "record") {
-            pillRef.current.style.left = recordTabRef.current.offsetLeft + "px";
+        if (tab === 'record') {
+            pillRef.current.style.left = recordTabRef.current.offsetLeft + 'px'
             pillRef.current.style.width =
-                recordTabRef.current.getBoundingClientRect().width + "px";
+                recordTabRef.current.getBoundingClientRect().width + 'px'
         } else {
-            pillRef.current.style.left = videoTabRef.current.offsetLeft + "px";
+            pillRef.current.style.left = videoTabRef.current.offsetLeft + 'px'
 
             pillRef.current.style.width =
-                videoTabRef.current.getBoundingClientRect().width + "px";
+                videoTabRef.current.getBoundingClientRect().width + 'px'
         }
-    }, [tab, recordTabRef.current, videoTabRef.current, pillRef.current]);
+    }, [tab, recordTabRef.current, videoTabRef.current, pillRef.current])
 
     useEffect(() => {
-        contentStateRef.current = contentState;
-    }, [contentState]);
+        contentStateRef.current = contentState
+    }, [contentState])
 
     useLayoutEffect(() => {
         function setPopupPosition(e) {
-            let xpos = DragRef.current.getDraggablePosition().x;
-            let ypos = DragRef.current.getDraggablePosition().y;
+            let xpos = DragRef.current.getDraggablePosition().x
+            let ypos = DragRef.current.getDraggablePosition().y
 
             // Width and height of popup
-            const width = PopupRef.current.getBoundingClientRect().width;
-            const height = PopupRef.current.getBoundingClientRect().height;
+            const width = PopupRef.current.getBoundingClientRect().width
+            const height = PopupRef.current.getBoundingClientRect().height
 
             // Keep popup positioned relative to the bottom and right of the screen, proportionally
             if (xpos > window.innerWidth + 10) {
-                xpos = window.innerWidth + 10;
+                xpos = window.innerWidth + 10
             }
             if (ypos + height + 40 > window.innerHeight) {
-                ypos = window.innerHeight - height - 40;
+                ypos = window.innerHeight - height - 40
             }
 
             // Check if attached to right or bottom, if so, keep it there
             if (contentStateRef.current.popupPosition.fixed) {
                 if (xpos < window.innerWidth) {
-                    xpos = window.innerWidth + 10;
+                    xpos = window.innerWidth + 10
                 }
             }
 
-            DragRef.current.updatePosition({ x: xpos, y: ypos });
+            DragRef.current.updatePosition({ x: xpos, y: ypos })
         }
-        window.addEventListener("resize", setPopupPosition);
-        setPopupPosition();
-        return () => window.removeEventListener("resize", setPopupPosition);
-    }, []);
+        window.addEventListener('resize', setPopupPosition)
+        setPopupPosition()
+        return () => window.removeEventListener('resize', setPopupPosition)
+    }, [])
 
     const handleDragStart = (e, d) => {
-        setDragging("ToolbarDragging");
-    };
+        setDragging('ToolbarDragging')
+    }
 
     const handleDrag = (e, d) => {
         // Width and height
-        const width = PopupRef.current.getBoundingClientRect().width;
-        const height = PopupRef.current.getBoundingClientRect().height;
+        const width = PopupRef.current.getBoundingClientRect().width
+        const height = PopupRef.current.getBoundingClientRect().height
 
         if (
             d.x - 40 < width ||
@@ -170,47 +174,47 @@ const PopupContainer = (props) => {
             d.y < 0 ||
             d.y + height + 40 > window.innerHeight
         ) {
-            setShake("ToolbarShake");
+            setShake('ToolbarShake')
         } else {
-            setShake("");
+            setShake('')
         }
-    };
+    }
 
     const handleDrop = (e, d) => {
-        let anim = "ToolbarElastic";
+        let anim = 'ToolbarElastic'
         if (e === null) {
-            anim = "";
+            anim = ''
         }
-        setShake("");
-        setDragging("");
-        let xpos = d.x;
-        let ypos = d.y;
+        setShake('')
+        setDragging('')
+        let xpos = d.x
+        let ypos = d.y
 
         // Width and height
-        const width = PopupRef.current.getBoundingClientRect().width;
-        const height = PopupRef.current.getBoundingClientRect().height;
+        const width = PopupRef.current.getBoundingClientRect().width
+        const height = PopupRef.current.getBoundingClientRect().height
 
         // Check if popup is off screen
         if (d.x - 40 < width) {
-            setElastic(anim);
-            xpos = width + 40;
+            setElastic(anim)
+            xpos = width + 40
         } else if (d.x + 10 > window.innerWidth) {
-            setElastic(anim);
-            xpos = window.innerWidth + 10;
+            setElastic(anim)
+            xpos = window.innerWidth + 10
         }
 
         if (d.y < 0) {
-            setElastic(anim);
-            ypos = 0;
+            setElastic(anim)
+            ypos = 0
         } else if (d.y + height + 40 > window.innerHeight) {
-            setElastic(anim);
-            ypos = window.innerHeight - height - 40;
+            setElastic(anim)
+            ypos = window.innerHeight - height - 40
         }
-        DragRef.current.updatePosition({ x: xpos, y: ypos });
+        DragRef.current.updatePosition({ x: xpos, y: ypos })
 
         setTimeout(() => {
-            setElastic("");
-        }, 250);
+            setElastic('')
+        }, 250)
 
         setContentState((prevContentState) => ({
             ...prevContentState,
@@ -223,22 +227,22 @@ const PopupContainer = (props) => {
                 top: ypos < window.innerHeight / 2 ? true : false,
                 bottom: ypos < window.innerHeight / 2 ? false : true,
             },
-        }));
+        }))
 
         // Is it on the left or right, also top or bottom
-        let left = xpos < window.innerWidth / 2 ? true : false;
-        let right = xpos < window.innerWidth / 2 ? false : true;
-        let top = ypos < window.innerHeight / 2 ? true : false;
-        let bottom = ypos < window.innerHeight / 2 ? false : true;
-        let offsetX = xpos;
-        let offsetY = ypos;
-        let fixed = d.x + 9 > window.innerWidth ? true : false;
+        let left = xpos < window.innerWidth / 2 ? true : false
+        let right = xpos < window.innerWidth / 2 ? false : true
+        let top = ypos < window.innerHeight / 2 ? true : false
+        let bottom = ypos < window.innerHeight / 2 ? false : true
+        let offsetX = xpos
+        let offsetY = ypos
+        let fixed = d.x + 9 > window.innerWidth ? true : false
 
         if (right) {
-            offsetX = window.innerWidth - xpos;
+            offsetX = window.innerWidth - xpos
         }
         if (bottom) {
-            offsetY = window.innerHeight - ypos;
+            offsetY = window.innerHeight - ypos
         }
 
         setContentState((prevContentState) => ({
@@ -253,7 +257,7 @@ const PopupContainer = (props) => {
                 bottom: bottom,
                 fixed: fixed,
             },
-        }));
+        }))
 
         chrome.storage.local.set({
             popupPosition: {
@@ -265,49 +269,54 @@ const PopupContainer = (props) => {
                 bottom: bottom,
                 fixed: fixed,
             },
-        });
-    };
+        })
+    }
 
     useEffect(() => {
-
-        let x = contentState.popupPosition.offsetX;
-        let y = contentState.popupPosition.offsetY;
+        let x = contentState.popupPosition.offsetX
+        let y = contentState.popupPosition.offsetY
 
         if (contentState.popupPosition.bottom) {
-            y = window.innerHeight - contentState.popupPosition.offsetY;
+            y = window.innerHeight - contentState.popupPosition.offsetY
         }
 
         if (contentState.popupPosition.right) {
-            x = window.innerWidth - contentState.popupPosition.offsetX;
+            x = window.innerWidth - contentState.popupPosition.offsetX
         }
 
-        DragRef.current.updatePosition({ x: x, y: y });
+        DragRef.current.updatePosition({ x: x, y: y })
 
-        handleDrop(null, { x: x, y: y });
+        handleDrop(null, { x: x, y: y })
 
-        chrome.runtime.sendMessage({ type: "set-organizations" })
-    }, []);
+        chrome.runtime.sendMessage({ type: 'set-organizations' })
+    }, [])
 
     return (
         <div
             style={{
-                position: "fixed",
+                position: 'fixed',
                 top: 0,
                 left: 0,
                 right: 0,
                 bottom: 0,
-                width: "100vw",
-                height: "100vh",
+                width: '100vw',
+                height: '100vh',
             }}
         >
-            <div className={"ToolbarBounds" + " " + shake}></div>
+            <div className={'ToolbarBounds' + ' ' + shake}></div>
             <Rnd
                 default={{
                     x: contentState.popupPosition.offsetX,
                     y: contentState.popupPosition.offsetY,
                 }}
                 className={
-                    "react-draggable" + " " + elastic + " " + shake + " " + dragging
+                    'react-draggable' +
+                    ' ' +
+                    elastic +
+                    ' ' +
+                    shake +
+                    ' ' +
+                    dragging
                 }
                 enableResizing={false}
                 dragHandleClassName="drag-area"
@@ -318,11 +327,17 @@ const PopupContainer = (props) => {
             >
                 <div className="popup-container" ref={PopupRef}>
                     <div
-                        className={open ? "popup-drag-head" : "popup-drag-head drag-area"}
+                        className={
+                            open
+                                ? 'popup-drag-head'
+                                : 'popup-drag-head drag-area'
+                        }
                     ></div>
                     <div
                         className={
-                            open ? "popup-controls open" : "popup-controls drag-area"
+                            open
+                                ? 'popup-controls open'
+                                : 'popup-controls drag-area'
                         }
                     >
                         <SettingsMenu
@@ -331,9 +346,9 @@ const PopupContainer = (props) => {
                             setOpen={setOpen}
                         />
                         <div
-                            style={{ marginBottom: "-4px", cursor: "pointer" }}
+                            style={{ marginBottom: '-4px', cursor: 'pointer' }}
                             onClick={() => {
-                                window.open(URL, "_blank");
+                                window.open(URL, '_blank')
                             }}
                         >
                             <HelpIconPopup />
@@ -344,7 +359,7 @@ const PopupContainer = (props) => {
                                 setContentState((prevContentState) => ({
                                     ...prevContentState,
                                     showExtension: false,
-                                }));
+                                }))
                             }}
                         >
                             <CloseIconPopup />
@@ -368,7 +383,10 @@ const PopupContainer = (props) => {
                                         aria-label="Manage your account"
                                         tabIndex={0}
                                     >
-                                        <div className="pill-anim" ref={pillRef}></div>
+                                        <div
+                                            className="pill-anim"
+                                            ref={pillRef}
+                                        ></div>
                                         <Tabs.Trigger
                                             className="TabsTrigger tl"
                                             value="record"
@@ -378,11 +396,15 @@ const PopupContainer = (props) => {
                                             <div className="TabsTriggerIcon">
                                                 <img
                                                     src={
-                                                        tab === "record" ? RecordTabActive : RecordTabInactive
+                                                        tab === 'record'
+                                                            ? RecordTabActive
+                                                            : RecordTabInactive
                                                     }
                                                 />
                                             </div>
-                                            {chrome.i18n.getMessage("recordTab")}
+                                            {chrome.i18n.getMessage(
+                                                'recordTab'
+                                            )}
                                         </Tabs.Trigger>
                                         <Tabs.Trigger
                                             className="TabsTrigger tl"
@@ -392,9 +414,15 @@ const PopupContainer = (props) => {
                                         >
                                             <div className="TabsTriggerIcon">
                                                 <img
-                                                    style={{ width: "16px", height: "16px", 'position': 'relative', 'bottom': '3px', 'marginRight': '-4px' }}
+                                                    style={{
+                                                        width: '16px',
+                                                        height: '16px',
+                                                        position: 'relative',
+                                                        bottom: '3px',
+                                                        marginRight: '-4px',
+                                                    }}
                                                     src={
-                                                        tab === "dashboard"
+                                                        tab === 'dashboard'
                                                             ? GoDAMIcon
                                                             : GoDAMIcon
                                                     }
@@ -403,23 +431,36 @@ const PopupContainer = (props) => {
                                             GoDAM
                                         </Tabs.Trigger>
                                     </Tabs.List>
-                                    <Tabs.Content className="TabsContent tl" value="record">
-                                        <RecordingTab shadowRef={props.shadowRef} />
+                                    <Tabs.Content
+                                        className="TabsContent tl"
+                                        value="record"
+                                    >
+                                        <RecordingTab
+                                            shadowRef={props.shadowRef}
+                                        />
                                     </Tabs.Content>
-                                    <Tabs.Content className="TabsContent tl" value="dashboard">
+                                    <Tabs.Content
+                                        className="TabsContent tl"
+                                        value="dashboard"
+                                    >
                                         <GoDAMVideos />
                                     </Tabs.Content>
                                 </>
                             ) : (
-                                <div style={{
-                                    padding: "1rem",
-                                }}>
+                                <div
+                                    style={{
+                                        padding: '1rem',
+                                    }}
+                                >
                                     {noticeMessage && (
                                         <>
-                                            <p style={{ textAlign: "center" }}>
+                                            <p style={{ textAlign: 'center' }}>
                                                 {noticeMessage}
                                             </p>
-                                            <h2 style={{ textAlign: "center" }}> OR </h2>
+                                            <h2 style={{ textAlign: 'center' }}>
+                                                {' '}
+                                                OR{' '}
+                                            </h2>
                                         </>
                                     )}
                                     <a
@@ -443,19 +484,19 @@ const PopupContainer = (props) => {
                         <div
                             className="HelpSection"
                             onClick={() => {
-                                window.open(URL, "_blank");
+                                window.open(URL, '_blank')
                             }}
                         >
                             <span className="HelpIcon">
                                 <HelpIconPopup />
                             </span>
-                            {chrome.i18n.getMessage("helpPopup")}
+                            {chrome.i18n.getMessage('helpPopup')}
                         </div>
                     )}
                 </div>
             </Rnd>
         </div>
-    );
-};
+    )
+}
 
-export default PopupContainer;
+export default PopupContainer

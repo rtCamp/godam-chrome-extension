@@ -8,7 +8,8 @@
     "start": "node utils/server.js",
     "dev": "concurrently \"npm run start\" \"npm run build:watch\"",
     "prettier": "prettier --write '**/*.{js,jsx,ts,tsx,json,css,scss,md}'",
-    "postinstall": "patch-package"
+    "postinstall": "patch-package",
+    "prepare": "husky"
   },
   "dependencies": {
     "@hot-loader/react-dom": "^17.0.2",
@@ -71,7 +72,8 @@
     "fs-extra": "^10.1.0",
     "html-loader": "^3.1.0",
     "html-webpack-plugin": "^5.5.0",
-    "prettier": "^2.7.1",
+    "husky": "^9.1.7",
+    "prettier": "2.8.8",
     "raw-loader": "^4.0.2",
     "sass": "^1.53.0",
     "sass-loader": "^13.2.0",

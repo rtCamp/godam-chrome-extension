@@ -1,28 +1,37 @@
 @mixin font($font-family, $font-file) {
-  @font-face {
-    font-family: $font-family;
-         src: url($font-file+'.ttf') format('truetype');
-    font-weight: normal;
-    font-style: normal;
-  }
+    @font-face {
+        font-family: $font-family;
+        src: url($font-file + '.ttf') format('truetype');
+        font-weight: normal;
+        font-style: normal;
+    }
 }
 
-@include font('Satoshi-Light', 'chrome-extension://__MSG_@@extension_id__/assets/fonts/Satoshi-Light');
-@include font('Satoshi-Medium', 'chrome-extension://__MSG_@@extension_id__/assets/fonts/Satoshi-Medium');
-@include font('Satoshi-Bold', 'chrome-extension://__MSG_@@extension_id__/assets/fonts/Satoshi-Bold');
+@include font(
+    'Satoshi-Light',
+    'chrome-extension://__MSG_@@extension_id__/assets/fonts/Satoshi-Light'
+);
+@include font(
+    'Satoshi-Medium',
+    'chrome-extension://__MSG_@@extension_id__/assets/fonts/Satoshi-Medium'
+);
+@include font(
+    'Satoshi-Bold',
+    'chrome-extension://__MSG_@@extension_id__/assets/fonts/Satoshi-Bold'
+);
 
 /* Colors */
-$color-background: #FFF;
-$color-light-grey: #F6F7FB;
+$color-background: #fff;
+$color-light-grey: #f6f7fb;
 $color-primary: #ab3a6c;
-$color-border: #E8E8E8;
-$color-text-contrast: #FFF;
-$color-text-primary: #29292F;
-$color-text-secondary: #6E7684;
-$color-red: #D2234D;
-$color-red-light: #FAF0F4; 
+$color-border: #e8e8e8;
+$color-text-contrast: #fff;
+$color-text-primary: #29292f;
+$color-text-secondary: #6e7684;
+$color-red: #d2234d;
+$color-red-light: #faf0f4;
 $color-primary-transparent: rgba(48, 128, 248, 0.1);
-$color-icon: #9797A4;
+$color-icon: #9797a4;
 
 /* Font */
 //$font-size-normal: 0.875rem;
@@ -45,9 +54,9 @@ $spacing-04: 0.75rem;
 $spacing-05: 1rem;
 */
 $spacing-01: 2px;
-$spacing-02: 4px; 
+$spacing-02: 4px;
 $spacing-03: 8px;
-$spacing-04: 12px; 
+$spacing-04: 12px;
 $spacing-05: 16px;
 
 /* Container */
@@ -57,7 +66,7 @@ $container-shadow: drop-shadow(0px 4px 100px rgba(0, 0, 0, 0.35));
 $container-shadow-focus: 2px 2px 10px rgba(0, 0, 0, 0.1);
 
 /* Gradients */
-$gradient-primary: linear-gradient(83.85deg,#ab3a6c -9.3%,#e6533a 120.31%);
+$gradient-primary: linear-gradient(83.85deg, #ab3a6c -9.3%, #e6533a 120.31%);
 $gradient-shadow-primary: drop-shadow(0px 4px 20px rgba(247, 52, 127, 0.25));
 
 /* Events */

@@ -1,102 +1,105 @@
-@use "../global/variables.scss" as *;
+@use '../global/variables.scss' as *;
 
 .content {
-  display: flex;
-  flex-direction: row;
-  position: absolute;
-  top: 80px;
-  width: 100%;
-  height: calc(100% - 80px);
-  box-sizing: border-box;
-  left: 0px;
+    display: flex;
+    flex-direction: row;
+    position: absolute;
+    top: 80px;
+    width: 100%;
+    height: calc(100% - 80px);
+    box-sizing: border-box;
+    left: 0px;
 }
 
 .contentWrapper {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
 .leftPanel {
-  flex: 1;
+    flex: 1;
 }
 
 .player {
-  position: absolute;
+    position: absolute;
 }
 
 .saving {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-top: 32px;
-  margin-bottom: -60px;
-  gap: 24px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 32px;
+    margin-bottom: -60px;
+    gap: 24px;
 
-  @media screen and (max-width: 900px) {
-    margin-bottom: 0;
-  }
+    @media screen and (max-width: 900px) {
+        margin-bottom: 0;
+    }
 
-  .savingSpinner {
-    width: 20px;
-    height: 20px;
-    border: 5px solid $color-text-primary;
-    border-top: 5px solid $color-primary;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-  }
+    .savingSpinner {
+        width: 20px;
+        height: 20px;
+        border: 5px solid $color-text-primary;
+        border-top: 5px solid $color-primary;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+    }
 
-  .savingText {
-    font-size: 1.2rem;
-    font-weight: 600;
-    color: $color-text-primary;
-  }
+    .savingText {
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: $color-text-primary;
+    }
 }
 
 .error {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  margin-top: 32px;
-  margin-bottom: -60px;
-  font-size: 16px;
-  padding: 0 16px;
-  text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-top: 32px;
+    margin-bottom: -60px;
+    font-size: 16px;
+    padding: 0 16px;
+    text-align: center;
 
-  @media screen and (max-width: 900px) {
-    margin-bottom: 0;
-  }
+    @media screen and (max-width: 900px) {
+        margin-bottom: 0;
+    }
 
-  svg {
-    color: #d6293d;
-    width: 24px;
-    height: 24px;
-    fill: #d6293d;
-  }
+    svg {
+        color: #d6293d;
+        width: 24px;
+        height: 24px;
+        fill: #d6293d;
+    }
 
-  .errorText {
-    font-size: 1.2rem;
-    font-weight: 600;
-    color: $color-text-primary;
-  }
+    .errorText {
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: $color-text-primary;
+    }
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
 }
 
-
 @media (max-width: 900px) {
-  .content {
-    display: block !important;
-    height: auto !important;
-  }
-  .player {
-    position: relative;
-  }
+    .content {
+        display: block !important;
+        height: auto !important;
+    }
+    .player {
+        position: relative;
+    }
 }

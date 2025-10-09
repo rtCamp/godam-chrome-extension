@@ -1,19 +1,18 @@
-import React, { useState, useContext, useEffect, useRef } from "react";
+import React, { useState, useContext, useEffect, useRef } from 'react'
 
 // Components
-import Wrapper from "./Wrapper";
+import Wrapper from './Wrapper'
 
 // Context
-import ContentState from "./context/ContentState";
+import ContentState from './context/ContentState'
 
 const Content = () => {
-
-  return (
-    <div className="screenity-shadow-dom">
-      <ContentState>
-        <Wrapper />
-      </ContentState>
-      <style type="text/css">{`
+    return (
+        <div className="screenity-shadow-dom">
+            <ContentState>
+                <Wrapper />
+            </ContentState>
+            <style type="text/css">{`
 			#screenity-ui, #screenity-ui div {
 				background-color: unset;
 				padding: unset;
@@ -262,8 +261,8 @@ const Content = () => {
 }
 
 `}</style>
-    </div>
-  );
-};
+        </div>
+    )
+}
 
-export default Content;
+export default Content

@@ -1,104 +1,101 @@
 {
-  "manifest_version": 3,
-  "name": "__MSG_extName__",
-  "description": "__MSG_extDesc__",
-  "key":"MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA6ug7k8VXtIZgMEyZUPwsn1ubPUnwkIpcQy9bqh7qsCMHLD+p+exSPM0dxIZrV1j/DzhLCMwh5I5K6STycyL5eNficKK7LQeB/IzGbxRCGbDcdmY+nCNLyilwuEDOJ1zCFMKwZ3X2gX1++vfWi64XGAcBi+aM//sREyIaeGsjsIwxwOUrY1eOaiAPQQJw9O7tQ9/zO4D7YOUC00GVasrLysEuJGMwRuj5tL7Rh5gH9o6uEXvR0F95kDPVbOJykjBuNua1Cv7V7sfTw0TXBgOlCpiDX1/m3o63xLmUGGWUWpKmFSFzVSoWTr1xgOm6EMRO9amSQZj7CZicfmVqSo/YQwIDAQAB",
-  "default_locale": "en",
-  "version": "1.1.2",
-  "background": {
-    "service_worker": "background.bundle.js"
-  },
-  "action": {
-    "default_icon": "assets/img/icon-32.png"
-  },
-  "icons": {
-    "16": "assets/img/icon-16.png",
-    "32": "assets/img/icon-32.png",
-    "48": "assets/img/icon-48.png",
-    "128": "assets/img/icon-128.png"
-  },
-  "host_permissions": [
-    "https://app.godam.io/*",
-    "https://app-godam.rt.gw/*"
-  ],
-  "content_scripts": [
-    {
-      "matches": ["<all_urls>"],
-      "js": ["contentScript.bundle.js"],
-      "css": ["assets/fonts/fonts.css"]
-    }
-  ],
-  "web_accessible_resources": [
-    {
-      "resources": [
-        "content.styles.css",
-        "blank.mp4",
-        "playground.html",
-        "login.html",
-        "editor.html",
-        "assets/*",
-        "setup.html",
-        "worker.js",
-        "vendor/*",
-        "recorder.html",
-        "recorderoffscreen.html",
-        "sandbox.html",
-        "wrapper.html",
-        "camera.html",
-        "permissions.html",
-        "region.html",
-        "waveform.html",
-        "playground.html",
-        "editorfallback.html",
-        "download.html",
-        "*"
-      ],
-      "matches": ["<all_urls>"]
-    }
-  ],
-  "cross_origin_embedder_policy": {
-    "value": "require-corp"
-  },
-  "cross_origin_opener_policy": {
-    "value": "same-origin"
-  },
-  "content_security_policy": {
-    "sandbox": "sandbox allow-scripts allow-modals allow-popups; script-src 'self' 'unsafe-inline' 'unsafe-eval' blob:; object-src 'self';worker-src 'self' blob: ;",
-    "extension_pages": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self'; media-src 'self' data: blob: *;"
-  },
-  "sandbox": {
-    "pages": ["editor.html"]
-  },
-  "commands": {
-    "start-recording": {
-      "suggested_key": {
-        "default": "Alt+Shift+G"
-      },
-      "description": "Start recording"
+    "manifest_version": 3,
+    "name": "__MSG_extName__",
+    "description": "__MSG_extDesc__",
+    "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA6ug7k8VXtIZgMEyZUPwsn1ubPUnwkIpcQy9bqh7qsCMHLD+p+exSPM0dxIZrV1j/DzhLCMwh5I5K6STycyL5eNficKK7LQeB/IzGbxRCGbDcdmY+nCNLyilwuEDOJ1zCFMKwZ3X2gX1++vfWi64XGAcBi+aM//sREyIaeGsjsIwxwOUrY1eOaiAPQQJw9O7tQ9/zO4D7YOUC00GVasrLysEuJGMwRuj5tL7Rh5gH9o6uEXvR0F95kDPVbOJykjBuNua1Cv7V7sfTw0TXBgOlCpiDX1/m3o63xLmUGGWUWpKmFSFzVSoWTr1xgOm6EMRO9amSQZj7CZicfmVqSo/YQwIDAQAB",
+    "default_locale": "en",
+    "version": "1.1.2",
+    "background": {
+        "service_worker": "background.bundle.js"
     },
-    "cancel-recording": {
-      "suggested_key": {
-        "default": "Alt+Shift+X"
-      },
-      "description": "Cancel recording"
+    "action": {
+        "default_icon": "assets/img/icon-32.png"
     },
-    "pause-recording": {
-      "suggested_key": {
-        "default": "Alt+Shift+M"
-      },
-      "description": "Pause/Resume recording"
-    }
-  },
-  "permissions": [
-    "identity",
-    "activeTab",
-    "storage",
-    "unlimitedStorage",
-    "downloads",
-    "tabs",
-    "tabCapture",
-    "scripting",
-    "cookies"
-  ],
-  "optional_permissions": ["offscreen", "desktopCapture", "alarms"]
+    "icons": {
+        "16": "assets/img/icon-16.png",
+        "32": "assets/img/icon-32.png",
+        "48": "assets/img/icon-48.png",
+        "128": "assets/img/icon-128.png"
+    },
+    "host_permissions": ["https://app.godam.io/*", "https://app-godam.rt.gw/*"],
+    "content_scripts": [
+        {
+            "matches": ["<all_urls>"],
+            "js": ["contentScript.bundle.js"],
+            "css": ["assets/fonts/fonts.css"]
+        }
+    ],
+    "web_accessible_resources": [
+        {
+            "resources": [
+                "content.styles.css",
+                "blank.mp4",
+                "playground.html",
+                "login.html",
+                "editor.html",
+                "assets/*",
+                "setup.html",
+                "worker.js",
+                "vendor/*",
+                "recorder.html",
+                "recorderoffscreen.html",
+                "sandbox.html",
+                "wrapper.html",
+                "camera.html",
+                "permissions.html",
+                "region.html",
+                "waveform.html",
+                "playground.html",
+                "editorfallback.html",
+                "download.html",
+                "*"
+            ],
+            "matches": ["<all_urls>"]
+        }
+    ],
+    "cross_origin_embedder_policy": {
+        "value": "require-corp"
+    },
+    "cross_origin_opener_policy": {
+        "value": "same-origin"
+    },
+    "content_security_policy": {
+        "sandbox": "sandbox allow-scripts allow-modals allow-popups; script-src 'self' 'unsafe-inline' 'unsafe-eval' blob:; object-src 'self';worker-src 'self' blob: ;",
+        "extension_pages": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self'; media-src 'self' data: blob: *;"
+    },
+    "sandbox": {
+        "pages": ["editor.html"]
+    },
+    "commands": {
+        "start-recording": {
+            "suggested_key": {
+                "default": "Alt+Shift+G"
+            },
+            "description": "Start recording"
+        },
+        "cancel-recording": {
+            "suggested_key": {
+                "default": "Alt+Shift+X"
+            },
+            "description": "Cancel recording"
+        },
+        "pause-recording": {
+            "suggested_key": {
+                "default": "Alt+Shift+M"
+            },
+            "description": "Pause/Resume recording"
+        }
+    },
+    "permissions": [
+        "identity",
+        "activeTab",
+        "storage",
+        "unlimitedStorage",
+        "downloads",
+        "tabs",
+        "tabCapture",
+        "scripting",
+        "cookies"
+    ],
+    "optional_permissions": ["offscreen", "desktopCapture", "alarms"]
 }

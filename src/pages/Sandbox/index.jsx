@@ -1,16 +1,16 @@
-import React from "react";
-import { render } from "react-dom";
+import React from 'react'
+import { render } from 'react-dom'
 
-import Sandbox from "./Sandbox";
+import Sandbox from './Sandbox'
 
-import ContentState from "./context/ContentState";
+import ContentState from './context/ContentState'
 
 // Render at the end of the body of any website
 render(
-  <ContentState>
-    <Sandbox />
-  </ContentState>,
-  window.document.querySelector("#app-container")
-);
+    <ContentState>
+        <Sandbox />
+    </ContentState>,
+    window.document.querySelector('#app-container')
+)
 
-if (module.hot) module.hot.accept();
+if (module.hot) module.hot.accept()
