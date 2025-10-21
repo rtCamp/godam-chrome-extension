@@ -1052,5 +1052,21 @@
   "permissionsModalReview": {
     "message": "Review permissions",
     "description": "Review permissions button"
+  },
+  "basedOnScreenity": {
+    "message": "Based on __LINK__ (GPLv3).",
+    "description": "Acknowledgement with link to original project and license"
+  },
+  "aboutGoDAM": {
+    "message": "About GoDAM",
+    "description": "About GoDAM Screen Recorder"
+  },
+  "copyrightNotice": {
+    "message": "__APP_NAME__ Copyright (C) __YEAR__ rtCamp",
+    "description": "Copyright notice with app name and year, app name will be hyperlinked"
+  },
+  "githubLink": {
+    "message": "GoDAM Screen Recorder on __LINK__",
+    "description": "Link to the GitHub repository, only GitHub part is linked"
   }
 }
