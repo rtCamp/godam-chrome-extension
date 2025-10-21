@@ -148,7 +148,7 @@ const SettingsMenu = (props) => {
               });
             });
         },
-        () => {}
+        () => { }
       );
     }
   };
@@ -160,15 +160,36 @@ const SettingsMenu = (props) => {
 
   const handleGoDAMSignOut = async (e) => {
     e.preventDefault();
-                
+
     // Close the dropdown.
     props.setOpen(false);
 
     const result = await chrome.runtime.sendMessage({ type: "sign-out-godam" });
-    if ( result.status && result.status === 'success' ) {
+    if (result.status && result.status === 'success') {
       window.location.reload();
-    }          
+    }
   }
+
+  const basedOnScreenityMessage = chrome.i18n.getMessage("basedOnScreenity");
+  const basedOnScreenityLink = '<a href="https://github.com/alyssaxuu/screenity" target="_blank" rel="noopener noreferrer">Screenity</a>';
+  const basedOnScreenity = basedOnScreenityMessage.replace("__LINK__", basedOnScreenityLink);
+
+  const year = new Date().getFullYear();
+
+  const copyrightMessage = chrome.i18n.getMessage("copyrightNotice")
+    .replace("__APP_NAME__", '<a href="https://godam.io/features/godam-chrome-recorder/" target="_blank" rel="noopener noreferrer">GoDAM Screen Recorder</a>')
+    .replace("__YEAR__", year.toString());
+
+  const githubMessage = chrome.i18n.getMessage("githubLink")
+    .replace("__LINK__", '<a href="https://github.com/rtCamp/godam-chrome-extension" target="_blank" rel="noopener noreferrer">GitHub</a>');
+
+  const handleMenuItemClick = (e, url) => {
+    if (e.target.tagName.toUpperCase() === 'A') {
+      e.stopPropagation();
+      return;
+    }
+    chrome.tabs.create({ url: url });
+  };
 
   return (
     <DropdownMenu.Root
@@ -636,6 +657,45 @@ const SettingsMenu = (props) => {
             {chrome.i18n.getMessage("downloadForTroubleshootingOption")}
           </DropdownMenu.Item>
 
+          <DropdownMenu.Sub>
+            <DropdownMenu.SubTrigger className="DropdownMenuItem">
+              {chrome.i18n.getMessage("aboutGoDAM")}
+              <div className="ItemIndicatorArrow">
+                <img src={DropdownGroup} />
+              </div>
+            </DropdownMenu.SubTrigger>
+
+            <DropdownMenu.Portal>
+              <DropdownMenu.SubContent
+                className="ScreenityDropdownMenuContent"
+                sideOffset={0}
+                alignOffset={-3}
+              >
+                <DropdownMenu.Item
+                  className="ScreenityDropdownMenuItem"
+                  onClick={(e) => handleMenuItemClick(e, 'https://godam.io/features/godam-chrome-recorder/')}
+                >
+                  <div dangerouslySetInnerHTML={{ __html: copyrightMessage }} />
+                </DropdownMenu.Item>
+
+                <DropdownMenu.Item
+                  className="ScreenityDropdownMenuItem"
+                  onClick={(e) => handleMenuItemClick(e, 'https://github.com/rtCamp/godam-chrome-extension')}
+                >
+                  <div dangerouslySetInnerHTML={{ __html: githubMessage }} />
+                </DropdownMenu.Item>
+
+                <DropdownMenu.Item
+                  className="ScreenityDropdownMenuItem"
+                  onClick={(e) => handleMenuItemClick(e, 'https://github.com/alyssaxuu/screenity')}
+                >
+                  <div dangerouslySetInnerHTML={{ __html: basedOnScreenity }} />
+                </DropdownMenu.Item>
+              </DropdownMenu.SubContent>
+            </DropdownMenu.Portal>
+          </DropdownMenu.Sub>
+
+
           {godamToken && (
             <DropdownMenu.Item
               className="DropdownMenuItem"
@@ -645,8 +705,8 @@ const SettingsMenu = (props) => {
                 {chrome.i18n.getMessage("signOutGoDAMLabel")}
               </span>
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#dc3545" class="bi bi-box-arrow-right" viewBox="0 0 16 16">
-                <path fill-rule="evenodd" d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v2a.5.5 0 0 0 1 0v-2A1.5 1.5 0 0 0 9.5 2h-8A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0z"/>
-                <path fill-rule="evenodd" d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708z"/>
+                <path fill-rule="evenodd" d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v2a.5.5 0 0 0 1 0v-2A1.5 1.5 0 0 0 9.5 2h-8A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0z" />
+                <path fill-rule="evenodd" d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708z" />
               </svg>
             </DropdownMenu.Item>
           )}
