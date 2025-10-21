@@ -184,7 +184,7 @@ const SettingsMenu = (props) => {
     .replace("__LINK__", '<a href="https://github.com/rtCamp/godam-chrome-extension" target="_blank" rel="noopener noreferrer">GitHub</a>');
 
   const handleMenuItemClick = (e, url) => {
-    if (e.target.tagName === 'A') {
+    if (e.target.tagName.toUpperCase() === 'A') {
       e.stopPropagation();
       return;
     }
