@@ -174,7 +174,6 @@ const SettingsMenu = (props) => {
   const basedOnScreenityLink = '<a href="https://github.com/alyssaxuu/screenity" target="_blank" rel="noopener noreferrer">Screenity</a>';
   const basedOnScreenity = basedOnScreenityMessage.replace("__LINK__", basedOnScreenityLink);
 
-
   const year = new Date().getFullYear();
 
   const copyrightMessage = chrome.i18n.getMessage("copyrightNotice")
@@ -183,6 +182,14 @@ const SettingsMenu = (props) => {
 
   const githubMessage = chrome.i18n.getMessage("githubLink")
     .replace("__LINK__", '<a href="https://github.com/rtCamp/godam-chrome-extension" target="_blank" rel="noopener noreferrer">GitHub</a>');
+
+  const handleMenuItemClick = (e, url) => {
+    if (e.target.tagName === 'A') {
+      e.stopPropagation();
+      return;
+    }
+    chrome.tabs.create({ url: url });
+  };
 
   return (
     <DropdownMenu.Root
@@ -664,15 +671,24 @@ const SettingsMenu = (props) => {
                 sideOffset={0}
                 alignOffset={-3}
               >
-                <DropdownMenu.Item className="ScreenityDropdownMenuItem">
+                <DropdownMenu.Item
+                  className="ScreenityDropdownMenuItem"
+                  onClick={(e) => handleMenuItemClick(e, 'https://godam.io/features/godam-chrome-recorder/')}
+                >
                   <div dangerouslySetInnerHTML={{ __html: copyrightMessage }} />
                 </DropdownMenu.Item>
 
-                <DropdownMenu.Item className="ScreenityDropdownMenuItem">
+                <DropdownMenu.Item
+                  className="ScreenityDropdownMenuItem"
+                  onClick={(e) => handleMenuItemClick(e, 'https://github.com/rtCamp/godam-chrome-extension')}
+                >
                   <div dangerouslySetInnerHTML={{ __html: githubMessage }} />
                 </DropdownMenu.Item>
 
-                <DropdownMenu.Item className="ScreenityDropdownMenuItem">
+                <DropdownMenu.Item
+                  className="ScreenityDropdownMenuItem"
+                  onClick={(e) => handleMenuItemClick(e, 'https://github.com/alyssaxuu/screenity')}
+                >
                   <div dangerouslySetInnerHTML={{ __html: basedOnScreenity }} />
                 </DropdownMenu.Item>
               </DropdownMenu.SubContent>
