@@ -1062,7 +1062,7 @@
     "description": "About GoDAM Screen Recorder"
   },
   "copyrightNotice": {
-    "message": "__APP_NAME__ Copyright (C) __YEAR__ rtCamp",
+    "message": "__APP_NAME__ © __YEAR__ rtCamp",
     "description": "Copyright notice with app name and year, app name will be hyperlinked"
   },
   "githubLink": {
