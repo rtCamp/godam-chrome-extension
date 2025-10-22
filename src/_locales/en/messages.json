@@ -1054,7 +1054,7 @@
     "description": "Review permissions button"
   },
   "basedOnScreenity": {
-    "message": "Based on __LINK__ (GPLv3).",
+    "message": "Based on __LINK__ (GPLv3)",
     "description": "Acknowledgement with link to original project and license"
   },
   "aboutGoDAM": {
