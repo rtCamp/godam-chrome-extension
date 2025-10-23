@@ -35,7 +35,7 @@ You’ll need an active GoDAM account. Sign up here:  https://godam.io/pricing
 
 ## Credits
 
-- [Screenity](https://github.com/alyssaxuu/screenity) – GoDAM is a fork of Screenity.
+- [Screenity](https://github.com/alyssaxuu/screenity) GoDAM Screen Recorder is a fork of Screenity.
 - [FFmpeg WASM](https://ffmpegwasm.netlify.app/) for editing and encoding videos
 - [Tensorflow](https://github.com/tensorflow/tfjs) with the [Selfie Segmentation](https://blog.tensorflow.org/2022/01/body-segmentation.html) model
 - [Fabric.js](https://github.com/fabricjs/fabric.js) for drawing and annotating
