@@ -15,6 +15,10 @@ import {
 } from "../images/popup/images";
 
 import {
+    Camera
+} from "lucide-react";
+
+import {
     ArrowRight
 } from "lucide-react";
 
@@ -34,6 +38,7 @@ import SettingsMenu from "./layout/SettingsMenu";
 // Context
 import { contentStateContext } from "../context/ContentState";
 import GoDAMVideos from "./layout/GoDAMVideos";
+import ScreenshotTab from "./layout/ScreenshotTab";
 
 const PopupContainer = (props) => {
     const baseUrl = process.env.GODAM_BASE_URL || 'https://app.godam.io';
@@ -50,6 +55,7 @@ const PopupContainer = (props) => {
     const [open, setOpen] = useState(false);
     const recordTabRef = useRef(null);
     const videoTabRef = useRef(null);
+    const screenshotTabRef = useRef(null);
     const pillRef = useRef(null);
     const [URL, setURL] = useState("https://godam.io/docs/godam-screen-recorder/");
     const [showNotice, setShowNotice] = useState(false);
@@ -105,6 +111,7 @@ const PopupContainer = (props) => {
 
     useEffect(() => {
         if (!recordTabRef.current) return;
+        if (!screenshotTabRef.current) return; 
         if (!videoTabRef.current) return;
         if (!pillRef.current) return;
 
@@ -112,13 +119,17 @@ const PopupContainer = (props) => {
             pillRef.current.style.left = recordTabRef.current.offsetLeft + "px";
             pillRef.current.style.width =
                 recordTabRef.current.getBoundingClientRect().width + "px";
+        } else if (tab === "screenshot") {
+            pillRef.current.style.left = screenshotTabRef.current.offsetLeft + "px";
+            pillRef.current.style.width =
+                screenshotTabRef.current.getBoundingClientRect().width + "px";
         } else {
             pillRef.current.style.left = videoTabRef.current.offsetLeft + "px";
 
             pillRef.current.style.width =
                 videoTabRef.current.getBoundingClientRect().width + "px";
         }
-    }, [tab, recordTabRef.current, videoTabRef.current, pillRef.current]);
+    }, [tab, recordTabRef.current, screenshotTabRef.current, videoTabRef.current, pillRef.current]);
 
     useEffect(() => {
         contentStateRef.current = contentState;
@@ -386,6 +397,19 @@ const PopupContainer = (props) => {
                                         </Tabs.Trigger>
                                         <Tabs.Trigger
                                             className="TabsTrigger tl"
+                                            value="screenshot"
+                                            ref={screenshotTabRef}
+                                            tabIndex={0}
+                                        >
+                                            <div className="TabsTriggerIcon">
+                                                {
+                                                    tab === "screenshot" ? <Camera fill="#ab3a6c" strokeWidth={1} stroke="#f6f7fb" size={18} /> : <Camera color="gray" size={16} />
+                                                }
+                                            </div>
+                                            Screenshot
+                                        </Tabs.Trigger>
+                                        <Tabs.Trigger
+                                            className="TabsTrigger tl"
                                             value="dashboard"
                                             ref={videoTabRef}
                                             tabIndex={0}
@@ -405,6 +429,9 @@ const PopupContainer = (props) => {
                                     </Tabs.List>
                                     <Tabs.Content className="TabsContent tl" value="record">
                                         <RecordingTab shadowRef={props.shadowRef} />
+                                    </Tabs.Content>
+                                    <Tabs.Content className="TabsContent tl" value="screenshot">
+                                        <ScreenshotTab />
                                     </Tabs.Content>
                                     <Tabs.Content className="TabsContent tl" value="dashboard">
                                         <GoDAMVideos />

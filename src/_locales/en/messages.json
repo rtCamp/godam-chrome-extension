@@ -11,6 +11,10 @@
     "message": "Record",
     "description": "Record tab label on popup"
   },
+  "screenshotTab": {
+    "message": "Screenshot",
+    "description": "Screenshot tab label on popup"
+  },
   "videosTab": {
     "message": "Your videos",
     "description": "Videos tab label on popup"
