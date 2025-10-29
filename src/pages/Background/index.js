@@ -1911,6 +1911,33 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         const getOrgList = require('./modules/getOrgList').default;
         getOrgList(sendResponse);
         return true;
+    } else if (request.type === "capture-screenshot") {
+
+        const options = {
+            format: request.format || 'png',
+        }
+
+        if (request.quality && !isNaN(request.quality)) {
+            options.quality = request.quality;
+        }
+
+        if (request.rect) {
+            options.rect = request.rect;
+        }
+
+        console.log(options);
+        
+
+        // Capture the current tab
+        chrome.tabs.captureVisibleTab(null, options, (dataUrl) => {
+            if (chrome.runtime.lastError) {
+                console.error('Screenshot capture error:', chrome.runtime.lastError);
+                sendResponse(null);
+            } else {
+                sendResponse(dataUrl);
+            }
+        });
+        return true;
     }
 });
 
