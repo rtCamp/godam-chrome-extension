@@ -250,11 +250,11 @@ const ScreenshotTab = ({onScreenshotComplete}) => {
         
         setIsSelecting(false);
         
-        const x = Math.min(selection.startX, selection.endX);
-        const y = Math.min(selection.startY, selection.endY);
-        const width = Math.abs(selection.endX - selection.startX);
-        const height = Math.abs(selection.endY - selection.startY);
-        
+        const x = Math.min(selection.startX, selection.endX) * window.devicePixelRatio;
+        const y = Math.min(selection.startY, selection.endY) * window.devicePixelRatio;
+        const width = Math.abs(selection.endX - selection.startX) * window.devicePixelRatio;
+        const height = Math.abs(selection.endY - selection.startY) * window.devicePixelRatio;
+
         if (width < 10 || height < 10) {
             cancelSelection();
             return;
@@ -276,15 +276,44 @@ const ScreenshotTab = ({onScreenshotComplete}) => {
                 type: "capture-screenshot",
                 format: 'png',
                 quality: 100,
-                rect: { x, y, width, height },
             });
 
             if (!dataUrl) {
                 throw new Error('Failed to capture screenshot');
             }
 
+            // Create an image from the captured data
+            const img = new Image();
+            await new Promise((resolve, reject) => {
+                img.onload = resolve;
+                img.onerror = reject;
+                img.src = dataUrl;
+            });
+            
+            // Create canvas to crop the image
+            const canvas = document.createElement('canvas');
+            canvas.width = width;
+            canvas.height = width;
+            const ctx = canvas.getContext('2d');
+            
+            // Draw the cropped portion
+            // sx, sy: source x,y coordinates
+            // sWidth, sHeight: source width and height
+            // dx, dy: destination x,y (0,0 for top-left)
+            // dWidth, dHeight: destination width and height
+            ctx.drawImage(
+                img,
+                x, y, width, height, // source rectangle
+                0, 0, width, height // destination rectangle
+            );
+            
+            // Convert to data URL with quality
+            const croppedDataUrl = canvas.toDataURL(`image/png`, 1);
+            
+            // return croppedDataUrl;
+
             // Convert data URL to blob
-            const response = await fetch(dataUrl);
+            const response = await fetch(croppedDataUrl);
             const blob = await response.blob();
 
             if (!blob) {
@@ -411,7 +440,7 @@ const ScreenshotTab = ({onScreenshotComplete}) => {
                             width: '100vw',
                             height: '100vh',
                             backgroundColor: 'transparent',
-                            zIndex: 9999999999,
+                            zIndex: 9999999999999,
                             cursor: 'crosshair',
                         }}
                         onMouseDown={handleMouseDown}
@@ -420,8 +449,10 @@ const ScreenshotTab = ({onScreenshotComplete}) => {
                     >
                         <div
                             style={{
+                                backgroundColor: 'transparent',
                                 position: 'absolute',
                                 border: '1px dashed #ab3a6c',
+                                boxShadow: 'rgba(0, 0, 0, 0.2) 0px 0px 0px 9999px',
                                 ...getSelectionStyle(),
                             }}
                         ></div>
