@@ -45,7 +45,7 @@ const PopupContainer = (props) => {
 
     const [contentState, setContentState] = useContext(contentStateContext);
     const contentStateRef = useRef(contentState);
-    const [tab, setTab] = useState("dashboard");
+    const [tab, setTab] = useState("record"); // Default to "record" as fallback
     const [badge, setBadge] = useState(TempLogo);
     const DragRef = useRef(null);
     const PopupRef = useRef(null);
@@ -92,6 +92,29 @@ const PopupContainer = (props) => {
         updateNotice()
     }, []);
 
+    // Load the last selected tab from storage when component mounts
+    useEffect(() => {
+        const loadLastSelectedTab = async () => {
+            try {
+                const { lastSelectedTab } = await chrome.storage.local.get(['lastSelectedTab']);
+                if (lastSelectedTab) {
+                    setTab(lastSelectedTab);
+                    setContentState((prevContentState) => ({
+                        ...prevContentState,
+                        bigTab: lastSelectedTab,
+                    }));
+                } else {
+                    // Ensure default tab is saved
+                    chrome.storage.local.set({ lastSelectedTab: 'record' });
+                }
+            } catch (error) {
+                console.error('Error loading last selected tab:', error);
+            }
+        };
+
+        loadLastSelectedTab();
+    }, []);
+
     const onValueChange = (tab) => {
         setTab(tab);
         if (tab === "record") {
@@ -103,11 +126,24 @@ const PopupContainer = (props) => {
             ...prevContentState,
             bigTab: tab,
         }));
+        
+        // Save the selected tab to storage
+        chrome.storage.local.set({ lastSelectedTab: tab });
+    };
+
+    // Helper function to clear saved tab (useful for debugging or reset)
+    const clearSavedTab = () => {
+        chrome.storage.local.remove(['lastSelectedTab']);
+        console.log('Cleared saved tab');
     };
 
     useEffect(() => {
-        setTab(contentState.bigTab);
-    }, []);
+        // Only set tab from contentState if it's different from current tab
+        // This prevents overriding the loaded tab from storage
+        if (contentState.bigTab && contentState.bigTab !== tab) {
+            setTab(contentState.bigTab);
+        }
+    }, [contentState.bigTab]);
 
     useEffect(() => {
         if (!recordTabRef.current) return;
@@ -368,7 +404,7 @@ const PopupContainer = (props) => {
                     <div className="popup-content">
                         <Tabs.Root
                             className="TabsRoot tl"
-                            defaultValue="record"
+                            value={tab}
                             onValueChange={onValueChange}
                         >
                             {!showNotice ? (
