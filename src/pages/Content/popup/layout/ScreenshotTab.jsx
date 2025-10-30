@@ -8,7 +8,7 @@ import {
 
 import { contentStateContext } from "../../context/ContentState";
 
-const ScreenshotTab = ({onScreenshotComplete}) => {
+const ScreenshotTab = ({onScreenshotComplete, shadowRef}) => {
     const [contentState, setContentState] = useContext(contentStateContext);
     const [contentStateBackup, setContentStateBackup] = useState(null);
     const [screenshotType, setScreenshotType] = useState('fullscreen');
@@ -97,14 +97,6 @@ const ScreenshotTab = ({onScreenshotComplete}) => {
         setIsCapturing(true);
 
         try {
-            setContentStateBackup(contentState);
-            // Hide popup and toolbar
-            setContentState((prevContentState) => ({
-                ...prevContentState,
-                hideToolbar: true,
-                hideUI: true,
-                cameraActive: false,
-            }));
 
             // Wait for UI to hide
             await new Promise(resolve => setTimeout(resolve, 300));
@@ -162,6 +154,17 @@ const ScreenshotTab = ({onScreenshotComplete}) => {
                 }));
             }
 
+            const screenityUI = document.getElementById('screenity-ui');
+            
+            if (screenityUI) {
+                screenityUI.style.display = 'unset';
+            }
+
+            setContentState((prevContentState) => ({
+                ...prevContentState,
+                showExtension: false,
+            }));
+
             // Trigger onScreenshotComplete function.
             onScreenshotComplete();
         }
@@ -174,50 +177,6 @@ const ScreenshotTab = ({onScreenshotComplete}) => {
         setMode(null);
         setIsSelecting(false);
     };
-
-    // const captureArea = async (x, y, width, height) => {
-    //     try {
-    //     const video = videoRef.current;
-        
-    //     if (!video) {
-    //         setError('Video capture not available');
-    //         return;
-    //     }
-
-    //     // Calculate scale factors
-    //     const scaleX = video.videoWidth / window.innerWidth;
-    //     const scaleY = video.videoHeight / window.innerHeight;
-
-    //     // Create canvas for cropped area
-    //     const canvas = document.createElement('canvas');
-    //     canvas.width = width * scaleX * quality;
-    //     canvas.height = height * scaleY * quality;
-        
-    //     const ctx = canvas.getContext('2d');
-    //     ctx.scale(quality, quality);
-        
-    //     // Draw the selected portion
-    //     ctx.drawImage(
-    //         video,
-    //         x * scaleX, y * scaleY, width * scaleX, height * scaleY,
-    //         0, 0, width * scaleX, height * scaleY
-    //     );
-
-    //     // Stop the stream
-    //     if (streamRef.current) {
-    //         streamRef.current.getTracks().forEach(track => track.stop());
-    //     }
-
-    //     // Convert to data URL
-    //     const dataUrl = canvas.toDataURL('image/png', quality);
-    //     setScreenshot(dataUrl);
-    //     setMode('preview');
-    //     } catch (error) {
-    //     console.error('Error capturing area:', error);
-    //     setError('Failed to capture selected area. Please try again.');
-    //     cancelSelection();
-    //     }
-    // };
 
     const handleMouseDown = (e) => {
         if (mode !== 'selecting') return;
@@ -265,6 +224,7 @@ const ScreenshotTab = ({onScreenshotComplete}) => {
         if (!isSelecting || mode !== 'selecting') return;
         
         setIsSelecting(false);
+        setMode('ideal');
         
         const x = Math.min(selection.startX, selection.endX) * window.devicePixelRatio;
         const y = Math.min(selection.startY, selection.endY) * window.devicePixelRatio;
@@ -275,9 +235,6 @@ const ScreenshotTab = ({onScreenshotComplete}) => {
             cancelSelection();
             return;
         }
-
-        console.log('Selected area:', { x, y, width, height });
-        
 
         // Capture the selected area
         try {
@@ -348,6 +305,20 @@ const ScreenshotTab = ({onScreenshotComplete}) => {
         } catch (error) {
             console.error('Error capturing area:', error);
             cancelSelection();
+        } finally {
+            const screenityUI = document.getElementById('screenity-ui');
+            
+            if (screenityUI) {
+                screenityUI.style.display = 'unset';
+            }
+
+            setContentState((prevContentState) => ({
+                ...prevContentState,
+                showExtension: false,
+            }));
+
+            // Trigger onScreenshotComplete function.
+            onScreenshotComplete();
         }
     };
     
@@ -418,17 +389,13 @@ const ScreenshotTab = ({onScreenshotComplete}) => {
                         color: '#fff',
                     }}
                     onClick={() => {
-                        if (screenshotType === 'custom-area') {
-                            // Activate selection mode
-                            setContentStateBackup(contentState);
-                            // Hide popup and toolbar
-                            setContentState((prevContentState) => ({
-                                ...prevContentState,
-                                hideToolbar: true,
-                                hideUI: true,
-                                cameraActive: false,
-                            }));
+                        const screenityUI = document.getElementById('screenity-ui');
 
+                        if (screenityUI) {
+                            screenityUI.style.display = 'none';
+                        }
+
+                        if (screenshotType === 'custom-area') {
                             setMode('selecting');
                         } else {
                             captureScreenshot();

@@ -436,6 +436,7 @@ const PopupContainer = (props) => {
                                                 console.log('onScreenshotComplete is clicked');
                                                 // Todo: open screenshot tab.
                                             }}
+                                            shadowRef={props.shadowRef}
                                         />
                                     </Tabs.Content>
                                     <Tabs.Content className="TabsContent tl" value="dashboard">
