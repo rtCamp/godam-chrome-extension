@@ -78,6 +78,19 @@ const ScreenshotTab = ({onScreenshotComplete}) => {
         }
     };
 
+    const playShutterSound = () => {
+        console.log('Playing shutter sound');
+        
+        try {
+            const audio = new Audio(chrome.runtime.getURL("/assets/sounds/camera-shutter.mp3"));
+            audio.volume = 0.5;
+            audio.play();
+            
+        } catch (error) {
+            console.error('Error playing shutter sound:', error);
+        }
+    };
+
     const captureScreenshot = async () => {
         if (isCapturing) return;
         
@@ -109,6 +122,9 @@ const ScreenshotTab = ({onScreenshotComplete}) => {
                     throw new Error('Failed to capture screenshot');
                     // Todo : Handle the error gracefully
                 }
+
+                // Play camera shutter sound
+                playShutterSound();
 
                 // Convert data URL to blob
                 const response = await fetch(dataUrl);
@@ -282,6 +298,9 @@ const ScreenshotTab = ({onScreenshotComplete}) => {
                 throw new Error('Failed to capture screenshot');
             }
 
+            // Play camera shutter sound
+            playShutterSound();
+
             // Create an image from the captured data
             const img = new Image();
             await new Promise((resolve, reject) => {
@@ -430,7 +449,6 @@ const ScreenshotTab = ({onScreenshotComplete}) => {
                     <div
                         ref={overlayRef}
                         data-screenshot-overlay="true"
-                        className="fixed inset-0 bg-black bg-opacity-50 cursor-crosshair z-50"
                         style={{
                             position: 'fixed',
                             top: 0,
@@ -453,6 +471,7 @@ const ScreenshotTab = ({onScreenshotComplete}) => {
                                 position: 'absolute',
                                 border: '1px dashed #ab3a6c',
                                 boxShadow: 'rgba(0, 0, 0, 0.2) 0px 0px 0px 9999px',
+                                boxSizing: 'border-box',
                                 ...getSelectionStyle(),
                             }}
                         ></div>
