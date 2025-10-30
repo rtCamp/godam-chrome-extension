@@ -378,7 +378,7 @@ const ScreenshotTab = ({onScreenshotComplete, shadowRef}) => {
                         onClick={() => setScreenshotType('fullscreen')}
                     >
                         <LaptopMinimal size={24} />
-                        <span>Fullscreen</span>
+                        <span>Current tab</span>
                     </div>
                 </div>
 
@@ -406,7 +406,7 @@ const ScreenshotTab = ({onScreenshotComplete, shadowRef}) => {
                     {
                         isCapturing 
                             ? 'Capturing...' 
-                            : screenshotType === 'custom-area' ? 'Select Area' : 'Take Screenshot'
+                            : screenshotType === 'custom-area' ? 'Select area' : 'Take screenshot'
                     }
                 </button>
             </div>
