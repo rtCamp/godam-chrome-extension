@@ -486,6 +486,12 @@ const ContentState = (props) => {
         microphonePermission: microphonePermission,
       }));
 
+      // Save permission states to localStorage
+      chrome.storage.local.set({
+        cameraPermission: cameraPermission,
+        microphonePermission: microphonePermission,
+      });
+
       chrome.runtime.sendMessage({
         type: "switch-camera",
         id: contentStateRef.current.defaultVideoInput,
@@ -494,15 +500,30 @@ const ContentState = (props) => {
       // Set default devices
       // Check if audio devices exist
       if (audioInput && audioInput.length > 0) {
-        setContentState((prevContentState) => ({
-          ...prevContentState,
-          defaultAudioInput: audioInput[0].deviceId,
-          micActive: true,
-        }));
-        chrome.storage.local.set({
-          defaultAudioInput: audioInput[0].deviceId,
-          micActive: true,
-        });
+        // Check if there's a previously saved audio input that's still available
+        const savedAudioDevice = audioInput.find(
+          (device) => device.deviceId === contentStateRef.current.defaultAudioInput
+        );
+        
+        if (savedAudioDevice) {
+          // Keep the previously selected device if it's still available
+          setContentState((prevContentState) => ({
+            ...prevContentState,
+            defaultAudioInput: savedAudioDevice.deviceId,
+            micActive: contentStateRef.current.micActive !== false,
+          }));
+        } else {
+          // Set to first available device if no previously saved device is found
+          setContentState((prevContentState) => ({
+            ...prevContentState,
+            defaultAudioInput: audioInput[0].deviceId,
+            micActive: true,
+          }));
+          chrome.storage.local.set({
+            defaultAudioInput: audioInput[0].deviceId,
+            micActive: true,
+          });
+        }
       }
       else {
         setContentState((prevContentState) => ({
@@ -516,15 +537,30 @@ const ContentState = (props) => {
         });
       }
       if (videoInput && videoInput.length > 0) {
-        setContentState((prevContentState) => ({
-          ...prevContentState,
-          defaultVideoInput: videoInput[0].deviceId,
-          cameraActive: true,
-        }));
-        chrome.storage.local.set({
-          defaultVideoInput: videoInput[0].deviceId,
-          cameraActive: true,
-        });
+        // Check if there's a previously saved video input that's still available
+        const savedVideoDevice = videoInput.find(
+          (device) => device.deviceId === contentStateRef.current.defaultVideoInput
+        );
+        
+        if (savedVideoDevice) {
+          // Keep the previously selected device if it's still available
+          setContentState((prevContentState) => ({
+            ...prevContentState,
+            defaultVideoInput: savedVideoDevice.deviceId,
+            cameraActive: contentStateRef.current.cameraActive !== false,
+          }));
+        } else {
+          // Set to first available device if no previously saved device is found
+          setContentState((prevContentState) => ({
+            ...prevContentState,
+            defaultVideoInput: videoInput[0].deviceId,
+            cameraActive: true,
+          }));
+          chrome.storage.local.set({
+            defaultVideoInput: videoInput[0].deviceId,
+            cameraActive: true,
+          });
+        }
       }
       else {
         setContentState((prevContentState) => ({
@@ -543,6 +579,13 @@ const ContentState = (props) => {
         cameraPermission: false,
         microphonePermission: false,
       }));
+      
+      // Save permission states to localStorage when denied
+      chrome.storage.local.set({
+        cameraPermission: false,
+        microphonePermission: false,
+      });
+      
       if (contentStateRef.current.askForPermissions) {
         contentStateRef.current.openModal(
           chrome.i18n.getMessage("permissionsModalTitle"),
@@ -1281,6 +1324,8 @@ const ContentState = (props) => {
         "alarmTime",
         "pendingRecording",
         "askForPermissions",
+        "cameraPermission",
+        "microphonePermission",
         "cursorMode",
         "pushToTalk",
         "askMicrophone",
@@ -1410,6 +1455,16 @@ const ContentState = (props) => {
               result.askForPermissions !== null
               ? result.askForPermissions
               : prevContentState.askForPermissions,
+          cameraPermission:
+            result.cameraPermission !== undefined &&
+              result.cameraPermission !== null
+              ? result.cameraPermission
+              : prevContentState.cameraPermission,
+          microphonePermission:
+            result.microphonePermission !== undefined &&
+              result.microphonePermission !== null
+              ? result.microphonePermission
+              : prevContentState.microphonePermission,
           cursorMode:
             result.cursorMode !== undefined && result.cursorMode !== null
               ? result.cursorMode

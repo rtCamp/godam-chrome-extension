@@ -467,13 +467,7 @@ const PopupContainer = (props) => {
                                         <RecordingTab shadowRef={props.shadowRef} />
                                     </Tabs.Content>
                                     <Tabs.Content className="TabsContent tl" value="screenshot">
-                                        <ScreenshotTab 
-                                            onScreenshotComplete={() => {
-                                                console.log('onScreenshotComplete is clicked');
-                                                // Todo: open screenshot tab.
-                                            }}
-                                            shadowRef={props.shadowRef}
-                                        />
+                                        <ScreenshotTab shadowRef={props.shadowRef} />
                                     </Tabs.Content>
                                     <Tabs.Content className="TabsContent tl" value="dashboard">
                                         <GoDAMVideos />
