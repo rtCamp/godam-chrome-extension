@@ -19,59 +19,27 @@ const ScreenshotTab = ({onScreenshotComplete, shadowRef}) => {
 
     const overlayRef = useRef(null);
 
-    const getGoDAMAuthToken = async () => {
-        const { godamToken, godamRefreshToken, godamTokenExpiration } = await chrome.storage.local.get(["godamToken", "godamRefreshToken", "godamTokenExpiration"]);
-
-        // Token is not set or expired
-        if (!godamToken || (godamTokenExpiration && Date.now() >= godamTokenExpiration)) {
-            // Request token from background script
-            const response = await chrome.runtime.sendMessage({ type: "get-godam-token" });
-            return response.token;
-        }
-
-        return godamToken;
-    };
-
     const uploadScreenshot = async (blob) => {
         try {
-            const token = await getGoDAMAuthToken();
-            const { selectedOrg } = await chrome.storage.local.get(["selectedOrg"]);
-
-            if (!selectedOrg) {
-                throw new Error("No organization selected");
-            }
-
-            const fileName = `Screenshot - ${new Date().toLocaleString("en-US", {
-                month: "short",
-                day: "numeric",
-                year: "numeric",
-                hour: "numeric",
-                minute: "numeric",
-                second: "numeric",
-                hour12: true,
-            })}.png`;
-
-            const formData = new FormData();
-            formData.append('file', blob, fileName);
-
-            const uploadUrl = process.env.GODAM_UPLOAD_URL || 'https://godam-upload.rt.gw';
-            const url = uploadUrl + '/upload-file';
-
-            const uploadResponse = await fetch(url, {
-                method: "POST",
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    Organization: selectedOrg
-                },
-                body: formData,
+            // Convert blob to base64
+            const base64 = await new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = reject;
+                reader.readAsDataURL(blob);
             });
 
-            if (!uploadResponse.ok) {
-                throw new Error('Upload failed');
-            }
+            // Send request to background script
+            const response = await chrome.runtime.sendMessage({
+                type: "upload-screenshot",
+                base64: base64
+            });
 
-            const responseData = await uploadResponse.json();
-            return responseData?.file_informations?.name;
+            if (response.status === "ok") {
+                return response.fileName;
+            } else {
+                throw new Error(response.message || "Upload failed");
+            }
         } catch (error) {
             throw error;
         }
