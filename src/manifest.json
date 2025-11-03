@@ -97,7 +97,6 @@
     "unlimitedStorage",
     "downloads",
     "tabs",
-    "activeTab",
     "tabCapture",
     "scripting",
     "cookies"

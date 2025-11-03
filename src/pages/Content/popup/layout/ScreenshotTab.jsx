@@ -110,9 +110,13 @@ const ScreenshotTab = ({onScreenshotComplete, shadowRef}) => {
                     rect: null, // Fullscreen
                 });
 
+                if (chrome.runtime.lastError) {
+                    console.error('Screenshot capture error:', chrome.runtime.lastError);
+                    throw new Error('Failed to capture screenshot');
+                }
+
                 if (!dataUrl) {
                     throw new Error('Failed to capture screenshot');
-                    // Todo : Handle the error gracefully
                 }
 
                 // Play camera shutter sound
@@ -269,7 +273,7 @@ const ScreenshotTab = ({onScreenshotComplete, shadowRef}) => {
             // Create canvas to crop the image
             const canvas = document.createElement('canvas');
             canvas.width = width;
-            canvas.height = width;
+            canvas.height = height;
             const ctx = canvas.getContext('2d');
             
             // Draw the cropped portion
@@ -282,11 +286,9 @@ const ScreenshotTab = ({onScreenshotComplete, shadowRef}) => {
                 x, y, width, height, // source rectangle
                 0, 0, width, height // destination rectangle
             );
-            
+
             // Convert to data URL with quality
             const croppedDataUrl = canvas.toDataURL(`image/png`, 1);
-            
-            // return croppedDataUrl;
 
             // Convert data URL to blob
             const response = await fetch(croppedDataUrl);
