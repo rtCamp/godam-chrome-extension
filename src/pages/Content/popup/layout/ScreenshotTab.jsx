@@ -73,19 +73,15 @@ const ScreenshotTab = ({onScreenshotComplete, shadowRef}) => {
             const responseData = await uploadResponse.json();
             return responseData?.file_informations?.name;
         } catch (error) {
-            console.error('Upload error:', error);
             throw error;
         }
     };
 
     const playShutterSound = () => {
-        console.log('Playing shutter sound');
-        
         try {
             const audio = new Audio(chrome.runtime.getURL("/assets/sounds/camera-shutter.mp3"));
             audio.volume = 0.5;
             audio.play();
-            
         } catch (error) {
             console.error('Error playing shutter sound:', error);
         }
@@ -97,52 +93,45 @@ const ScreenshotTab = ({onScreenshotComplete, shadowRef}) => {
         setIsCapturing(true);
 
         try {
-
             // Wait for UI to hide
             await new Promise(resolve => setTimeout(resolve, 300));
 
-            try {
-                // Capture the current tab using Chrome API
-                const dataUrl = await chrome.runtime.sendMessage({
-                    type: "capture-screenshot",
-                    format: 'png',
-                    quality: 100,
-                    rect: null, // Fullscreen
-                });
+            // Capture the current tab using Chrome API
+            const dataUrl = await chrome.runtime.sendMessage({
+                type: "capture-screenshot",
+                format: 'png',
+                quality: 100,
+                rect: null, // Fullscreen
+            });
 
-                if (chrome.runtime.lastError) {
-                    console.error('Screenshot capture error:', chrome.runtime.lastError);
-                    throw new Error('Failed to capture screenshot');
-                }
-
-                if (!dataUrl) {
-                    throw new Error('Failed to capture screenshot');
-                }
-
-                // Play camera shutter sound
-                playShutterSound();
-
-                // Convert data URL to blob
-                const response = await fetch(dataUrl);
-                const blob = await response.blob();
-
-                if (!blob) {
-                    throw new Error('Failed to create screenshot blob');
-                }
-
-                // Upload screenshot
-                await uploadScreenshot(blob);
-
-                // Redirect to GoDAM
-                const baseUrl = process.env.GODAM_BASE_URL || 'https://app.godam.io';
-                window.open(`${baseUrl}/web/media-library`, '_blank');
-
-            } catch (error) {
-                console.error('Screenshot error:', error);
-                alert('Failed to capture screenshot: ' + error.message);
+            if (chrome.runtime.lastError) {
+                throw new Error('Failed to capture screenshot');
             }
+
+            if (!dataUrl) {
+                throw new Error('Failed to capture screenshot');
+            }
+
+            // Play camera shutter sound
+            playShutterSound();
+
+            // Convert data URL to blob
+            const response = await fetch(dataUrl);
+            const blob = await response.blob();
+
+            if (!blob) {
+                throw new Error('Failed to create screenshot blob');
+            }
+
+            // Upload screenshot
+            const uploadedFileName = await uploadScreenshot(blob);
+
+            // Redirect to GoDAM
+            const baseUrl = process.env.GODAM_BASE_URL || 'https://app.godam.io';
+            window.open(`${baseUrl}/web/media-library?media=${uploadedFileName}`, '_blank');
+
         } catch (error) {
-            console.error('Screenshot error:', error);
+            alert('Failed to capture screenshot: ' + error.message);
         } finally {
             setIsCapturing(false);
 
@@ -299,13 +288,13 @@ const ScreenshotTab = ({onScreenshotComplete, shadowRef}) => {
             }
 
             // Upload screenshot
-            await uploadScreenshot(blob);
+            const uploadedFileName = await uploadScreenshot(blob);
 
             // Redirect to GoDAM
             const baseUrl = process.env.GODAM_BASE_URL || 'https://app.godam.io';
-            window.open(`${baseUrl}/web/media-library`, '_blank');
+            window.open(`${baseUrl}/web/media-library?media=${uploadedFileName}`, '_blank');
         } catch (error) {
-            console.error('Error capturing area:', error);
+            alert(error.message);
             cancelSelection();
         } finally {
             const screenityUI = document.getElementById('screenity-ui');
