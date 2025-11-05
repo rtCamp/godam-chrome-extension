@@ -10,6 +10,8 @@ import {
 
 import localforage from "localforage";
 
+import { initPostHog, trackEvent } from "./modules/posthogHelper";
+
 const saveToGoDAM = require('./modules/saveToGoDAM').default;
 
 localforage.config({
@@ -17,6 +19,8 @@ localforage.config({
     name: "screenity",
     version: 1,
 });
+
+initPostHog();
 
 // Get chunks store
 const chunksStore = localforage.createInstance({
@@ -108,6 +112,9 @@ const startRecording = async () => {
 
     // Check if customRegion is set
     const { customRegion } = await chrome.storage.local.get(["customRegion"]);
+
+    // Track recording started
+    trackEvent('extension_recording_started');
 
     if (customRegion) {
         sendMessageRecord({ type: "start-recording-tab", region: true });
@@ -476,6 +483,12 @@ const stopRecording = async () => {
     if (recordingStartTime === 0) {
         duration = 0;
     }
+
+    // Track recording stopped with duration
+    trackEvent('extension_recording_stopped', {
+        duration_seconds: Math.floor(duration / 1000),
+    });
+
     chrome.storage.local.set({
         recording: false,
         recordingDuration: duration,
@@ -580,6 +593,8 @@ chrome.runtime.onStartup.addListener(() => {
 
 // Check when action button is clicked
 chrome.action.onClicked.addListener(async (tab) => {
+    // Track action button click
+    trackEvent('extension_icon_clicked');
 
     // Check if user is logged in to GoDAM
     const { godamToken } = await chrome.storage.local.get(["godamToken"]);
@@ -1612,7 +1627,7 @@ const handleSignOutGoDAM = async (sendResponse) => {
                 'godamRefreshToken',
                 'godamTokenExpiration'
             ]);
-            return sendResponse({status: 'success', revokeToken});
+            return sendResponse({ status: 'success', revokeToken });
         }
     }
 
@@ -1923,7 +1938,7 @@ chrome.cookies.onChanged.addListener(async (changeInfo) => {
 
     if (!cookie.domain.includes(domain)) return;
 
-    if ( (cookie.name === "sid" || cookie.name === "user_id") && cookie.value === "Guest"  ) {
+    if ((cookie.name === "sid" || cookie.name === "user_id") && cookie.value === "Guest") {
         await chrome.storage.local.remove(["godamToken", "godamRefreshToken", "godamTokenExpiration"]);
     }
 });
