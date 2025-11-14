@@ -18,6 +18,7 @@ const ScreenshotTab = ({onScreenshotComplete, shadowRef}) => {
     const [selection, setSelection] = useState({ startX: 0, startY: 0, endX: 0, endY: 0 });
 
     const overlayRef = useRef(null);
+    const selectionRef = useRef(null);
 
     const uploadScreenshot = async (blob) => {
         try {
@@ -184,9 +185,13 @@ const ScreenshotTab = ({onScreenshotComplete, shadowRef}) => {
     const handleMouseUp = async () => {
         if (!isSelecting || mode !== 'selecting') return;
         
+        if ( selectionRef.current ) {
+            selectionRef.current.style.display = 'none';
+        }
+
         setIsSelecting(false);
         setMode('ideal');
-        
+
         const x = Math.min(selection.startX, selection.endX) * window.devicePixelRatio;
         const y = Math.min(selection.startY, selection.endY) * window.devicePixelRatio;
         const width = Math.abs(selection.endX - selection.startX) * window.devicePixelRatio;
@@ -400,6 +405,7 @@ const ScreenshotTab = ({onScreenshotComplete, shadowRef}) => {
                                 boxSizing: 'border-box',
                                 ...getSelectionStyle(),
                             }}
+                            ref={selectionRef}
                         ></div>
                     </div>
                 </OverlayControl>
