@@ -1619,6 +1619,89 @@ const handleSignOutGoDAM = async (sendResponse) => {
 
 };
 
+// Function to handle uploading screenshot to GoDAM
+const handleUploadScreenshot = async (sendResponse, request) => {
+    try {
+        const { godamToken, godamRefreshToken, godamTokenExpiration, selectedOrg } = await chrome.storage.local.get([
+            "godamToken", 
+            "godamRefreshToken", 
+            "godamTokenExpiration", 
+            "selectedOrg"
+        ]);
+
+        let token = godamToken;
+
+        // Token is not set or expired
+        if (!godamToken || (godamTokenExpiration && Date.now() >= godamTokenExpiration)) {
+            // Try to refresh token
+            try {
+                const refreshResponse = await new Promise((resolve) => {
+                    refreshToken(resolve);
+                });
+                if (refreshResponse.status === "ok") {
+                    token = refreshResponse.token;
+                } else {
+                    throw new Error("Token refresh failed");
+                }
+            } catch (error) {
+                sendResponse({ status: "error", message: "Authentication failed" });
+                return;
+            }
+        }
+
+        if (!selectedOrg) {
+            sendResponse({ status: "error", message: "No organization selected" });
+            return;
+        }
+
+        const fileName = `Screenshot - ${new Date().toLocaleString("en-US", {
+            month: "short",
+            day: "numeric",
+            year: "numeric",
+            hour: "numeric",
+            minute: "numeric",
+            second: "numeric",
+            hour12: true,
+        })}.png`;
+
+        // Convert base64 to blob
+        const blob = base64ToUint8Array(request.base64);
+
+        const formData = new FormData();
+        formData.append('file', blob, fileName);
+
+        const uploadUrl = process.env.GODAM_UPLOAD_URL || 'https://godam-upload.rt.gw';
+        const url = uploadUrl + '/upload-file';
+
+        const uploadResponse = await fetch(url, {
+            method: "POST",
+            headers: {
+                Authorization: `Bearer ${token}`,
+                Organization: selectedOrg
+            },
+            body: formData,
+        });
+
+        if (!uploadResponse.ok) {
+            throw new Error('Upload failed');
+        }
+
+        const responseData = await uploadResponse.json();
+        const uploadedFileName = responseData?.file_informations?.name;
+
+        sendResponse({ 
+            status: "ok", 
+            fileName: uploadedFileName,
+            message: "Screenshot uploaded successfully" 
+        });
+    } catch (error) {
+        sendResponse({ 
+            status: "error", 
+            message: error.message || "Failed to upload screenshot" 
+        });
+    }
+};
+
 // Function to handle saving to GoDAM
 const handleSaveToGoDAM = async (sendResponse, request, fallback = false) => {
     if (!fallback) {
@@ -1910,6 +1993,36 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     } else if (request.type === "get-organisations") {
         const getOrgList = require('./modules/getOrgList').default;
         getOrgList(sendResponse);
+        return true;
+    } else if (request.type === "capture-screenshot") {
+
+        const options = {
+            format: request.format || 'png',
+        }
+
+        if (request.quality && !isNaN(request.quality)) {
+            options.quality = request.quality;
+        }
+
+        if (request.rect) {
+            options.rect = request.rect;
+        }
+
+        console.log(options);
+        
+
+        // Capture the current tab
+        chrome.tabs.captureVisibleTab(null, options, (dataUrl) => {
+            if (chrome.runtime.lastError) {
+                console.error('Screenshot capture error:', chrome.runtime.lastError);
+                sendResponse(null);
+            } else {
+                sendResponse(dataUrl);
+            }
+        });
+        return true;
+    } else if (request.type === "upload-screenshot") {
+        handleUploadScreenshot(sendResponse, request);
         return true;
     }
 });

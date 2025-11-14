@@ -19,7 +19,8 @@
   },
   "host_permissions": [
     "https://app.godam.io/*",
-    "https://app-godam.rt.gw/*"
+    "https://app-godam.rt.gw/*",
+    "<all_urls>"
   ],
   "content_scripts": [
     {
