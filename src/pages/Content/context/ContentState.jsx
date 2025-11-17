@@ -7,6 +7,8 @@ import React, {
   useMemo,
 } from "react";
 
+import { detectAutoQuality } from "../../../utils/quality";
+
 // Shortcuts
 import Shortcuts from "../shortcuts/Shortcuts";
 
@@ -504,7 +506,7 @@ const ContentState = (props) => {
         const savedAudioDevice = audioInput.find(
           (device) => device.deviceId === contentStateRef.current.defaultAudioInput
         );
-        
+
         if (savedAudioDevice) {
           // Keep the previously selected device if it's still available
           setContentState((prevContentState) => ({
@@ -541,7 +543,7 @@ const ContentState = (props) => {
         const savedVideoDevice = videoInput.find(
           (device) => device.deviceId === contentStateRef.current.defaultVideoInput
         );
-        
+
         if (savedVideoDevice) {
           // Keep the previously selected device if it's still available
           setContentState((prevContentState) => ({
@@ -579,13 +581,13 @@ const ContentState = (props) => {
         cameraPermission: false,
         microphonePermission: false,
       }));
-      
+
       // Save permission states to localStorage when denied
       chrome.storage.local.set({
         cameraPermission: false,
         microphonePermission: false,
       });
-      
+
       if (contentStateRef.current.askForPermissions) {
         contentStateRef.current.openModal(
           chrome.i18n.getMessage("permissionsModalTitle"),
@@ -739,7 +741,7 @@ const ContentState = (props) => {
     backupSetup: false,
     openWarning: false,
     hasOpenedBefore: false,
-    qualityValue: "1080p",
+    qualityValue: "",
     fpsValue: "30",
   });
   contentStateRef.current = contentState;
@@ -1078,43 +1080,6 @@ const ContentState = (props) => {
     });
   }, [contentState.pendingRecording]);
 
-  // Check if user has enough RAM to record for each quality option
-  useEffect(() => {
-    const checkRAM = () => {
-      let width = Math.round(window.screen.width * window.devicePixelRatio);
-      let height = Math.round(window.screen.height * window.devicePixelRatio);
-      const ram = navigator.deviceMemory;
-
-      // Check if ramValue needs to be updated
-      if (
-        (ram < 2 || width < 1280 || height < 720) &&
-        (contentState.qualityValue === "720p" ||
-          contentState.qualityValue === "4k" ||
-          contentState.qualityValue === "1080p")
-      ) {
-        setContentState((prevContentState) => ({
-          ...prevContentState,
-          qualityValue: "480p",
-        }));
-        chrome.storage.local.set({
-          qualityValue: "480p",
-        });
-      } else if (
-        (ram < 8 || width < 3840 || height < 2160) &&
-        contentState.qualityValue === "4k"
-      ) {
-        setContentState((prevContentState) => ({
-          ...prevContentState,
-          qualityValue: "720p",
-        }));
-        chrome.storage.local.set({
-          qualityValue: "720p",
-        });
-      }
-    };
-    checkRAM();
-  }, [contentState.qualityValue]);
-
   // Check recording start time
   useEffect(() => {
     chrome.storage.local.get(["recordingStartTime"], (result) => {
@@ -1349,6 +1314,23 @@ const ContentState = (props) => {
         "fpsValue",
       ],
       (result) => {
+        const screenWidth = Math.round(
+          window.screen.width * window.devicePixelRatio
+        );
+        const screenHeight = Math.round(
+          window.screen.height * window.devicePixelRatio
+        );
+        const ram = navigator.deviceMemory || 0;
+        const hasStoredQuality =
+          result.qualityValue !== undefined && result.qualityValue !== null;
+        const resolvedQualityValue = hasStoredQuality
+          ? result.qualityValue
+          : detectAutoQuality({
+            ram,
+            width: screenWidth,
+            height: screenHeight,
+          });
+
         setContentState((prevContentState) => ({
           ...prevContentState,
           audioInput:
@@ -1543,14 +1525,21 @@ const ContentState = (props) => {
               ? result.backupSetup
               : prevContentState.backupSetup,
           qualityValue:
-            result.qualityValue !== undefined && result.qualityValue !== null
-              ? result.qualityValue
+            resolvedQualityValue !== undefined &&
+              resolvedQualityValue !== null
+              ? resolvedQualityValue
               : prevContentState.qualityValue,
           fpsValue:
             result.fpsValue !== undefined && result.fpsValue !== null
               ? result.fpsValue
               : prevContentState.fpsValue,
         }));
+
+        if (!hasStoredQuality) {
+          chrome.storage.local.set({
+            qualityValue: resolvedQualityValue,
+          });
+        }
 
         if (result.systemAudio === undefined || result.systemAudio === null) {
           chrome.storage.local.set({ systemAudio: true });

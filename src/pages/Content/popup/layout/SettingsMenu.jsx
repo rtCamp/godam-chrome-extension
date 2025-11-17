@@ -13,6 +13,7 @@ import JSZip from "jszip";
 
 // Context
 import { contentStateContext } from "../../context/ContentState";
+import { detectAutoQuality } from "../../../../utils/quality";
 
 const SettingsMenu = (props) => {
   const [contentState, setContentState] = useContext(contentStateContext);
@@ -41,44 +42,6 @@ const SettingsMenu = (props) => {
       setOldChrome(true);
     }
   }, []);
-
-  // Check if user has enough RAM to record for each quality option
-  useEffect(() => {
-    if (width === 0 || height === 0) return;
-    const checkRAM = () => {
-      const ram = navigator.deviceMemory;
-
-      // Check if ramValue needs to be updated
-      if (
-        (ram < 2 || width < 1280 || height < 720) &&
-        (contentState.qualityValue === "720p" ||
-          contentState.qualityValue === "4k" ||
-          contentState.qualityValue === "1080p")
-      ) {
-        setContentState((prevContentState) => ({
-          ...prevContentState,
-          qualityValue: "480p",
-        }));
-        chrome.storage.local.set({
-          qualityValue: "480p",
-        });
-      } else if (
-        (ram < 8 || width < 3840 || height < 2160) &&
-        contentState.qualityValue === "4k"
-      ) {
-        setContentState((prevContentState) => ({
-          ...prevContentState,
-          qualityValue: "720p",
-        }));
-        chrome.storage.local.set({
-          qualityValue: "720p",
-        });
-      }
-
-      setRAM(ram);
-    };
-    checkRAM();
-  }, [contentState.qualityValue, width, height]);
 
   const handleTroubleshooting = () => {
     if (typeof contentState.openModal === "function") {
@@ -156,7 +119,29 @@ const SettingsMenu = (props) => {
   useEffect(() => {
     setWidth(Math.round(window.screen.width * window.devicePixelRatio));
     setHeight(Math.round(window.screen.height * window.devicePixelRatio));
+    setRAM(navigator.deviceMemory || 0);
   }, []);
+
+  const handleAutoQuality = () => {
+    const ramValue = navigator.deviceMemory || RAM || 0;
+    const screenWidth =
+      width || Math.round(window.screen.width * window.devicePixelRatio);
+    const screenHeight =
+      height || Math.round(window.screen.height * window.devicePixelRatio);
+    const autoQuality = detectAutoQuality({
+      ram: ramValue,
+      width: screenWidth,
+      height: screenHeight,
+    });
+
+    setContentState((prevContentState) => ({
+      ...prevContentState,
+      qualityValue: autoQuality,
+    }));
+    chrome.storage.local.set({
+      qualityValue: autoQuality,
+    });
+  };
 
   const handleGoDAMSignOut = async (e) => {
     e.preventDefault();
@@ -392,6 +377,12 @@ const SettingsMenu = (props) => {
                 sideOffset={0}
                 alignOffset={-3}
               >
+                <DropdownMenu.Item
+                  className="ScreenityDropdownMenuItem"
+                  onSelect={handleAutoQuality}
+                >
+                  {chrome.i18n.getMessage("autoQualityOption") || "Auto"}
+                </DropdownMenu.Item>
                 <DropdownMenu.RadioGroup
                   value={contentState.qualityValue}
                   onValueChange={(value) => {
