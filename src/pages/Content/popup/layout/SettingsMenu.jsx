@@ -25,8 +25,8 @@ const SettingsMenu = (props) => {
   const [RAM, setRAM] = useState(0);
   const [width, setWidth] = useState(0);
   const [height, setHeight] = useState(0);
-  const [qualitySelectionSource, setQualitySelectionSource] = useState("manual");
   const [godamToken, setGodamToken] = useState(null);
+  const qualitySelectionSource = contentState.qualitySelectionSource ?? "manual";
   useEffect(() => {
     // Check chrome version
     const chromeVersion = navigator.userAgent.match(/Chrom(e|ium)\/([0-9]+)\./);
@@ -137,9 +137,11 @@ const SettingsMenu = (props) => {
 
     setContentState((prevContentState) => ({
       ...prevContentState,
+      qualitySelectionSource: "auto",
       qualityValue: autoQuality,
     }));
     chrome.storage.local.set({
+      qualitySelectionSource: "auto",
       qualityValue: autoQuality,
     });
     return autoQuality;
@@ -365,10 +367,15 @@ const SettingsMenu = (props) => {
             }}
           >
             <DropdownMenu.SubTrigger className="DropdownMenuItem">
-              {chrome.i18n.getMessage("maxResolutionLabel") +
-                " (" +
-                contentState.qualityValue +
-                ")"}
+              {(() => {
+                const baseLabel = chrome.i18n.getMessage("maxResolutionLabel");
+                if (qualitySelectionSource === "auto") {
+                  const autoLabel =
+                    chrome.i18n.getMessage("autoQualityOption") || "Auto";
+                  return `${baseLabel} (${autoLabel} ${contentState.qualityValue})`;
+                }
+                return `${baseLabel} (${contentState.qualityValue})`;
+              })()}
               <div className="ItemIndicatorArrow">
                 <img src={DropdownGroup} />
               </div>
@@ -388,16 +395,16 @@ const SettingsMenu = (props) => {
                   onValueChange={(value) => {
                     if (value === "auto") {
                       handleAutoQuality();
-                      setQualitySelectionSource("auto");
                       return;
                     }
 
-                    setQualitySelectionSource("manual");
                     setContentState((prevContentState) => ({
                       ...prevContentState,
+                      qualitySelectionSource: "manual",
                       qualityValue: value,
                     }));
                     chrome.storage.local.set({
+                      qualitySelectionSource: "manual",
                       qualityValue: value,
                     });
                   }}

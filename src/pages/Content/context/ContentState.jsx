@@ -741,8 +741,9 @@ const ContentState = (props) => {
     backupSetup: false,
     openWarning: false,
     hasOpenedBefore: false,
-    qualityValue: "",
+    qualityValue: "720p",
     fpsValue: "30",
+    qualitySelectionSource: "manual",
   });
   contentStateRef.current = contentState;
 
@@ -1312,6 +1313,7 @@ const ContentState = (props) => {
         "backupSetup",
         "qualityValue",
         "fpsValue",
+        "qualitySelectionSource",
       ],
       (result) => {
         const screenWidth = Math.round(
@@ -1533,12 +1535,24 @@ const ContentState = (props) => {
             result.fpsValue !== undefined && result.fpsValue !== null
               ? result.fpsValue
               : prevContentState.fpsValue,
+          qualitySelectionSource:
+            result.qualitySelectionSource !== undefined &&
+              result.qualitySelectionSource !== null
+              ? result.qualitySelectionSource
+              : prevContentState.qualitySelectionSource,
         }));
 
         if (!hasStoredQuality) {
           chrome.storage.local.set({
             qualityValue: resolvedQualityValue,
           });
+        }
+
+        if (
+          result.qualitySelectionSource === undefined ||
+          result.qualitySelectionSource === null
+        ) {
+          chrome.storage.local.set({ qualitySelectionSource: "manual" });
         }
 
         if (result.systemAudio === undefined || result.systemAudio === null) {
