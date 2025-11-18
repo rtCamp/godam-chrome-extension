@@ -18,22 +18,27 @@
   animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
   will-change: transform, opacity;
 }
+
 .DropdownMenuContent[data-side="top"],
 .DropdownMenuSubContent[data-side="top"] {
   animation-name: slideDownAndFade;
 }
+
 .DropdownMenuContent[data-side="right"],
 .DropdownMenuSubContent[data-side="right"] {
   animation-name: slideLeftAndFade;
 }
+
 .DropdownMenuContent[data-side="bottom"],
 .DropdownMenuSubContent[data-side="bottom"] {
   animation-name: slideUpAndFade;
 }
+
 .DropdownMenuContent[data-side="left"],
 .DropdownMenuSubContent[data-side="left"] {
   animation-name: slideRightAndFade;
 }
+
 .ItemIndicator,
 .ItemIndicatorArrow {
   position: absolute;
@@ -46,6 +51,7 @@
   align-items: center;
   justify-content: center;
 }
+
 .ItemIndicatorArrow {
   background: transparent !important;
 }
@@ -71,10 +77,12 @@
     cursor: pointer;
   }
 }
+
 .DropdownMenuSubTrigger[data-state="open"] {
   background-color: var(--violet-4);
   color: var(--violet-11);
 }
+
 .DropdownMenuItem[data-disabled],
 .DropdownMenuCheckboxItem[data-disabled],
 .DropdownMenuRadioItem[data-disabled],
@@ -83,6 +91,7 @@
   cursor: not-allowed;
   background-color: $color-light-grey !important;
 }
+
 .DropdownMenuItem[data-highlighted],
 .DropdownMenuCheckboxItem[data-highlighted],
 .DropdownMenuRadioItem[data-highlighted],
@@ -130,20 +139,23 @@
     color: #9797a4;
   }
 }
+
 .IconButton:hover {
   background-color: var(--violet-3);
 }
-.IconButton:focus {
-}
+
+.IconButton:focus {}
 
 .RightSlot {
   margin-left: auto;
   padding-left: 20px;
   color: var(--mauve-11);
 }
-[data-highlighted] > .RightSlot {
+
+[data-highlighted]>.RightSlot {
   color: white;
 }
+
 [data-disabled] .RightSlot {
   color: var(--mauve-8);
 }
@@ -153,6 +165,7 @@
     opacity: 0;
     transform: translateY(2px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -164,6 +177,7 @@
     opacity: 0;
     transform: translateX(-2px);
   }
+
   to {
     opacity: 1;
     transform: translateX(0);
@@ -175,6 +189,7 @@
     opacity: 0;
     transform: translateY(-2px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -186,6 +201,7 @@
     opacity: 0;
     transform: translateX(2px);
   }
+
   to {
     opacity: 1;
     transform: translateX(0);

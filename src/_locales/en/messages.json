@@ -1053,6 +1053,10 @@
     "message": "Cannot record at this resolution in your device",
     "description": "Maxed out resolution tooltip in settings menu"
   },
+  "autoQualityOption": {
+    "message": "Auto",
+    "description": "Automatically select the best quality based on the device"
+  },
   "permissionsModalReview": {
     "message": "Review permissions",
     "description": "Review permissions button"

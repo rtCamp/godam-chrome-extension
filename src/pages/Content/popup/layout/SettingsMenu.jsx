@@ -13,6 +13,7 @@ import JSZip from "jszip";
 
 // Context
 import { contentStateContext } from "../../context/ContentState";
+import { detectAutoQuality } from "../../../../utils/quality";
 
 const SettingsMenu = (props) => {
   const [contentState, setContentState] = useContext(contentStateContext);
@@ -25,6 +26,7 @@ const SettingsMenu = (props) => {
   const [width, setWidth] = useState(0);
   const [height, setHeight] = useState(0);
   const [godamToken, setGodamToken] = useState(null);
+  const qualitySelectionSource = contentState.qualitySelectionSource ?? "manual";
   useEffect(() => {
     // Check chrome version
     const chromeVersion = navigator.userAgent.match(/Chrom(e|ium)\/([0-9]+)\./);
@@ -41,44 +43,6 @@ const SettingsMenu = (props) => {
       setOldChrome(true);
     }
   }, []);
-
-  // Check if user has enough RAM to record for each quality option
-  useEffect(() => {
-    if (width === 0 || height === 0) return;
-    const checkRAM = () => {
-      const ram = navigator.deviceMemory;
-
-      // Check if ramValue needs to be updated
-      if (
-        (ram < 2 || width < 1280 || height < 720) &&
-        (contentState.qualityValue === "720p" ||
-          contentState.qualityValue === "4k" ||
-          contentState.qualityValue === "1080p")
-      ) {
-        setContentState((prevContentState) => ({
-          ...prevContentState,
-          qualityValue: "480p",
-        }));
-        chrome.storage.local.set({
-          qualityValue: "480p",
-        });
-      } else if (
-        (ram < 8 || width < 3840 || height < 2160) &&
-        contentState.qualityValue === "4k"
-      ) {
-        setContentState((prevContentState) => ({
-          ...prevContentState,
-          qualityValue: "720p",
-        }));
-        chrome.storage.local.set({
-          qualityValue: "720p",
-        });
-      }
-
-      setRAM(ram);
-    };
-    checkRAM();
-  }, [contentState.qualityValue, width, height]);
 
   const handleTroubleshooting = () => {
     if (typeof contentState.openModal === "function") {
@@ -156,7 +120,32 @@ const SettingsMenu = (props) => {
   useEffect(() => {
     setWidth(Math.round(window.screen.width * window.devicePixelRatio));
     setHeight(Math.round(window.screen.height * window.devicePixelRatio));
+    setRAM(navigator.deviceMemory || 0);
   }, []);
+
+  const handleAutoQuality = () => {
+    const ramValue = navigator.deviceMemory || RAM || 0;
+    const screenWidth =
+      width || Math.round(window.screen.width * window.devicePixelRatio);
+    const screenHeight =
+      height || Math.round(window.screen.height * window.devicePixelRatio);
+    const autoQuality = detectAutoQuality({
+      ram: ramValue,
+      width: screenWidth,
+      height: screenHeight,
+    });
+
+    setContentState((prevContentState) => ({
+      ...prevContentState,
+      qualitySelectionSource: "auto",
+      qualityValue: autoQuality,
+    }));
+    chrome.storage.local.set({
+      qualitySelectionSource: "auto",
+      qualityValue: autoQuality,
+    });
+    return autoQuality;
+  };
 
   const handleGoDAMSignOut = async (e) => {
     e.preventDefault();
@@ -378,10 +367,15 @@ const SettingsMenu = (props) => {
             }}
           >
             <DropdownMenu.SubTrigger className="DropdownMenuItem">
-              {chrome.i18n.getMessage("maxResolutionLabel") +
-                " (" +
-                contentState.qualityValue +
-                ")"}
+              {(() => {
+                const baseLabel = chrome.i18n.getMessage("maxResolutionLabel");
+                if (qualitySelectionSource === "auto") {
+                  const autoLabel =
+                    chrome.i18n.getMessage("autoQualityOption") || "Auto";
+                  return `${baseLabel} (${autoLabel} ${contentState.qualityValue})`;
+                }
+                return `${baseLabel} (${contentState.qualityValue})`;
+              })()}
               <div className="ItemIndicatorArrow">
                 <img src={DropdownGroup} />
               </div>
@@ -393,17 +387,48 @@ const SettingsMenu = (props) => {
                 alignOffset={-3}
               >
                 <DropdownMenu.RadioGroup
-                  value={contentState.qualityValue}
+                  value={
+                    qualitySelectionSource === "auto"
+                      ? "auto"
+                      : contentState.qualityValue
+                  }
                   onValueChange={(value) => {
+                    if (value === "auto") {
+                      handleAutoQuality();
+                      return;
+                    }
+
                     setContentState((prevContentState) => ({
                       ...prevContentState,
+                      qualitySelectionSource: "manual",
                       qualityValue: value,
                     }));
                     chrome.storage.local.set({
+                      qualitySelectionSource: "manual",
                       qualityValue: value,
                     });
                   }}
                 >
+                  <DropdownMenu.RadioItem
+                    className="ScreenityDropdownMenuItem"
+                    value="auto"
+                  >
+                    {(() => {
+                      const baseLabel = chrome.i18n.getMessage("autoQualityOption") || "Auto";
+                      if (qualitySelectionSource === "auto") {
+                        const autoQuality = detectAutoQuality({
+                          ram: navigator.deviceMemory || 0,
+                          width: width,
+                          height: height,
+                        });
+                        return `${baseLabel} (${autoQuality})`;
+                      }
+                      return baseLabel;
+                    })()}
+                    <DropdownMenu.ItemIndicator className="ScreenityItemIndicator">
+                      <img src={CheckWhiteIcon} />
+                    </DropdownMenu.ItemIndicator>
+                  </DropdownMenu.RadioItem>
                   <TooltipWrap
                     content={
                       RAM < 8 || width < 3840 || height < 2160
