@@ -25,6 +25,7 @@ const SettingsMenu = (props) => {
   const [RAM, setRAM] = useState(0);
   const [width, setWidth] = useState(0);
   const [height, setHeight] = useState(0);
+  const [qualitySelectionSource, setQualitySelectionSource] = useState("manual");
   const [godamToken, setGodamToken] = useState(null);
   useEffect(() => {
     // Check chrome version
@@ -141,6 +142,7 @@ const SettingsMenu = (props) => {
     chrome.storage.local.set({
       qualityValue: autoQuality,
     });
+    return autoQuality;
   };
 
   const handleGoDAMSignOut = async (e) => {
@@ -377,15 +379,20 @@ const SettingsMenu = (props) => {
                 sideOffset={0}
                 alignOffset={-3}
               >
-                <DropdownMenu.Item
-                  className="ScreenityDropdownMenuItem"
-                  onSelect={handleAutoQuality}
-                >
-                  {chrome.i18n.getMessage("autoQualityOption") || "Auto"}
-                </DropdownMenu.Item>
                 <DropdownMenu.RadioGroup
-                  value={contentState.qualityValue}
+                  value={
+                    qualitySelectionSource === "auto"
+                      ? "auto"
+                      : contentState.qualityValue
+                  }
                   onValueChange={(value) => {
+                    if (value === "auto") {
+                      handleAutoQuality();
+                      setQualitySelectionSource("auto");
+                      return;
+                    }
+
+                    setQualitySelectionSource("manual");
                     setContentState((prevContentState) => ({
                       ...prevContentState,
                       qualityValue: value,
@@ -395,6 +402,26 @@ const SettingsMenu = (props) => {
                     });
                   }}
                 >
+                  <DropdownMenu.RadioItem
+                    className="ScreenityDropdownMenuItem"
+                    value="auto"
+                  >
+                    {(() => {
+                      const baseLabel = chrome.i18n.getMessage("autoQualityOption") || "Auto";
+                      if (qualitySelectionSource === "auto") {
+                        const autoQuality = detectAutoQuality({
+                          ram: navigator.deviceMemory || 0,
+                          width: width,
+                          height: height,
+                        });
+                        return `${baseLabel} (${autoQuality})`;
+                      }
+                      return baseLabel;
+                    })()}
+                    <DropdownMenu.ItemIndicator className="ScreenityItemIndicator">
+                      <img src={CheckWhiteIcon} />
+                    </DropdownMenu.ItemIndicator>
+                  </DropdownMenu.RadioItem>
                   <TooltipWrap
                     content={
                       RAM < 8 || width < 3840 || height < 2160
