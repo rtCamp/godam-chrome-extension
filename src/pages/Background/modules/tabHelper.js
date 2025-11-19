@@ -4,19 +4,12 @@ const sendMessageTab = async (
   responseCallback = null,
   noTab = null
 ) => {
-  if (tabId === null || message === null)
-    return Promise.reject("Tab ID or message is null");
+  if (tabId === null || message === null) {
+    throw new Error("Tab ID or message is null");
+  }
 
   try {
-    const tab = await new Promise((resolve, reject) => {
-      chrome.tabs.get(tabId, (tab) => {
-        if (chrome.runtime.lastError) {
-          reject(chrome.runtime.lastError.message);
-        } else {
-          resolve(tab);
-        }
-      });
-    });
+    const tab = await chrome.tabs.get(tabId);
 
     if (
       !tab ||
@@ -27,24 +20,22 @@ const sendMessageTab = async (
       tab.url === "" ||
       tab.url === "about:blank"
     ) {
-      return Promise.reject("Invalid tab URL");
+      throw new Error("Invalid tab URL");
     }
 
-    return new Promise((resolve, reject) => {
-      chrome.tabs.sendMessage(tab.id, message, (response) => {
-        if (chrome.runtime.lastError) {
-          reject(chrome.runtime.lastError.message);
-        } else {
-          responseCallback ? responseCallback(response) : resolve(response);
-        }
-      });
-    });
+    const response = await chrome.tabs.sendMessage(tab.id, message);
+
+    if (responseCallback && typeof responseCallback === "function") {
+      responseCallback(response);
+    }
+
+    return response;
   } catch (error) {
     console.error("Error sending message to tab:", error);
     if (noTab && typeof noTab === "function") {
       noTab();
     }
-    return Promise.reject(error);
+    throw error;
   }
 };
 
@@ -52,16 +43,11 @@ const focusTab = async (tabId) => {
   if (tabId === null) return;
 
   try {
-    const tab = await new Promise((resolve) => {
-      chrome.tabs.get(tabId, (tab) => {
-        resolve(tab);
-      });
-    });
+    const tab = await chrome.tabs.get(tabId);
 
     if (tab && tab.id) {
-      chrome.windows.update(tab.windowId, { focused: true }).then(() => {
-        chrome.tabs.update(tab.id, { active: true });
-      });
+      await chrome.windows.update(tab.windowId, { focused: true });
+      await chrome.tabs.update(tab.id, { active: true });
     }
   } catch (error) {
     // Tab doesn't exist or can't be accessed
@@ -72,14 +58,10 @@ const removeTab = async (tabId) => {
   if (tabId === null) return;
 
   try {
-    const tab = await new Promise((resolve) => {
-      chrome.tabs.get(tabId, (tab) => {
-        resolve(tab);
-      });
-    });
+    const tab = await chrome.tabs.get(tabId);
 
     if (tab && tab.id) {
-      chrome.tabs.remove(tab.id);
+      await chrome.tabs.remove(tab.id);
     }
   } catch (error) {
     // Tab doesn't exist or can't be accessed
@@ -107,7 +89,7 @@ const createTab = async (url, translate = false, active = false) => {
     }
   }
 
-  chrome.tabs.create({
+  return await chrome.tabs.create({
     url: url,
     active: active,
   });
