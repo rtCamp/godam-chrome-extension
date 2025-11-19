@@ -9,17 +9,11 @@ import { ReactSVG } from "react-svg";
 const URL =
   "chrome-extension://" + chrome.i18n.getMessage("@@extension_id") + "/assets/";
 
-// Components
-import CropUI from "../editor/CropUI";
-import AudioUI from "../editor/AudioUI";
-import { GoDAMModal } from "./GoDAMModal";
-
 // Context
 import { ContentStateContext } from "../../context/ContentState"; // Import the ContentState context
 
 const RightPanel = () => {
   const [contentState, setContentState] = useContext(ContentStateContext); // Access the ContentState context
-  const [webmFallback, setWebmFallback] = useState(false);
   const [videoModal, setVideoModal] = useState('');
   const contentStateRef = useRef(contentState);
   const consoleErrorRef = useRef([]);
@@ -204,7 +198,7 @@ const RightPanel = () => {
             }
           );
         },
-        () => {}
+        () => { }
       );
     }
   };
@@ -250,7 +244,7 @@ const RightPanel = () => {
             });
           });
         },
-        () => {}
+        () => { }
       );
     }
   };
@@ -319,10 +313,10 @@ const RightPanel = () => {
                         contentState.noffmpeg ||
                         (contentState.duration > contentState.editLimit &&
                           !contentState.override)
-                      ? chrome.i18n.getMessage("notAvailableLabel")
-                      : contentState.mp4ready && !contentState.isFfmpegRunning
-                      ? chrome.i18n.getMessage("downloadMP4ButtonDescription")
-                      : chrome.i18n.getMessage("preparingLabel")}
+                        ? chrome.i18n.getMessage("notAvailableLabel")
+                        : contentState.mp4ready && !contentState.isFfmpegRunning
+                          ? chrome.i18n.getMessage("downloadMP4ButtonDescription")
+                          : chrome.i18n.getMessage("preparingLabel")}
                   </div>
                 </div>
                 <div className={styles.buttonRight}>
@@ -348,8 +342,8 @@ const RightPanel = () => {
                     <div className={styles.buttonDescription}>
                       {!contentState.isFfmpegRunning
                         ? chrome.i18n.getMessage(
-                            "downloadWEBMButtonDescription"
-                          )
+                          "downloadWEBMButtonDescription"
+                        )
                         : chrome.i18n.getMessage("preparingLabel")}
                     </div>
                   </div>
@@ -388,10 +382,10 @@ const RightPanel = () => {
                         contentState.noffmpeg ||
                         (contentState.duration > contentState.editLimit &&
                           !contentState.override)
-                      ? chrome.i18n.getMessage("notAvailableLabel")
-                      : contentState.mp4ready
-                      ? chrome.i18n.getMessage("downloadGIFButtonDescription")
-                      : chrome.i18n.getMessage("preparingLabel")}
+                        ? chrome.i18n.getMessage("notAvailableLabel")
+                        : contentState.mp4ready
+                          ? chrome.i18n.getMessage("downloadGIFButtonDescription")
+                          : chrome.i18n.getMessage("preparingLabel")}
                   </div>
                 </div>
                 <div className={styles.buttonRight}>
