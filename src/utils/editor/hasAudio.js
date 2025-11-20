@@ -46,3 +46,4 @@ const hasAudio = async (videoBlob) => {
 };
 
 export default hasAudio;
+
