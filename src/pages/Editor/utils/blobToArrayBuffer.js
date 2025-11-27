@@ -1,5 +1,5 @@
-async function blobToArrayBuffer(blob) {
-  return await blob.arrayBuffer();
+function blobToArrayBuffer(blob) {
+  return blob.arrayBuffer();
 }
 
 export default blobToArrayBuffer;
