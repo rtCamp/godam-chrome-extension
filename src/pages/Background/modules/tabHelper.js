@@ -4,15 +4,19 @@ const sendMessageTab = async (
   responseCallback = null,
   noTab = null
 ) => {
-  if (tabId === null) {
-    throw new Error("Tab ID is required and cannot be null");
-  }
-  if (message === null) {
-    throw new Error("Message is required and cannot be null");
-  }
+  if (tabId === null || message === null)
+    return Promise.reject("Tab ID or message is null");
 
   try {
-    const tab = await chrome.tabs.get(tabId);
+    const tab = await new Promise((resolve, reject) => {
+      chrome.tabs.get(tabId, (tab) => {
+        if (chrome.runtime.lastError) {
+          reject(chrome.runtime.lastError.message);
+        } else {
+          resolve(tab);
+        }
+      });
+    });
 
     if (
       !tab ||
@@ -23,22 +27,24 @@ const sendMessageTab = async (
       tab.url === "" ||
       tab.url === "about:blank"
     ) {
-      throw new Error("Cannot send message to restricted page (system pages, Chrome Web Store) or tab without valid URL");
+      return Promise.reject("Invalid tab URL");
     }
 
-    const response = await chrome.tabs.sendMessage(tab.id, message);
-
-    if (responseCallback && typeof responseCallback === "function") {
-      responseCallback(response);
-    }
-
-    return response;
+    return new Promise((resolve, reject) => {
+      chrome.tabs.sendMessage(tab.id, message, (response) => {
+        if (chrome.runtime.lastError) {
+          reject(chrome.runtime.lastError.message);
+        } else {
+          responseCallback ? responseCallback(response) : resolve(response);
+        }
+      });
+    });
   } catch (error) {
     console.error("Error sending message to tab:", error);
     if (noTab && typeof noTab === "function") {
       noTab();
     }
-    throw error;
+    return Promise.reject(error);
   }
 };
 
@@ -46,11 +52,16 @@ const focusTab = async (tabId) => {
   if (tabId === null) return;
 
   try {
-    const tab = await chrome.tabs.get(tabId);
+    const tab = await new Promise((resolve) => {
+      chrome.tabs.get(tabId, (tab) => {
+        resolve(tab);
+      });
+    });
 
     if (tab && tab.id) {
-      await chrome.windows.update(tab.windowId, { focused: true });
-      await chrome.tabs.update(tab.id, { active: true });
+      chrome.windows.update(tab.windowId, { focused: true }).then(() => {
+        chrome.tabs.update(tab.id, { active: true });
+      });
     }
   } catch (error) {
     // Tab doesn't exist or can't be accessed
@@ -61,10 +72,14 @@ const removeTab = async (tabId) => {
   if (tabId === null) return;
 
   try {
-    const tab = await chrome.tabs.get(tabId);
+    const tab = await new Promise((resolve) => {
+      chrome.tabs.get(tabId, (tab) => {
+        resolve(tab);
+      });
+    });
 
     if (tab && tab.id) {
-      await chrome.tabs.remove(tab.id);
+      chrome.tabs.remove(tab.id);
     }
   } catch (error) {
     // Tab doesn't exist or can't be accessed
@@ -92,7 +107,7 @@ const createTab = async (url, translate = false, active = false) => {
     }
   }
 
-  return await chrome.tabs.create({
+  chrome.tabs.create({
     url: url,
     active: active,
   });
