@@ -20,7 +20,9 @@ localforage.config({
     version: 1,
 });
 
-initPostHog();
+(async () => {
+    await initPostHog();
+})();
 
 // Get chunks store
 const chunksStore = localforage.createInstance({

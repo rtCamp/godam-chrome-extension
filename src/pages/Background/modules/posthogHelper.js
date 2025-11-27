@@ -25,7 +25,7 @@ export async function getSharedDistinctId() {
  * @returns {Promise<void>}
  */
 export const initPostHog = async () => {
-    if (isInitialized || !process.env.POSTHOG_KEY) {
+    if (isInitialized || !process.env.POSTHOG_KEY || !process.env.POSTHOG_HOST) {
         return;
     }
 
@@ -58,7 +58,10 @@ export const initPostHog = async () => {
  * @returns {void}
  */
 export const trackEvent = (eventName, properties = {}) => {
-    if (!isInitialized) return;
+    if (!isInitialized) {
+        console.warn(`PostHog not initialized: event "${eventName}" was not tracked.`);
+        return;
+    }
 
     try {
         posthog.capture(eventName, {
