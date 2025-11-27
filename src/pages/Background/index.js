@@ -724,10 +724,21 @@ const sendMessageRecord = async (message) => {
 
 const forwardAudioTrackWarning = async ({ source, reason }) => {
     try {
-        const { activeTab, tabRecordedID } = await chrome.storage.local.get([
+        const { activeTab, tabRecordedID, recordingType, tabPreferred } =
+            await chrome.storage.local.get([
             "activeTab",
             "tabRecordedID",
+                "recordingType",
+                "tabPreferred",
         ]);
+
+        const isScreenCapture =
+            recordingType === "screen" && tabPreferred !== true;
+
+        if (isScreenCapture) {
+            await sendMessageRecord({ type: "stop-recording-tab" });
+            return;
+        }
 
         const targets = new Set();
         if (typeof activeTab === "number") {
