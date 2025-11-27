@@ -362,8 +362,12 @@ chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
 function blobToBase64(blob) {
     return new Promise((resolve, reject) => {
         const reader = new FileReader();
-        reader.onload = () => resolve(reader.result);
-        reader.onerror = (error) => reject(error);
+        reader.onload = function () {
+            resolve(reader.result);
+        };
+        reader.onerror = function (error) {
+            reject(error);
+        };
         reader.readAsDataURL(blob);
     });
 }
@@ -1636,9 +1640,9 @@ const handleSignOutGoDAM = async (sendResponse) => {
 const handleUploadScreenshot = async (sendResponse, request) => {
     try {
         const { godamToken, godamRefreshToken, godamTokenExpiration, selectedOrg } = await chrome.storage.local.get([
-            "godamToken",
-            "godamRefreshToken",
-            "godamTokenExpiration",
+            "godamToken", 
+            "godamRefreshToken", 
+            "godamTokenExpiration", 
             "selectedOrg"
         ]);
 
@@ -1702,15 +1706,15 @@ const handleUploadScreenshot = async (sendResponse, request) => {
         const responseData = await uploadResponse.json();
         const uploadedFileName = responseData?.file_informations?.name;
 
-        sendResponse({
-            status: "ok",
+        sendResponse({ 
+            status: "ok", 
             fileName: uploadedFileName,
-            message: "Screenshot uploaded successfully"
+            message: "Screenshot uploaded successfully" 
         });
     } catch (error) {
-        sendResponse({
-            status: "error",
-            message: error.message || "Failed to upload screenshot"
+        sendResponse({ 
+            status: "error", 
+            message: error.message || "Failed to upload screenshot" 
         });
     }
 };
@@ -2022,7 +2026,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         }
 
         console.log(options);
-
+        
 
         // Capture the current tab
         chrome.tabs.captureVisibleTab(null, options, (dataUrl) => {
