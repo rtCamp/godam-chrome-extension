@@ -726,11 +726,11 @@ const forwardAudioTrackWarning = async ({ source, reason }) => {
     try {
         const { activeTab, tabRecordedID, recordingType, tabPreferred } =
             await chrome.storage.local.get([
-            "activeTab",
-            "tabRecordedID",
+                "activeTab",
+                "tabRecordedID",
                 "recordingType",
                 "tabPreferred",
-        ]);
+            ]);
 
         const isScreenCapture =
             recordingType === "screen" && tabPreferred !== true;
