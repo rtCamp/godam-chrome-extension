@@ -4,8 +4,11 @@ const sendMessageTab = async (
   responseCallback = null,
   noTab = null
 ) => {
-  if (tabId === null || message === null) {
-    throw new Error("Tab ID or message is null");
+  if (tabId === null) {
+    throw new Error("Tab ID is required and cannot be null");
+  }
+  if (message === null) {
+    throw new Error("Message is required and cannot be null");
   }
 
   try {
@@ -20,7 +23,7 @@ const sendMessageTab = async (
       tab.url === "" ||
       tab.url === "about:blank"
     ) {
-      throw new Error("Invalid tab URL");
+      throw new Error("Cannot send message to restricted page (system pages, Chrome Web Store) or tab without valid URL");
     }
 
     const response = await chrome.tabs.sendMessage(tab.id, message);
