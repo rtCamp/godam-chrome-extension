@@ -3,7 +3,6 @@ import "./styles/global/_app.scss";
 
 import React, { useState, useEffect, useRef, useContext } from "react";
 // Layout
-import Editor from "./layout/editor/Editor";
 import Player from "./layout/player/Player";
 import Modal from "./components/global/Modal";
 
@@ -100,11 +99,7 @@ const Sandbox = () => {
     <div ref={parentRef}>
       <Modal />
       <video></video>
-      {/* Render the WaveformGenerator component and pass the ffmpeg instance as a prop */}
-      {contentState.ffmpeg &&
-        contentState.ready &&
-        contentState.mode === "edit" && <Editor />}
-      {contentState.mode != "edit" && contentState.ready && <Player />}
+      {contentState.ready && <Player />}
       {!contentState.ready && (
         <div className="wrap">
           <div className="setupLogo">
