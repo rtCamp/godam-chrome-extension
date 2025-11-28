@@ -651,6 +651,44 @@
     "message": "रद्द करें",
     "description": "माइक्रोफ़ोन म्यूट हो गया मॉडल रद्द करें"
   },
+  "audioWarningModalTitle": {
+    "message": "आपके ऑडियो में समस्या है।",
+    "description": "ऑडियो ट्रैक डिस्कनेक्ट चेतावनी शीर्षक"
+  },
+  "audioWarningModalDescription": {
+    "message": "रिकॉर्डिंग के दौरान हमने $1 ऑडियो ट्रैक खो दिया। यदि आप जारी रखते हैं, तो अंतिम वीडियो में संभवतः ध्वनि नहीं होगी।",
+    "description": "ऑडियो ट्रैक डिस्कनेक्ट चेतावनी विवरण",
+    "placeholders": {
+      "source": {
+        "content": "$1",
+        "example": "माइक्रोफ़ोन"
+      }
+    }
+  },
+  "audioWarningModalContinue": {
+    "message": "फिर भी जारी रखें",
+    "description": "ऑडियो चेतावनी मॉडल जारी रखें बटन"
+  },
+  "audioWarningModalCancel": {
+    "message": "रिकॉर्डिंग रोकें",
+    "description": "ऑडियो चेतावनी मॉडल रद्द करें बटन"
+  },
+  "audioWarningModalSourceMicrophone": {
+    "message": "माइक्रोफ़ोन",
+    "description": "ऑडियो चेतावनी स्रोत लेबल माइक्रोफ़ोन"
+  },
+  "audioWarningModalSourceSystem": {
+    "message": "सिस्टम",
+    "description": "ऑडियो चेतावनी स्रोत लेबल सिस्टम"
+  },
+  "audioWarningModalSourceMixed": {
+    "message": "ऑडियो",
+    "description": "ऑडियो चेतावनी स्रोत लेबल सम्मिलित"
+  },
+  "audioWarningModalSourceGeneric": {
+    "message": "ऑडियो",
+    "description": "ऑडियो चेतावनी स्रोत लेबल डिफ़ॉल्ट"
+  },
   "setupTitle": {
     "message": "गोदाम के साथ तीन सरल कदमों में शुरू हो जाइए:",
     "description": "सेटअप कदम शीर्षक"

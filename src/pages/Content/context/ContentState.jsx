@@ -18,6 +18,7 @@ export const contentStateContext = createContext();
 const ContentState = (props) => {
   const [timer, setTimer] = React.useState(0);
   const contentStateRef = useRef();
+  const audioWarningShown = useRef(false);
   const [URL, setURL] = useState(
     "https://godam.io/features/godam-screen-recorder/"
   );
@@ -1048,6 +1049,32 @@ const ContentState = (props) => {
             contentStateRef.current.dismissRecording();
           },
           () => {
+            contentStateRef.current.dismissRecording();
+          }
+        );
+      } else if (request.type === "audio-track-warning") {
+        if (audioWarningShown.current) return;
+        audioWarningShown.current = true;
+        const sourceMap = {
+          microphone: chrome.i18n.getMessage(
+            "audioWarningModalSourceMicrophone"
+          ),
+          system: chrome.i18n.getMessage("audioWarningModalSourceSystem"),
+          mixed: chrome.i18n.getMessage("audioWarningModalSourceMixed"),
+        };
+        const sourceLabel =
+          sourceMap[request.source] ||
+          chrome.i18n.getMessage("audioWarningModalSourceGeneric");
+        contentStateRef.current.openModal(
+          chrome.i18n.getMessage("audioWarningModalTitle"),
+          chrome.i18n.getMessage("audioWarningModalDescription", [sourceLabel]),
+          chrome.i18n.getMessage("audioWarningModalContinue"),
+          chrome.i18n.getMessage("audioWarningModalCancel"),
+          () => {
+            audioWarningShown.current = false;
+          },
+          () => {
+            audioWarningShown.current = false;
             contentStateRef.current.dismissRecording();
           }
         );

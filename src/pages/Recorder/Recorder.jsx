@@ -48,6 +48,55 @@ const Recorder = () => {
 
   const backupRef = useRef(false);
 
+  const audioWarningSent = useRef(false);
+  const audioTrackHandlers = useRef(new Map());
+
+  const notifyAudioIssue = useCallback((source, reason) => {
+    if (audioWarningSent.current) return;
+    audioWarningSent.current = true;
+    chrome.runtime.sendMessage({
+      type: "audio-track-warning",
+      source,
+      reason,
+    });
+  }, []);
+
+  const monitorAudioTracks = useCallback(
+    (tracks, source) => {
+      if (!tracks || tracks.length === 0) return;
+      tracks.forEach((track) => {
+        if (!track || audioTrackHandlers.current.has(track.id)) return;
+        const handleEnded = () => notifyAudioIssue(source, "ended");
+        const handleMute = () => notifyAudioIssue(source, "muted");
+        track.addEventListener("ended", handleEnded);
+        track.addEventListener("mute", handleMute);
+        audioTrackHandlers.current.set(track.id, {
+          track,
+          handleEnded,
+          handleMute,
+        });
+      });
+    },
+    [notifyAudioIssue]
+  );
+
+  const resetAudioTrackMonitors = useCallback(() => {
+    audioTrackHandlers.current.forEach(
+      ({ track, handleEnded, handleMute }) => {
+        track.removeEventListener("ended", handleEnded);
+        track.removeEventListener("mute", handleMute);
+      }
+    );
+    audioTrackHandlers.current.clear();
+    audioWarningSent.current = false;
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      resetAudioTrackMonitors();
+    };
+  }, [resetAudioTrackMonitors]);
+
   useEffect(() => {
     chrome.storage.local.get(["backup"], (result) => {
       if (result.backup) {
@@ -63,6 +112,7 @@ const Recorder = () => {
     if (recorder.current !== null) return;
 
     navigator.storage.persist();
+    audioWarningSent.current = false;
     // Check if the stream actually has data in it
     if (helperVideoStream.current.getVideoTracks().length === 0) {
       chrome.runtime.sendMessage({
@@ -302,6 +352,7 @@ const Recorder = () => {
       });
       helperAudioStream.current = null;
     }
+    resetAudioTrackMonitors();
   }
 
   const dismissRecording = async () => {
@@ -311,6 +362,7 @@ const Recorder = () => {
       recorder.current = null;
     }
     window.close();
+    resetAudioTrackMonitors();
   };
 
   const restartRecording = async () => {
@@ -320,6 +372,7 @@ const Recorder = () => {
     }
     recorder.current = null;
     chrome.runtime.sendMessage({ type: "new-sandbox-page-restart" });
+    resetAudioTrackMonitors();
   };
 
   async function startAudioStream(id) {
@@ -525,6 +578,10 @@ const Recorder = () => {
       audioInputSource.current
         .connect(audioInputGain.current)
         .connect(destination.current);
+      monitorAudioTracks(
+        helperAudioStream.current.getAudioTracks(),
+        "microphone"
+      );
     } else {
       // No microphone available
     }
@@ -542,6 +599,10 @@ const Recorder = () => {
       audioOutputSource.current
         .connect(audioOutputGain.current)
         .connect(destination.current);
+      monitorAudioTracks(
+        helperVideoStream.current.getAudioTracks(),
+        "system"
+      );
     } else {
       // No system audio available
     }
@@ -555,6 +616,10 @@ const Recorder = () => {
     ) {
       liveStream.current.addTrack(
         destination.current.stream.getAudioTracks()[0]
+      );
+      monitorAudioTracks(
+        destination.current.stream.getAudioTracks(),
+        "mixed"
       );
     }
 

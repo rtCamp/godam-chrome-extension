@@ -675,6 +675,44 @@
     "message": "Cancel",
     "description": "Microphone muted modal cancel"
   },
+  "audioWarningModalTitle": {
+    "message": "There's an issue with your audio.",
+    "description": "Audio track disconnected modal title"
+  },
+  "audioWarningModalDescription": {
+    "message": "We lost the $1 audio track during recording. If you continue, your final video might not have sound.",
+    "description": "Audio track disconnected modal description",
+    "placeholders": {
+      "source": {
+        "content": "$1",
+        "example": "microphone"
+      }
+    }
+  },
+  "audioWarningModalContinue": {
+    "message": "Continue anyway",
+    "description": "Audio warning modal continue button"
+  },
+  "audioWarningModalCancel": {
+    "message": "Stop recording",
+    "description": "Audio warning modal cancel button"
+  },
+  "audioWarningModalSourceMicrophone": {
+    "message": "microphone",
+    "description": "Source label for microphone audio warning"
+  },
+  "audioWarningModalSourceSystem": {
+    "message": "system",
+    "description": "Source label for system audio warning"
+  },
+  "audioWarningModalSourceMixed": {
+    "message": "combined",
+    "description": "Source label when mixed output track fails"
+  },
+  "audioWarningModalSourceGeneric": {
+    "message": "audio",
+    "description": "Fallback source label for audio warning"
+  },
   "setupTitle": {
     "message": "Get started with GoDAM in three simple steps:",
     "description": "Set up steps title"

@@ -733,6 +733,46 @@ const sendMessageRecord = async (message) => {
     });
 };
 
+const forwardAudioTrackWarning = async ({ source, reason }) => {
+    try {
+        const { activeTab, tabRecordedID, recordingType, tabPreferred } =
+            await chrome.storage.local.get([
+                "activeTab",
+                "tabRecordedID",
+                "recordingType",
+                "tabPreferred",
+            ]);
+
+        const isScreenCapture =
+            recordingType === "screen" && tabPreferred !== true;
+
+        if (isScreenCapture) {
+            await sendMessageRecord({ type: "stop-recording-tab" });
+            return;
+        }
+
+        const targets = new Set();
+        if (typeof activeTab === "number") {
+            targets.add(activeTab);
+        }
+        if (typeof tabRecordedID === "number") {
+            targets.add(tabRecordedID);
+        }
+
+        await Promise.all(
+            Array.from(targets).map((tabId) =>
+                sendMessageTab(tabId, {
+                    type: "audio-track-warning",
+                    source,
+                    reason,
+                }).catch(() => {})
+            )
+        );
+    } catch (err) {
+        console.warn("Unable to forward audio warning", err);
+    }
+};
+
 const initBackup = async (request, id) => {
     const { backupTab } = await chrome.storage.local.get(["backupTab"]);
     const backupURL = chrome.runtime.getURL("backup.html");
@@ -1850,6 +1890,8 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     } else if (request.type === "get-platform-info") {
         getPlatformInfo(sendResponse);
         return true;
+    } else if (request.type === "audio-track-warning") {
+        forwardAudioTrackWarning(request);
     } else if (request.type === "restore-recording") {
         restoreRecording();
     } else if (request.type === "check-restore") {
