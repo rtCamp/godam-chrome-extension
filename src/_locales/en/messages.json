@@ -551,26 +551,6 @@
     "message": "Save",
     "description": "Save title in sandbox editor page"
   },
-  "signOutDriveLabel": {
-    "message": "Sign out of Drive",
-    "description": "Sign out of Google Drive label"
-  },
-  "savingDriveLabel": {
-    "message": "Saving...",
-    "description": "Saving to Google Drive label"
-  },
-  "saveDriveButtonTitle": {
-    "message": "Save to Drive",
-    "description": "Save to Google Drive button"
-  },
-  "saveDriveButtonDescription": {
-    "message": "Save the current version to Google Drive",
-    "description": "Save to Google Drive label"
-  },
-  "signInDriveLabel": {
-    "message": "Sign in and save to Drive",
-    "description": "Sign in to Google Drive label"
-  },
   "signOutGoDAMLabel": {
     "message": "Sign out of GoDAM",
     "description": "Sign out of GoDAM label"
@@ -778,22 +758,6 @@
   "stopRecording": {
     "message": "Stop recording",
     "description": "Stop recording button in recording scren"
-  },
-  "updateAnnouncementTitle": {
-    "message": "Welcome to the new GoDAM chrome extension!",
-    "description": "Update announcement title for existing users"
-  },
-  "updateAnnouncementDescription": {
-    "message": "We’re introducing a new look and many exciting features, but don’t worry, it’s still the same free, private and open source extension you know and love.",
-    "description": "Update announcement description for existing users"
-  },
-  "updateAnnouncementLearnMore": {
-    "message": "Learn more about the update.",
-    "description": "Update announcement learn more link for existing users"
-  },
-  "updateAnnouncementButton": {
-    "message": "Get started",
-    "description": "Update announcement button for existing users"
   },
   "streamErrorModalTitle": {
     "message": "Error starting the recording",

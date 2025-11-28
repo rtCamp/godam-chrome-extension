@@ -3,7 +3,6 @@ import "./styles/global/_app.scss";
 
 import React, { useState, useEffect, useRef, useContext } from "react";
 // Layout
-import Editor from "./layout/editor/Editor";
 import Player from "./layout/player/Player";
 import Modal from "./components/global/Modal";
 
@@ -16,16 +15,6 @@ const Sandbox = () => {
   const [contentState, setContentState] = useContext(ContentStateContext); // Access the ContentState context
   const parentRef = useRef(null);
   const progress = useRef("");
-
-  // Check when going offline (listener)
-  // useEffect(() => {
-  //   window.addEventListener("offline", () => {
-  //     setContentState((prevState) => ({
-  //       ...prevState,
-  //       offline: true,
-  //     }));
-  //   });
-  // }, []);
 
   const getChromeVersion = () => {
     var raw = navigator.userAgent.match(/Chrom(e|ium)\/([0-9]+)\./);
@@ -110,11 +99,7 @@ const Sandbox = () => {
     <div ref={parentRef}>
       <Modal />
       <video></video>
-      {/* Render the WaveformGenerator component and pass the ffmpeg instance as a prop */}
-      {contentState.ffmpeg &&
-        contentState.ready &&
-        contentState.mode === "edit" && <Editor />}
-      {contentState.mode != "edit" && contentState.ready && <Player />}
+      {contentState.ready && <Player />}
       {!contentState.ready && (
         <div className="wrap">
           <div className="setupLogo">
@@ -143,20 +128,6 @@ const Sandbox = () => {
                     chrome.i18n.getMessage("havingIssuesModalButton2"),
                     () => {
                       chrome.runtime.sendMessage({ type: "restore-recording" });
-                      // chrome.runtime.sendMessage(
-                      //   {
-                      //     type: "check-restore",
-                      //   },
-                      //   (response) => {
-                      //     if (response.restore) {
-                      //       chrome.runtime.sendMessage({
-                      //         type: "indexed-db-download",
-                      //       });
-                      //     } else {
-                      //       alert(chrome.i18n.getMessage("noRecordingFound"));
-                      //     }
-                      //   }
-                      // );
                     },
                     () => {
                       chrome.runtime.sendMessage({ type: "report-bug" });

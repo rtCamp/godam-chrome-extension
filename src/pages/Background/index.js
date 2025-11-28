@@ -1,5 +1,3 @@
-import saveToDrive from "./modules/saveToDrive";
-
 import {
     sendMessageTab,
     focusTab,
@@ -858,41 +856,6 @@ const offscreenDocument = async (request, tabId = null) => {
             try {
                 // This is following the steps from this page, but it still doesn't work :( https://developer.chrome.com/docs/extensions/mv3/screen_capture/#audio-and-video-offscreen-doc
                 throw new Error("Exit offscreen recording");
-                const existingContexts = await chrome.runtime.getContexts({});
-
-                const offDocument = existingContexts.find(
-                    (c) => c.contextType === "OFFSCREEN_DOCUMENT"
-                );
-
-                if (offDocument) {
-                    // If an offscreen document is already open, close it.
-                    await chrome.offscreen.closeDocument();
-                }
-
-                // Create an offscreen document.
-                await chrome.offscreen.createDocument({
-                    url: "recorderoffscreen.html",
-                    reasons: ["USER_MEDIA", "AUDIO_PLAYBACK", "DISPLAY_MEDIA"],
-                    justification:
-                        "Recording from getDisplayMedia API and tabCapture API",
-                });
-
-                const streamId = await chrome.tabCapture.getMediaStreamId({
-                    targetTabId: activeTab.id,
-                });
-
-                chrome.storage.local.set({
-                    recordingTab: null,
-                    offscreen: true,
-                    region: false,
-                    wasRegion: true,
-                });
-                sendMessageRecord({
-                    type: "loaded",
-                    request: request,
-                    isTab: true,
-                    tabID: streamId,
-                });
             } catch (error) {
                 // Open the recorder.html page as a normal tab.
                 chrome.tabs
@@ -1320,44 +1283,6 @@ const base64ToUint8Array = (base64) => {
             bytes[i] = binaryString.charCodeAt(i);
         }
         return new Blob([bytes], { type: "video/webm" });
-    }
-};
-
-const handleSaveToDrive = async (sendResponse, request, fallback = false) => {
-    if (!fallback) {
-        const blob = base64ToUint8Array(request.base64);
-
-        // Specify the desired file name
-        const fileName = request.title + ".mp4";
-
-        // Call the saveToDrive function
-        saveToDrive(blob, fileName, sendResponse).then(() => {
-            savedToDrive();
-        });
-    } else {
-        const chunks = [];
-        await chunksStore.iterate((value, key) => {
-            chunks.push(value);
-        });
-
-        // Build the video from chunks
-        let array = [];
-        let lastTimestamp = 0;
-        for (const chunk of chunks) {
-            // Check if chunk timestamp is smaller than last timestamp, if so, skip
-            if (chunk.timestamp < lastTimestamp) {
-                continue;
-            }
-            lastTimestamp = chunk.timestamp;
-            array.push(chunk.chunk);
-        }
-        const blob = new Blob(array, { type: "video/webm" });
-
-        const filename = request.title + ".webm";
-
-        saveToDrive(blob, filename, sendResponse).then(() => {
-            savedToDrive();
-        });
     }
 };
 
@@ -1862,12 +1787,6 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         handleRecordingComplete();
     } else if (request.type === "check-recording") {
         checkRecording();
-    } else if (request.type === "review-screenity") {
-        createTab(
-            "https://chrome.google.com/webstore/detail/screenity-screen-recorder/kbbdabhdfibnancpjfhlkhafgdilcnji/reviews",
-            false,
-            true
-        );
     } else if (request.type === "open-processing-info") {
         createTab(
             "https://godam.io/docs/godam-screen-recorder/",
@@ -1964,12 +1883,6 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         return true;
     } else if (request.type === "is-pinned") {
         isPinned(sendResponse);
-        return true;
-    } else if (request.type === "save-to-drive") {
-        handleSaveToDrive(sendResponse, request, false);
-        return true;
-    } else if (request.type === "save-to-drive-fallback") {
-        handleSaveToDrive(sendResponse, request, true);
         return true;
     } else if (request.type === "request-download") {
         requestDownload(request.base64, request.title);
