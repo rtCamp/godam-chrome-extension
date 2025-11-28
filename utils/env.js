@@ -9,5 +9,7 @@ module.exports = {
   GODAM_UPLOAD_URL: process.env.GODAM_UPLOAD_URL || 'https://godam-upload.rt.gw',
   GODAM_OAUTH_CLIENT_ID: process.env.GODAM_OAUTH_CLIENT_ID || 'habg22ul6k',
   GODAM_OAUTH_SCOPE: process.env.GODAM_OAUTH_SCOPE || 'all openid',
-  ASSET_PATH : process.env.ASSET_PATH || "/",
+  ASSET_PATH: process.env.ASSET_PATH || "/",
+  POSTHOG_KEY: process.env.POSTHOG_KEY || "",
+  POSTHOG_HOST: process.env.POSTHOG_HOST || 'https://us.i.posthog.com',
 };

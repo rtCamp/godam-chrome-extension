@@ -1,5 +1,3 @@
-import saveToDrive from "./modules/saveToDrive";
-
 import {
     sendMessageTab,
     focusTab,
@@ -10,6 +8,8 @@ import {
 
 import localforage from "localforage";
 
+import { initPostHog, trackEvent } from "./modules/posthogHelper";
+
 const saveToGoDAM = require('./modules/saveToGoDAM').default;
 
 localforage.config({
@@ -17,6 +17,10 @@ localforage.config({
     name: "screenity",
     version: 1,
 });
+
+(async () => {
+    await initPostHog();
+})();
 
 // Get chunks store
 const chunksStore = localforage.createInstance({
@@ -108,6 +112,9 @@ const startRecording = async () => {
 
     // Check if customRegion is set
     const { customRegion } = await chrome.storage.local.get(["customRegion"]);
+
+    // Track recording started
+    trackEvent('extension_recording_started');
 
     if (customRegion) {
         sendMessageRecord({ type: "start-recording-tab", region: true });
@@ -353,12 +360,8 @@ chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
 function blobToBase64(blob) {
     return new Promise((resolve, reject) => {
         const reader = new FileReader();
-        reader.onload = function () {
-            resolve(reader.result);
-        };
-        reader.onerror = function (error) {
-            reject(error);
-        };
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = (error) => reject(error);
         reader.readAsDataURL(blob);
     });
 }
@@ -476,6 +479,12 @@ const stopRecording = async () => {
     if (recordingStartTime === 0) {
         duration = 0;
     }
+
+    // Track recording stopped with duration
+    trackEvent('extension_recording_stopped', {
+        duration_seconds: Math.floor(duration / 1000),
+    });
+
     chrome.storage.local.set({
         recording: false,
         recordingDuration: duration,
@@ -580,6 +589,8 @@ chrome.runtime.onStartup.addListener(() => {
 
 // Check when action button is clicked
 chrome.action.onClicked.addListener(async (tab) => {
+    // Track action button click
+    trackEvent('extension_icon_clicked');
 
     // Check if user is logged in to GoDAM
     const { godamToken } = await chrome.storage.local.get(["godamToken"]);
@@ -845,41 +856,6 @@ const offscreenDocument = async (request, tabId = null) => {
             try {
                 // This is following the steps from this page, but it still doesn't work :( https://developer.chrome.com/docs/extensions/mv3/screen_capture/#audio-and-video-offscreen-doc
                 throw new Error("Exit offscreen recording");
-                const existingContexts = await chrome.runtime.getContexts({});
-
-                const offDocument = existingContexts.find(
-                    (c) => c.contextType === "OFFSCREEN_DOCUMENT"
-                );
-
-                if (offDocument) {
-                    // If an offscreen document is already open, close it.
-                    await chrome.offscreen.closeDocument();
-                }
-
-                // Create an offscreen document.
-                await chrome.offscreen.createDocument({
-                    url: "recorderoffscreen.html",
-                    reasons: ["USER_MEDIA", "AUDIO_PLAYBACK", "DISPLAY_MEDIA"],
-                    justification:
-                        "Recording from getDisplayMedia API and tabCapture API",
-                });
-
-                const streamId = await chrome.tabCapture.getMediaStreamId({
-                    targetTabId: activeTab.id,
-                });
-
-                chrome.storage.local.set({
-                    recordingTab: null,
-                    offscreen: true,
-                    region: false,
-                    wasRegion: true,
-                });
-                sendMessageRecord({
-                    type: "loaded",
-                    request: request,
-                    isTab: true,
-                    tabID: streamId,
-                });
             } catch (error) {
                 // Open the recorder.html page as a normal tab.
                 chrome.tabs
@@ -1310,44 +1286,6 @@ const base64ToUint8Array = (base64) => {
     }
 };
 
-const handleSaveToDrive = async (sendResponse, request, fallback = false) => {
-    if (!fallback) {
-        const blob = base64ToUint8Array(request.base64);
-
-        // Specify the desired file name
-        const fileName = request.title + ".mp4";
-
-        // Call the saveToDrive function
-        saveToDrive(blob, fileName, sendResponse).then(() => {
-            savedToDrive();
-        });
-    } else {
-        const chunks = [];
-        await chunksStore.iterate((value, key) => {
-            chunks.push(value);
-        });
-
-        // Build the video from chunks
-        let array = [];
-        let lastTimestamp = 0;
-        for (const chunk of chunks) {
-            // Check if chunk timestamp is smaller than last timestamp, if so, skip
-            if (chunk.timestamp < lastTimestamp) {
-                continue;
-            }
-            lastTimestamp = chunk.timestamp;
-            array.push(chunk.chunk);
-        }
-        const blob = new Blob(array, { type: "video/webm" });
-
-        const filename = request.title + ".webm";
-
-        saveToDrive(blob, filename, sendResponse).then(() => {
-            savedToDrive();
-        });
-    }
-};
-
 const desktopCapture = async (request) => {
     const { backup } = await chrome.storage.local.get(["backup"]);
     const { backupSetup } = await chrome.storage.local.get(["backupSetup"]);
@@ -1612,7 +1550,7 @@ const handleSignOutGoDAM = async (sendResponse) => {
                 'godamRefreshToken',
                 'godamTokenExpiration'
             ]);
-            return sendResponse({status: 'success', revokeToken});
+            return sendResponse({ status: 'success', revokeToken });
         }
     }
 
@@ -1623,9 +1561,9 @@ const handleSignOutGoDAM = async (sendResponse) => {
 const handleUploadScreenshot = async (sendResponse, request) => {
     try {
         const { godamToken, godamRefreshToken, godamTokenExpiration, selectedOrg } = await chrome.storage.local.get([
-            "godamToken", 
-            "godamRefreshToken", 
-            "godamTokenExpiration", 
+            "godamToken",
+            "godamRefreshToken",
+            "godamTokenExpiration",
             "selectedOrg"
         ]);
 
@@ -1689,15 +1627,15 @@ const handleUploadScreenshot = async (sendResponse, request) => {
         const responseData = await uploadResponse.json();
         const uploadedFileName = responseData?.file_informations?.name;
 
-        sendResponse({ 
-            status: "ok", 
+        sendResponse({
+            status: "ok",
             fileName: uploadedFileName,
-            message: "Screenshot uploaded successfully" 
+            message: "Screenshot uploaded successfully"
         });
     } catch (error) {
-        sendResponse({ 
-            status: "error", 
-            message: error.message || "Failed to upload screenshot" 
+        sendResponse({
+            status: "error",
+            message: error.message || "Failed to upload screenshot"
         });
     }
 };
@@ -1849,12 +1787,6 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         handleRecordingComplete();
     } else if (request.type === "check-recording") {
         checkRecording();
-    } else if (request.type === "review-screenity") {
-        createTab(
-            "https://chrome.google.com/webstore/detail/screenity-screen-recorder/kbbdabhdfibnancpjfhlkhafgdilcnji/reviews",
-            false,
-            true
-        );
     } else if (request.type === "open-processing-info") {
         createTab(
             "https://godam.io/docs/godam-screen-recorder/",
@@ -1952,12 +1884,6 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     } else if (request.type === "is-pinned") {
         isPinned(sendResponse);
         return true;
-    } else if (request.type === "save-to-drive") {
-        handleSaveToDrive(sendResponse, request, false);
-        return true;
-    } else if (request.type === "save-to-drive-fallback") {
-        handleSaveToDrive(sendResponse, request, true);
-        return true;
     } else if (request.type === "request-download") {
         requestDownload(request.base64, request.title);
     } else if (request.type === "resize-window") {
@@ -2009,7 +1935,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         }
 
         console.log(options);
-        
+
 
         // Capture the current tab
         chrome.tabs.captureVisibleTab(null, options, (dataUrl) => {
@@ -2036,7 +1962,7 @@ chrome.cookies.onChanged.addListener(async (changeInfo) => {
 
     if (!cookie.domain.includes(domain)) return;
 
-    if ( (cookie.name === "sid" || cookie.name === "user_id") && cookie.value === "Guest"  ) {
+    if ((cookie.name === "sid" || cookie.name === "user_id") && cookie.value === "Guest") {
         await chrome.storage.local.remove(["godamToken", "godamRefreshToken", "godamTokenExpiration"]);
     }
 });
