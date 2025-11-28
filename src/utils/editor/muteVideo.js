@@ -36,3 +36,4 @@ async function muteVideo(ffmpeg, videoBlob, start, end) {
 }
 
 export default muteVideo;
+

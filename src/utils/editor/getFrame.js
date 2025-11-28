@@ -41,3 +41,4 @@ async function getFrame(ffmpeg, videoBlob, time = 0) {
 }
 
 export default getFrame;
+

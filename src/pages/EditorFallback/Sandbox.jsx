@@ -1,19 +1,19 @@
 import React, { useEffect, useRef } from "react";
 
 // Import all the utils
-import addAudioToVideo from "./utils/addAudioToVideo";
-import base64ToBlob from "./utils/base64toBlob";
-import blobToArrayBuffer from "./utils/blobToArrayBuffer";
-import cropVideo from "./utils/cropVideo";
-import cutVideo from "./utils/cutVideo";
-import fetchFile from "./utils/fetchFile";
-import generateThumbstrips from "./utils/generateThumbstrips";
-import getAudio from "./utils/getAudio";
-import getFrame from "./utils/getFrame";
-import hasAudio from "./utils/hasAudio";
-import muteVideo from "./utils/muteVideo";
-import reencodeVideo from "./utils/reencodeVideo";
-import toGIF from "./utils/toGIF";
+import addAudioToVideo from "../../utils/editor/addAudioToVideo";
+import base64ToBlob from "../../utils/editor/base64toBlob";
+import blobToArrayBuffer from "../../utils/editor/blobToArrayBuffer";
+import cropVideo from "../../utils/editor/cropVideo";
+import cutVideo from "../../utils/editor/cutVideo";
+import fetchFile from "../../utils/editor/fetchFile";
+import generateThumbstrips from "../../utils/editor/generateThumbstrips";
+import getAudio from "../../utils/editor/getAudio";
+import getFrame from "../../utils/editor/getFrame";
+import hasAudio from "../../utils/editor/hasAudio";
+import muteVideo from "../../utils/editor/muteVideo";
+import reencodeVideo from "../../utils/editor/reencodeVideo";
+import toGIF from "../../utils/editor/toGIF";
 
 const Sandbox = () => {
   const iframeRef = useRef(null);

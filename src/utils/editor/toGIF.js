@@ -23,3 +23,4 @@ async function toGIF(ffmpeg, blob) {
 }
 
 export default toGIF;
+

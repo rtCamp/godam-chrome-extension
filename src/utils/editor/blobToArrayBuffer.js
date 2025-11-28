@@ -3,3 +3,4 @@ function blobToArrayBuffer(blob) {
 }
 
 export default blobToArrayBuffer;
+
