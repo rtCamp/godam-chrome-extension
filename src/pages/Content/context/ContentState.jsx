@@ -1605,6 +1605,10 @@ const ContentState = (props) => {
           chrome.storage.local.set({ backupSetup: false });
         }
 
+        if (result.recordingType === undefined || result.recordingType === null) {
+          chrome.storage.local.set({ recordingType: "screen" });
+        }
+
         if (result.backgroundEffectsActive) {
           chrome.runtime.sendMessage({ type: "backgroundEffectsActive" });
         }
