@@ -1075,7 +1075,7 @@ const ContentState = (props) => {
           },
           () => {
             audioWarningShown.current = false;
-            contentStateRef.current.dismissRecording();
+            contentStateRef.current.stopRecording();
           }
         );
       } else if (request.type === "recording-check") {
@@ -1603,6 +1603,10 @@ const ContentState = (props) => {
 
         if (result.backupSetup === undefined || result.backupSetup === null) {
           chrome.storage.local.set({ backupSetup: false });
+        }
+
+        if (result.recordingType === undefined || result.recordingType === null) {
+          chrome.storage.local.set({ recordingType: "screen" });
         }
 
         if (result.backgroundEffectsActive) {
