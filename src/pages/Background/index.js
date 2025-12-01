@@ -735,16 +735,16 @@ const sendMessageRecord = async (message) => {
 
 const forwardAudioTrackWarning = async ({ source, reason }) => {
     try {
-        const { activeTab, tabRecordedID, recordingType } =
+        const { activeTab, tabRecordedID, recordingType, surface } =
             await chrome.storage.local.get([
                 "activeTab",
                 "tabRecordedID",
                 "recordingType",
+                "surface"
             ]);
 
-        const isScreenCapture = recordingType === "screen";
-
-        if (isScreenCapture) {
+        // Stop recording if surface window or monitor and recording type is screen and not in region mode
+        if (recordingType === "screen" && ( surface === "window" || surface === "monitor" ) ) {
             await sendMessageRecord({ type: "stop-recording-tab" });
             return;
         }

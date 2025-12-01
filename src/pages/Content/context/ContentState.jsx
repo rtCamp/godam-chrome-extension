@@ -1075,7 +1075,7 @@ const ContentState = (props) => {
           },
           () => {
             audioWarningShown.current = false;
-            contentStateRef.current.dismissRecording();
+            contentStateRef.current.stopRecording();
           }
         );
       } else if (request.type === "recording-check") {
