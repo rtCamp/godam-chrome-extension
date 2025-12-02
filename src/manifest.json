@@ -72,8 +72,8 @@
     "value": "same-origin"
   },
   "content_security_policy": {
-    "sandbox": "sandbox allow-scripts allow-modals allow-popups; script-src 'self' 'unsafe-inline' 'unsafe-eval' blob:; object-src 'self';worker-src 'self' blob: ; connect-src 'self' https://*.posthog.com https://app.godam.io https://upload.godam.io https://cdn.plyr.io;",
-    "extension_pages": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self'; media-src 'self' data: blob: *; connect-src 'self' https://*.posthog.com https://app.godam.io https://upload.godam.io https://cdn.plyr.io;"
+    "sandbox": "sandbox allow-scripts allow-modals allow-popups; script-src 'self' 'unsafe-inline' 'unsafe-eval' blob:; object-src 'self';worker-src 'self' blob: ; connect-src 'self' data: blob: https://*.posthog.com https://app.godam.io https://upload.godam.io https://cdn.plyr.io;",
+    "extension_pages": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self'; media-src 'self' data: blob: *; connect-src 'self' data: blob: https://*.posthog.com https://app.godam.io https://upload.godam.io https://cdn.plyr.io;"
   },
   "sandbox": {
     "pages": [

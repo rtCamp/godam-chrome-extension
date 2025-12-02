@@ -1974,9 +1974,6 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
             options.rect = request.rect;
         }
 
-        console.log(options);
-
-
         // Capture the current tab
         chrome.tabs.captureVisibleTab(null, options, (dataUrl) => {
             if (chrome.runtime.lastError) {
