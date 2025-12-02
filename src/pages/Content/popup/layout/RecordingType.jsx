@@ -61,6 +61,10 @@ const RecordingType = (props) => {
   const startStreaming = () => {
     contentState.startStreaming();
   };
+  const setTeleprompter = (updates) => {
+    setContentState((prev) => ({ ...prev, ...updates }));
+    chrome.storage.local.set(updates);
+  };
 
   useEffect(() => {
     // Check if CropTarget is null
@@ -268,6 +272,130 @@ const RecordingType = (props) => {
           {contentState.customRegion && <RegionDimensions />}
         </div>
       )}
+      <div className="popup-content-divider"></div>
+      <div>
+        <Switch
+          label={"Teleprompter"}
+          name="teleprompterEnabled"
+          value="teleprompterEnabled"
+        />
+        {contentState.teleprompterEnabled && (
+          <div>
+            <div className="popup-field">
+              <label style={{ display: "block", marginBottom: 6 }}>
+                Script
+              </label>
+              <textarea
+                style={{ width: "100%", minHeight: 90 }}
+                placeholder="Paste or write your script here..."
+                value={contentState.teleprompterText}
+                onChange={(e) =>
+                  setTeleprompter({ teleprompterText: e.target.value })
+                }
+              />
+            </div>
+            <div className="popup-field">
+              <label>
+                Speed
+                <span style={{ opacity: 0.6, marginLeft: 8 }}>
+                  {contentState.teleprompterSpeed}
+                </span>
+              </label>
+              <input
+                type="range"
+                min={10}
+                max={100}
+                step={1}
+                value={contentState.teleprompterSpeed}
+                onChange={(e) =>
+                  setTeleprompter({ teleprompterSpeed: Number(e.target.value) })
+                }
+              />
+            </div>
+            <div className="popup-field">
+              <label>
+                Font size
+                <span style={{ opacity: 0.6, marginLeft: 8 }}>
+                  {contentState.teleprompterFontSize}px
+                </span>
+              </label>
+              <input
+                type="range"
+                min={16}
+                max={48}
+                step={1}
+                value={contentState.teleprompterFontSize}
+                onChange={(e) =>
+                  setTeleprompter({ teleprompterFontSize: Number(e.target.value) })
+                }
+              />
+            </div>
+            <div className="popup-field">
+              <label style={{ display: "block", marginBottom: 6 }}>
+                Position
+              </label>
+              <div style={{ display: "flex", gap: 8 }}>
+                <button
+                  className={
+                    contentState.teleprompterPosition === "top"
+                      ? "button-secondary active"
+                      : "button-secondary"
+                  }
+                  onClick={() => setTeleprompter({ teleprompterPosition: "top" })}
+                >
+                  Top
+                </button>
+                <button
+                  className={
+                    contentState.teleprompterPosition === "bottom"
+                      ? "button-secondary active"
+                      : "button-secondary"
+                  }
+                  onClick={() => setTeleprompter({ teleprompterPosition: "bottom" })}
+                >
+                  Bottom
+                </button>
+              </div>
+            </div>
+            <div className="popup-field">
+              <label>
+                Width
+                <span style={{ opacity: 0.6, marginLeft: 8 }}>
+                  {contentState.teleprompterWidth}px
+                </span>
+              </label>
+              <input
+                type="range"
+                min={400}
+                max={1000}
+                step={10}
+                value={contentState.teleprompterWidth}
+                onChange={(e) =>
+                  setTeleprompter({ teleprompterWidth: Number(e.target.value) })
+                }
+              />
+            </div>
+            <div className="popup-field">
+              <label>
+                Opacity
+                <span style={{ opacity: 0.6, marginLeft: 8 }}>
+                  {Math.round(contentState.teleprompterOpacity * 100)}%
+                </span>
+              </label>
+              <input
+                type="range"
+                min={0.3}
+                max={1}
+                step={0.05}
+                value={contentState.teleprompterOpacity}
+                onChange={(e) =>
+                  setTeleprompter({ teleprompterOpacity: Number(e.target.value) })
+                }
+              />
+            </div>
+          </div>
+        )}
+      </div>
       <button
         role="button"
         className="main-button recording-button"

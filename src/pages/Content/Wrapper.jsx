@@ -9,6 +9,7 @@ import Canvas from "./canvas/Canvas";
 import Countdown from "./countdown/Countdown";
 import Modal from "./modal/Modal";
 import Warning from "./warning/Warning";
+import Teleprompter from "./teleprompter/Teleprompter";
 
 import Region from "./region/Region";
 
@@ -200,6 +201,7 @@ const Wrapper = () => {
               {contentState.recordingType === "region" &&
                 contentState.customRegion && <Region />}
               {shadowRef.current && <Modal shadowRef={shadowRef} />}
+              <Teleprompter />
               <Countdown />
               {contentState.recordingType != "camera" && (
                 <Camera shadowRef={shadowRef} />

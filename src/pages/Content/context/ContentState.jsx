@@ -698,6 +698,14 @@ const ContentState = (props) => {
     hasOpenedBefore: false,
     qualityValue: "1080p",
     fpsValue: "30",
+    // Teleprompter settings
+    teleprompterEnabled: false,
+    teleprompterText: "",
+    teleprompterSpeed: 50, // 0-100 where higher is faster
+    teleprompterFontSize: 28, // px
+    teleprompterPosition: "top", // top | bottom
+    teleprompterWidth: 600, // px
+    teleprompterOpacity: 0.85,
   });
   contentStateRef.current = contentState;
 
@@ -1302,6 +1310,14 @@ const ContentState = (props) => {
         "backupSetup",
         "qualityValue",
         "fpsValue",
+        // Teleprompter settings
+        "teleprompterEnabled",
+        "teleprompterText",
+        "teleprompterSpeed",
+        "teleprompterFontSize",
+        "teleprompterPosition",
+        "teleprompterWidth",
+        "teleprompterOpacity",
       ],
       (result) => {
         setContentState((prevContentState) => ({
@@ -1495,6 +1511,42 @@ const ContentState = (props) => {
             result.fpsValue !== undefined && result.fpsValue !== null
               ? result.fpsValue
               : prevContentState.fpsValue,
+          // Teleprompter settings
+          teleprompterEnabled:
+            result.teleprompterEnabled !== undefined &&
+            result.teleprompterEnabled !== null
+              ? result.teleprompterEnabled
+              : prevContentState.teleprompterEnabled,
+          teleprompterText:
+            result.teleprompterText !== undefined &&
+            result.teleprompterText !== null
+              ? result.teleprompterText
+              : prevContentState.teleprompterText,
+          teleprompterSpeed:
+            result.teleprompterSpeed !== undefined &&
+            result.teleprompterSpeed !== null
+              ? result.teleprompterSpeed
+              : prevContentState.teleprompterSpeed,
+          teleprompterFontSize:
+            result.teleprompterFontSize !== undefined &&
+            result.teleprompterFontSize !== null
+              ? result.teleprompterFontSize
+              : prevContentState.teleprompterFontSize,
+          teleprompterPosition:
+            result.teleprompterPosition !== undefined &&
+            result.teleprompterPosition !== null
+              ? result.teleprompterPosition
+              : prevContentState.teleprompterPosition,
+          teleprompterWidth:
+            result.teleprompterWidth !== undefined &&
+            result.teleprompterWidth !== null
+              ? result.teleprompterWidth
+              : prevContentState.teleprompterWidth,
+          teleprompterOpacity:
+            result.teleprompterOpacity !== undefined &&
+            result.teleprompterOpacity !== null
+              ? result.teleprompterOpacity
+              : prevContentState.teleprompterOpacity,
         }));
 
         if (result.systemAudio === undefined || result.systemAudio === null) {
