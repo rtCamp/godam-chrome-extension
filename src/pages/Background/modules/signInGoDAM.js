@@ -85,6 +85,7 @@ const signInGoDAM = async () => {
 
         return token;
     } catch (error) {
+        console.error('Error during GoDAM sign-in:', error);
         throw error;
     }
     

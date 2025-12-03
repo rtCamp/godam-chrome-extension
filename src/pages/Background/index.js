@@ -1719,7 +1719,7 @@ const handleSignInGoDAM = async (sendResponse) => {
     const signInGoDAM = require('./modules/signInGoDAM').default;
     const setOrgList = require('./modules/setOrgList').default;
 
-    const attemptSignIn = async (attemptNumber) => {
+    const attemptSignIn = async () => {
         try {
             const token = await signInGoDAM();
             await setOrgList();
@@ -1734,11 +1734,11 @@ const handleSignInGoDAM = async (sendResponse) => {
     };
 
     // Try first attempt
-    let result = await attemptSignIn(1);
+    let result = await attemptSignIn();
 
     // Retry once if first attempt failed
     if (!result.success) {
-        result = await attemptSignIn(2);
+        result = await attemptSignIn();
     }
 
     if (result.success) {
