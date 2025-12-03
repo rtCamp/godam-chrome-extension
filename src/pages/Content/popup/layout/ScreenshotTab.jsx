@@ -353,10 +353,10 @@ const ScreenshotTab = ({onScreenshotComplete, shadowRef}) => {
                         color: '#fff',
                     }}
                     onClick={() => {
-                        const screenityUI = document.getElementById('screenity-ui');
+                        const screenityRootContainer = document.getElementById('screenity-root-container');
 
-                        if (screenityUI) {
-                            screenityUI.style.display = 'none';
+                        if (screenityRootContainer) {
+                            screenityRootContainer.style.display = 'none';
                         }
 
                         if (screenshotType === 'custom-area') {
