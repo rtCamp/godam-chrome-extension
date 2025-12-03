@@ -1719,11 +1719,30 @@ const handleSignInGoDAM = async (sendResponse) => {
     const signInGoDAM = require('./modules/signInGoDAM').default;
     const setOrgList = require('./modules/setOrgList').default;
 
-    const token = await signInGoDAM();
-    await setOrgList();
+    const attemptSignIn = async () => {
+        try {
+            const token = await signInGoDAM();
+            await setOrgList();
 
-    if (token) {
-        sendResponse({ status: "ok", token: token });
+            if (token) {
+                return { success: true, token };
+            }
+            return { success: false, error: "No token received" };
+        } catch (error) {
+            return { success: false, error: error.message };
+        }
+    };
+
+    // Try first attempt
+    let result = await attemptSignIn();
+
+    // Retry once if first attempt failed
+    if (!result.success) {
+        result = await attemptSignIn();
+    }
+
+    if (result.success) {
+        sendResponse({ status: "ok", token: result.token });
     } else {
         sendResponse({ status: "error", message: "Failed to sign in to GoDAM" });
     }
