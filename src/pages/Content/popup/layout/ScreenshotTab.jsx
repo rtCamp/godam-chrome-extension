@@ -353,9 +353,11 @@ const ScreenshotTab = ({onScreenshotComplete, shadowRef}) => {
                         color: '#fff',
                     }}
                     onClick={() => {
+                        const screenityUIBackdrop = document.getElementById('screenity-ui-backdrop');
                         const screenityRootContainer = document.getElementById('screenity-root-container');
 
                         if (screenityRootContainer) {
+                            screenityUIBackdrop.style.background = 'none';
                             screenityRootContainer.style.display = 'none';
                         }
 
