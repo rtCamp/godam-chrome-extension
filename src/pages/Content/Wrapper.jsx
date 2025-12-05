@@ -137,6 +137,7 @@ const Wrapper = () => {
             !contentState.drawingMode &&
             !contentState.blurMode && (
               <div
+                id="screenity-ui-backdrop"
                 style={{
                   // all: "unset",
                   width: "100%",
