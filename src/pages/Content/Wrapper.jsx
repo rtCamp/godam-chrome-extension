@@ -15,9 +15,8 @@ import Region from "./region/Region";
 // Using ShadowDOM
 import root from "react-shadow";
 
-// Import styles raw to add into the ShadowDOM
-// dist?
-import styles from "!raw-loader!./styles/app.css";
+// Import styles raw to add into the ShadowDOM (compile SCSS on build)
+import styles from "!raw-loader!sass-loader!./styles/app.scss";
 
 // Utils
 import ZoomContainer from "./utils/ZoomContainer";
@@ -149,10 +148,10 @@ const Wrapper = () => {
                     window.location.href.indexOf(
                       chrome.runtime.getURL("setup.html")
                     ) === -1 &&
-                    window.location.href.indexOf(
-                      chrome.runtime.getURL("playground.html")
-                    ) === -1 &&
-                    !contentState.pendingRecording
+                      window.location.href.indexOf(
+                        chrome.runtime.getURL("playground.html")
+                      ) === -1 &&
+                      !contentState.pendingRecording
                       ? "rgba(0,0,0,0.15)"
                       : "rgba(0,0,0,0)",
                   top: 0,

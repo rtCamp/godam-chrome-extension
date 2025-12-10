@@ -3,6 +3,9 @@ import Plyr from "plyr-react";
 import "plyr-react/plyr.css";
 import { ContentStateContext } from "../../context/ContentState"; // Import the ContentState context
 
+// Import styles raw to inject into DOM
+import videoPlayerStyles from "!raw-loader!sass-loader!./styles/_VideoPlayer.scss";
+
 const VideoPlayer = (props) => {
   const [contentState, setContentState] = useContext(ContentStateContext); // Access the ContentState context
   const playerRef = useRef(null);
@@ -135,21 +138,7 @@ const VideoPlayer = (props) => {
           />
         )}
       </div>
-      <style>
-        {`
-					.plyr {
-						height: 90%!important;
-					}
-					@media (max-width: 900px) {
-						.videoPlayer {
-							height: 100%!important;
-							top: 40px!important;
-						}
-						.playerWrap {
-							height: calc(100% - 300px)!important;
-						}
-					`}
-      </style>
+      <style>{videoPlayerStyles}</style>
     </div>
   );
 };
