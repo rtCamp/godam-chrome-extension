@@ -1,3 +1,5 @@
+@use "../../Content/styles/variables" as *;
+
 body {
 	overflow: hidden;
 	margin: 0px;
@@ -126,7 +128,7 @@ a {
 	justify-content: center;
 
 	svg {
-		color: #9797A4;
+		color: $color-icon;
 		width: 28px;
 		height: 28px;
 	}

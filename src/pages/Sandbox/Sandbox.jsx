@@ -146,7 +146,12 @@ const Sandbox = () => {
           <div className="setupBackgroundSVG"></div>
         </div>
       )}
-      <style>{sandboxStyles}</style>
+      <style>
+        {sandboxStyles.replace(
+          "__PATTERN_SVG_URL__",
+          chrome.runtime.getURL("assets/helper/pattern-svg.svg")
+        )}
+      </style>
     </div>
   );
 };
