@@ -1598,8 +1598,9 @@ const handleSignOutGoDAM = async (sendResponse) => {
 // Function to handle uploading screenshot to GoDAM
 const handleUploadScreenshot = async (sendResponse, request) => {
     try {
-        const { godamToken, godamTokenExpiration, selectedOrg } = await chrome.storage.local.get([
+        const { godamToken, godamRefreshToken, godamTokenExpiration, selectedOrg } = await chrome.storage.local.get([
             "godamToken",
+            "godamRefreshToken",
             "godamTokenExpiration",
             "selectedOrg"
         ]);
