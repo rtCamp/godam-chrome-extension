@@ -11,6 +11,10 @@
     "message": "Record",
     "description": "Record tab label on popup"
   },
+  "screenshotTab": {
+    "message": "Screenshot",
+    "description": "Screenshot tab label on popup"
+  },
   "videosTab": {
     "message": "Your videos",
     "description": "Videos tab label on popup"
@@ -547,26 +551,6 @@
     "message": "Save",
     "description": "Save title in sandbox editor page"
   },
-  "signOutDriveLabel": {
-    "message": "Sign out of Drive",
-    "description": "Sign out of Google Drive label"
-  },
-  "savingDriveLabel": {
-    "message": "Saving...",
-    "description": "Saving to Google Drive label"
-  },
-  "saveDriveButtonTitle": {
-    "message": "Save to Drive",
-    "description": "Save to Google Drive button"
-  },
-  "saveDriveButtonDescription": {
-    "message": "Save the current version to Google Drive",
-    "description": "Save to Google Drive label"
-  },
-  "signInDriveLabel": {
-    "message": "Sign in and save to Drive",
-    "description": "Sign in to Google Drive label"
-  },
   "signOutGoDAMLabel": {
     "message": "Sign out of GoDAM",
     "description": "Sign out of GoDAM label"
@@ -691,6 +675,44 @@
     "message": "Cancel",
     "description": "Microphone muted modal cancel"
   },
+  "audioWarningModalTitle": {
+    "message": "There's an issue with your audio.",
+    "description": "Audio track disconnected modal title"
+  },
+  "audioWarningModalDescription": {
+    "message": "We lost the $1 audio track during recording. If you continue, your final video might not have sound.",
+    "description": "Audio track disconnected modal description",
+    "placeholders": {
+      "source": {
+        "content": "$1",
+        "example": "microphone"
+      }
+    }
+  },
+  "audioWarningModalContinue": {
+    "message": "Continue anyway",
+    "description": "Audio warning modal continue button"
+  },
+  "audioWarningModalCancel": {
+    "message": "Stop recording",
+    "description": "Audio warning modal cancel button"
+  },
+  "audioWarningModalSourceMicrophone": {
+    "message": "microphone",
+    "description": "Source label for microphone audio warning"
+  },
+  "audioWarningModalSourceSystem": {
+    "message": "system",
+    "description": "Source label for system audio warning"
+  },
+  "audioWarningModalSourceMixed": {
+    "message": "combined",
+    "description": "Source label when mixed output track fails"
+  },
+  "audioWarningModalSourceGeneric": {
+    "message": "audio",
+    "description": "Fallback source label for audio warning"
+  },
   "setupTitle": {
     "message": "Get started with GoDAM in three simple steps:",
     "description": "Set up steps title"
@@ -774,22 +796,6 @@
   "stopRecording": {
     "message": "Stop recording",
     "description": "Stop recording button in recording scren"
-  },
-  "updateAnnouncementTitle": {
-    "message": "Welcome to the new GoDAM chrome extension!",
-    "description": "Update announcement title for existing users"
-  },
-  "updateAnnouncementDescription": {
-    "message": "We’re introducing a new look and many exciting features, but don’t worry, it’s still the same free, private and open source extension you know and love.",
-    "description": "Update announcement description for existing users"
-  },
-  "updateAnnouncementLearnMore": {
-    "message": "Learn more about the update.",
-    "description": "Update announcement learn more link for existing users"
-  },
-  "updateAnnouncementButton": {
-    "message": "Get started",
-    "description": "Update announcement button for existing users"
   },
   "streamErrorModalTitle": {
     "message": "Error starting the recording",
@@ -1048,6 +1054,10 @@
   "maxResolutionTooltip": {
     "message": "Cannot record at this resolution in your device",
     "description": "Maxed out resolution tooltip in settings menu"
+  },
+  "autoQualityOption": {
+    "message": "Auto",
+    "description": "Automatically select the best quality based on the device"
   },
   "permissionsModalReview": {
     "message": "Review permissions",

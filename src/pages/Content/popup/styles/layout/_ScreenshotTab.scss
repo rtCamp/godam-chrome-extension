@@ -1,0 +1,23 @@
+@use '../../../styles/_variables' as *;
+
+.screenshot-tab-container {
+    padding: 1rem;
+    background-color: #F6F7FB;
+    margin-top: 1rem;
+}
+
+.screenshot-type-selector {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+
+    &--item {
+        padding: 20px;
+        border-radius: 8px;
+        background-color: #f2f2f2;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+    }
+}

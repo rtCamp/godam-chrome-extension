@@ -547,26 +547,6 @@
     "message": "सहेजें",
     "description": "सैंडबॉक्स संपादक पृष्ठ में शीर्षक सहेजें"
   },
-  "signOutDriveLabel": {
-    "message": "ड्राइव से लॉग आउट करें",
-    "description": "Google ड्राइव से लॉग आउट लेबल"
-  },
-  "savingDriveLabel": {
-    "message": "सहेज रहे हैं...",
-    "description": "Google ड्राइव में सहेज रहे हैं लेबल"
-  },
-  "saveDriveButtonTitle": {
-    "message": "ड्राइव में सहेजें",
-    "description": "Google ड्राइव में सहेजें बटन"
-  },
-  "saveDriveButtonDescription": {
-    "message": "वर्तमान संस्करण को Google ड्राइव में सहेजें",
-    "description": "Google ड्राइव में सहेजें लेबल"
-  },
-  "signInDriveLabel": {
-    "message": "साइन इन करें और ड्राइव में सहेजें",
-    "description": "Google ड्राइव में साइन इन करें लेबल"
-  },
   "sandboxExportTitle": {
     "message": "निर्यात",
     "description": "सैंडबॉक्स संपादक पृष्ठ में निर्यात शीर्षक"
@@ -671,6 +651,44 @@
     "message": "रद्द करें",
     "description": "माइक्रोफ़ोन म्यूट हो गया मॉडल रद्द करें"
   },
+  "audioWarningModalTitle": {
+    "message": "आपके ऑडियो में समस्या है।",
+    "description": "ऑडियो ट्रैक डिस्कनेक्ट चेतावनी शीर्षक"
+  },
+  "audioWarningModalDescription": {
+    "message": "रिकॉर्डिंग के दौरान हमने $1 ऑडियो ट्रैक खो दिया। यदि आप जारी रखते हैं, तो अंतिम वीडियो में संभवतः ध्वनि नहीं होगी।",
+    "description": "ऑडियो ट्रैक डिस्कनेक्ट चेतावनी विवरण",
+    "placeholders": {
+      "source": {
+        "content": "$1",
+        "example": "माइक्रोफ़ोन"
+      }
+    }
+  },
+  "audioWarningModalContinue": {
+    "message": "फिर भी जारी रखें",
+    "description": "ऑडियो चेतावनी मॉडल जारी रखें बटन"
+  },
+  "audioWarningModalCancel": {
+    "message": "रिकॉर्डिंग रोकें",
+    "description": "ऑडियो चेतावनी मॉडल रद्द करें बटन"
+  },
+  "audioWarningModalSourceMicrophone": {
+    "message": "माइक्रोफ़ोन",
+    "description": "ऑडियो चेतावनी स्रोत लेबल माइक्रोफ़ोन"
+  },
+  "audioWarningModalSourceSystem": {
+    "message": "सिस्टम",
+    "description": "ऑडियो चेतावनी स्रोत लेबल सिस्टम"
+  },
+  "audioWarningModalSourceMixed": {
+    "message": "ऑडियो",
+    "description": "ऑडियो चेतावनी स्रोत लेबल सम्मिलित"
+  },
+  "audioWarningModalSourceGeneric": {
+    "message": "ऑडियो",
+    "description": "ऑडियो चेतावनी स्रोत लेबल डिफ़ॉल्ट"
+  },
   "setupTitle": {
     "message": "गोदाम के साथ तीन सरल कदमों में शुरू हो जाइए:",
     "description": "सेटअप कदम शीर्षक"
@@ -754,22 +772,6 @@
   "stopRecording": {
     "message": "रिकॉर्डिंग बंद करें",
     "description": "रिकॉर्डिंग स्क्रीन में बंद करें बटन"
-  },
-  "updateAnnouncementTitle": {
-    "message": "नए गोदाम में आपका स्वागत है!",
-    "description": "मौजूदा उपयोगकर्ताओं के लिए अपडेट घोषणा शीर्षक"
-  },
-  "updateAnnouncementDescription": {
-    "message": "हम एक नए दिखावट और कई रोमांचक सुविधाओं का परिचय कर रहे हैं, लेकिन चिंता न करें, यह वही मुफ्त, निजी और ओपन सोर्स एक्सटेंशन है जो आप जानते और पसंद करते हैं।",
-    "description": "मौजूदा उपयोगकर्ताओं के लिए अपडेट घोषणा विवरण"
-  },
-  "updateAnnouncementLearnMore": {
-    "message": "अपडेट के बारे में और अधिक जानें।",
-    "description": "मौजूदा उपयोगकर्ताओं के लिए अपडेट घोषणा और अधिक जानें लिंक"
-  },
-  "updateAnnouncementButton": {
-    "message": "शुरू हो जाओ",
-    "description": "मौजूदा उपयोगकर्ताओं के लिए अपडेट घोषणा बटन"
   },
   "streamErrorModalTitle": {
     "message": "रिकॉर्डिंग शुरू करने में त्रुटि",

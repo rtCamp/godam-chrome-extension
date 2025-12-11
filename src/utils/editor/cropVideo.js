@@ -40,3 +40,4 @@ async function cropVideo(ffmpeg, videoBlob, cropParameters) {
 }
 
 export default cropVideo;
+

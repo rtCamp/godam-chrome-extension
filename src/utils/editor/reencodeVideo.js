@@ -1,6 +1,6 @@
-async function toGIF(ffmpeg, blob) {
+async function reencodeVideo(ffmpeg, blob) {
   const videoData = new Uint8Array(await blob.arrayBuffer());
-  const outputFileName = "output.gif";
+  const outputFileName = "output.mp4";
   ffmpeg.FS("writeFile", "input.mp4", videoData);
   await ffmpeg.run(
     "-i",
@@ -15,11 +15,13 @@ async function toGIF(ffmpeg, blob) {
     "fastdecode",
     outputFileName
   );
+
   const data = ffmpeg.FS("readFile", outputFileName);
   const editedVideoBlob = new Blob([data.buffer], {
-    type: "image/gif",
+    type: "video/mp4",
   });
   return editedVideoBlob;
 }
 
-export default toGIF;
+export default reencodeVideo;
+

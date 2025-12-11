@@ -15,6 +15,10 @@ import {
 } from "../images/popup/images";
 
 import {
+    Camera
+} from "lucide-react";
+
+import {
     ArrowRight
 } from "lucide-react";
 
@@ -34,13 +38,14 @@ import SettingsMenu from "./layout/SettingsMenu";
 // Context
 import { contentStateContext } from "../context/ContentState";
 import GoDAMVideos from "./layout/GoDAMVideos";
+import ScreenshotTab from "./layout/ScreenshotTab";
 
 const PopupContainer = (props) => {
     const baseUrl = process.env.GODAM_BASE_URL || 'https://app.godam.io';
 
     const [contentState, setContentState] = useContext(contentStateContext);
     const contentStateRef = useRef(contentState);
-    const [tab, setTab] = useState("dashboard");
+    const [tab, setTab] = useState("record"); // Default to "record" as fallback
     const [badge, setBadge] = useState(TempLogo);
     const DragRef = useRef(null);
     const PopupRef = useRef(null);
@@ -50,6 +55,7 @@ const PopupContainer = (props) => {
     const [open, setOpen] = useState(false);
     const recordTabRef = useRef(null);
     const videoTabRef = useRef(null);
+    const screenshotTabRef = useRef(null);
     const pillRef = useRef(null);
     const [URL, setURL] = useState("https://godam.io/docs/godam-screen-recorder/");
     const [showNotice, setShowNotice] = useState(false);
@@ -86,6 +92,29 @@ const PopupContainer = (props) => {
         updateNotice()
     }, []);
 
+    // Load the last selected tab from storage when component mounts
+    useEffect(() => {
+        const loadLastSelectedTab = async () => {
+            try {
+                const { lastSelectedTab } = await chrome.storage.local.get(['lastSelectedTab']);
+                if (lastSelectedTab) {
+                    setTab(lastSelectedTab);
+                    setContentState((prevContentState) => ({
+                        ...prevContentState,
+                        bigTab: lastSelectedTab,
+                    }));
+                } else {
+                    // Ensure default tab is saved
+                    chrome.storage.local.set({ lastSelectedTab: 'record' });
+                }
+            } catch (error) {
+                console.error('Error loading last selected tab:', error);
+            }
+        };
+
+        loadLastSelectedTab();
+    }, []);
+
     const onValueChange = (tab) => {
         setTab(tab);
         if (tab === "record") {
@@ -97,14 +126,22 @@ const PopupContainer = (props) => {
             ...prevContentState,
             bigTab: tab,
         }));
+        
+        // Save the selected tab to storage
+        chrome.storage.local.set({ lastSelectedTab: tab });
     };
 
     useEffect(() => {
-        setTab(contentState.bigTab);
-    }, []);
+        // Only set tab from contentState if it's different from current tab
+        // This prevents overriding the loaded tab from storage
+        if (contentState.bigTab && contentState.bigTab !== tab) {
+            setTab(contentState.bigTab);
+        }
+    }, [contentState.bigTab]);
 
     useEffect(() => {
         if (!recordTabRef.current) return;
+        if (!screenshotTabRef.current) return; 
         if (!videoTabRef.current) return;
         if (!pillRef.current) return;
 
@@ -112,13 +149,17 @@ const PopupContainer = (props) => {
             pillRef.current.style.left = recordTabRef.current.offsetLeft + "px";
             pillRef.current.style.width =
                 recordTabRef.current.getBoundingClientRect().width + "px";
+        } else if (tab === "screenshot") {
+            pillRef.current.style.left = screenshotTabRef.current.offsetLeft + "px";
+            pillRef.current.style.width =
+                screenshotTabRef.current.getBoundingClientRect().width + "px";
         } else {
             pillRef.current.style.left = videoTabRef.current.offsetLeft + "px";
 
             pillRef.current.style.width =
                 videoTabRef.current.getBoundingClientRect().width + "px";
         }
-    }, [tab, recordTabRef.current, videoTabRef.current, pillRef.current]);
+    }, [tab, recordTabRef.current, screenshotTabRef.current, videoTabRef.current, pillRef.current]);
 
     useEffect(() => {
         contentStateRef.current = contentState;
@@ -357,7 +398,7 @@ const PopupContainer = (props) => {
                     <div className="popup-content">
                         <Tabs.Root
                             className="TabsRoot tl"
-                            defaultValue="record"
+                            value={tab}
                             onValueChange={onValueChange}
                         >
                             {!showNotice ? (
@@ -386,6 +427,19 @@ const PopupContainer = (props) => {
                                         </Tabs.Trigger>
                                         <Tabs.Trigger
                                             className="TabsTrigger tl"
+                                            value="screenshot"
+                                            ref={screenshotTabRef}
+                                            tabIndex={0}
+                                        >
+                                            <div className="TabsTriggerIcon">
+                                                {
+                                                    tab === "screenshot" ? <Camera fill="#ab3a6c" strokeWidth={1} stroke="#f6f7fb" size={18} /> : <Camera color="gray" size={16} />
+                                                }
+                                            </div>
+                                            Screenshot
+                                        </Tabs.Trigger>
+                                        <Tabs.Trigger
+                                            className="TabsTrigger tl"
                                             value="dashboard"
                                             ref={videoTabRef}
                                             tabIndex={0}
@@ -405,6 +459,9 @@ const PopupContainer = (props) => {
                                     </Tabs.List>
                                     <Tabs.Content className="TabsContent tl" value="record">
                                         <RecordingTab shadowRef={props.shadowRef} />
+                                    </Tabs.Content>
+                                    <Tabs.Content className="TabsContent tl" value="screenshot">
+                                        <ScreenshotTab shadowRef={props.shadowRef} />
                                     </Tabs.Content>
                                     <Tabs.Content className="TabsContent tl" value="dashboard">
                                         <GoDAMVideos />

@@ -2,9 +2,9 @@
   "manifest_version": 3,
   "name": "__MSG_extName__",
   "description": "__MSG_extDesc__",
-  "key":"MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA6ug7k8VXtIZgMEyZUPwsn1ubPUnwkIpcQy9bqh7qsCMHLD+p+exSPM0dxIZrV1j/DzhLCMwh5I5K6STycyL5eNficKK7LQeB/IzGbxRCGbDcdmY+nCNLyilwuEDOJ1zCFMKwZ3X2gX1++vfWi64XGAcBi+aM//sREyIaeGsjsIwxwOUrY1eOaiAPQQJw9O7tQ9/zO4D7YOUC00GVasrLysEuJGMwRuj5tL7Rh5gH9o6uEXvR0F95kDPVbOJykjBuNua1Cv7V7sfTw0TXBgOlCpiDX1/m3o63xLmUGGWUWpKmFSFzVSoWTr1xgOm6EMRO9amSQZj7CZicfmVqSo/YQwIDAQAB",
+  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA6ug7k8VXtIZgMEyZUPwsn1ubPUnwkIpcQy9bqh7qsCMHLD+p+exSPM0dxIZrV1j/DzhLCMwh5I5K6STycyL5eNficKK7LQeB/IzGbxRCGbDcdmY+nCNLyilwuEDOJ1zCFMKwZ3X2gX1++vfWi64XGAcBi+aM//sREyIaeGsjsIwxwOUrY1eOaiAPQQJw9O7tQ9/zO4D7YOUC00GVasrLysEuJGMwRuj5tL7Rh5gH9o6uEXvR0F95kDPVbOJykjBuNua1Cv7V7sfTw0TXBgOlCpiDX1/m3o63xLmUGGWUWpKmFSFzVSoWTr1xgOm6EMRO9amSQZj7CZicfmVqSo/YQwIDAQAB",
   "default_locale": "en",
-  "version": "1.1.4",
+  "version": "1.2.0",
   "background": {
     "service_worker": "background.bundle.js"
   },
@@ -19,13 +19,20 @@
   },
   "host_permissions": [
     "https://app.godam.io/*",
-    "https://app-godam.rt.gw/*"
+    "https://app-godam.rt.gw/*",
+    "<all_urls>"
   ],
   "content_scripts": [
     {
-      "matches": ["<all_urls>"],
-      "js": ["contentScript.bundle.js"],
-      "css": ["assets/fonts/fonts.css"]
+      "matches": [
+        "<all_urls>"
+      ],
+      "js": [
+        "contentScript.bundle.js"
+      ],
+      "css": [
+        "assets/fonts/fonts.css"
+      ]
     }
   ],
   "web_accessible_resources": [
@@ -53,7 +60,9 @@
         "download.html",
         "*"
       ],
-      "matches": ["<all_urls>"]
+      "matches": [
+        "<all_urls>"
+      ]
     }
   ],
   "cross_origin_embedder_policy": {
@@ -63,11 +72,13 @@
     "value": "same-origin"
   },
   "content_security_policy": {
-    "sandbox": "sandbox allow-scripts allow-modals allow-popups; script-src 'self' 'unsafe-inline' 'unsafe-eval' blob:; object-src 'self';worker-src 'self' blob: ;",
-    "extension_pages": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self'; media-src 'self' data: blob: *;"
+    "sandbox": "sandbox allow-scripts allow-modals allow-popups; script-src 'self' 'unsafe-inline' 'unsafe-eval' blob:; object-src 'self';worker-src 'self' blob: ; connect-src 'self' data: blob: https://*.posthog.com https://app.godam.io https://upload.godam.io https://cdn.plyr.io;",
+    "extension_pages": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self'; media-src 'self' data: blob: *; connect-src 'self' data: blob: https://*.posthog.com https://app.godam.io https://upload.godam.io https://cdn.plyr.io;"
   },
   "sandbox": {
-    "pages": ["editor.html"]
+    "pages": [
+      "editor.html"
+    ]
   },
   "commands": {
     "start-recording": {
@@ -100,5 +111,9 @@
     "scripting",
     "cookies"
   ],
-  "optional_permissions": ["offscreen", "desktopCapture", "alarms"]
+  "optional_permissions": [
+    "offscreen",
+    "desktopCapture",
+    "alarms"
+  ]
 }

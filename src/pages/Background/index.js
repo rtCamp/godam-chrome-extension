@@ -1,5 +1,3 @@
-import saveToDrive from "./modules/saveToDrive";
-
 import {
     sendMessageTab,
     focusTab,
@@ -10,6 +8,8 @@ import {
 
 import localforage from "localforage";
 
+import { initPostHog, trackEvent } from "./modules/posthogHelper";
+
 const saveToGoDAM = require('./modules/saveToGoDAM').default;
 
 localforage.config({
@@ -17,6 +17,10 @@ localforage.config({
     name: "screenity",
     version: 1,
 });
+
+(async () => {
+    await initPostHog();
+})();
 
 // Get chunks store
 const chunksStore = localforage.createInstance({
@@ -108,6 +112,9 @@ const startRecording = async () => {
 
     // Check if customRegion is set
     const { customRegion } = await chrome.storage.local.get(["customRegion"]);
+
+    // Track recording started
+    trackEvent('extension_recording_started');
 
     if (customRegion) {
         sendMessageRecord({ type: "start-recording-tab", region: true });
@@ -353,12 +360,8 @@ chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
 function blobToBase64(blob) {
     return new Promise((resolve, reject) => {
         const reader = new FileReader();
-        reader.onload = function () {
-            resolve(reader.result);
-        };
-        reader.onerror = function (error) {
-            reject(error);
-        };
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = (error) => reject(error);
         reader.readAsDataURL(blob);
     });
 }
@@ -476,6 +479,12 @@ const stopRecording = async () => {
     if (recordingStartTime === 0) {
         duration = 0;
     }
+
+    // Track recording stopped with duration
+    trackEvent('extension_recording_stopped', {
+        duration_seconds: Math.floor(duration / 1000),
+    });
+
     chrome.storage.local.set({
         recording: false,
         recordingDuration: duration,
@@ -580,6 +589,8 @@ chrome.runtime.onStartup.addListener(() => {
 
 // Check when action button is clicked
 chrome.action.onClicked.addListener(async (tab) => {
+    // Track action button click
+    trackEvent('extension_icon_clicked');
 
     // Check if user is logged in to GoDAM
     const { godamToken } = await chrome.storage.local.get(["godamToken"]);
@@ -722,6 +733,44 @@ const sendMessageRecord = async (message) => {
     });
 };
 
+const forwardAudioTrackWarning = async ({ source, reason }) => {
+    try {
+        const { activeTab, tabRecordedID, recordingType, surface } =
+            await chrome.storage.local.get([
+                "activeTab",
+                "tabRecordedID",
+                "recordingType",
+                "surface"
+            ]);
+
+        // Stop recording if surface window or monitor and recording type is screen and not in region mode
+        if (recordingType === "screen" && ( surface === "window" || surface === "monitor" ) ) {
+            await sendMessageRecord({ type: "stop-recording-tab" });
+            return;
+        }
+
+        const targets = new Set();
+        if (typeof activeTab === "number") {
+            targets.add(activeTab);
+        }
+        if (typeof tabRecordedID === "number") {
+            targets.add(tabRecordedID);
+        }
+
+        await Promise.all(
+            Array.from(targets).map((tabId) =>
+                sendMessageTab(tabId, {
+                    type: "audio-track-warning",
+                    source,
+                    reason,
+                }).catch(() => {})
+            )
+        );
+    } catch (err) {
+        console.warn("Unable to forward audio warning", err);
+    }
+};
+
 const initBackup = async (request, id) => {
     const { backupTab } = await chrome.storage.local.get(["backupTab"]);
     const backupURL = chrome.runtime.getURL("backup.html");
@@ -845,41 +894,6 @@ const offscreenDocument = async (request, tabId = null) => {
             try {
                 // This is following the steps from this page, but it still doesn't work :( https://developer.chrome.com/docs/extensions/mv3/screen_capture/#audio-and-video-offscreen-doc
                 throw new Error("Exit offscreen recording");
-                const existingContexts = await chrome.runtime.getContexts({});
-
-                const offDocument = existingContexts.find(
-                    (c) => c.contextType === "OFFSCREEN_DOCUMENT"
-                );
-
-                if (offDocument) {
-                    // If an offscreen document is already open, close it.
-                    await chrome.offscreen.closeDocument();
-                }
-
-                // Create an offscreen document.
-                await chrome.offscreen.createDocument({
-                    url: "recorderoffscreen.html",
-                    reasons: ["USER_MEDIA", "AUDIO_PLAYBACK", "DISPLAY_MEDIA"],
-                    justification:
-                        "Recording from getDisplayMedia API and tabCapture API",
-                });
-
-                const streamId = await chrome.tabCapture.getMediaStreamId({
-                    targetTabId: activeTab.id,
-                });
-
-                chrome.storage.local.set({
-                    recordingTab: null,
-                    offscreen: true,
-                    region: false,
-                    wasRegion: true,
-                });
-                sendMessageRecord({
-                    type: "loaded",
-                    request: request,
-                    isTab: true,
-                    tabID: streamId,
-                });
             } catch (error) {
                 // Open the recorder.html page as a normal tab.
                 chrome.tabs
@@ -1310,44 +1324,6 @@ const base64ToUint8Array = (base64) => {
     }
 };
 
-const handleSaveToDrive = async (sendResponse, request, fallback = false) => {
-    if (!fallback) {
-        const blob = base64ToUint8Array(request.base64);
-
-        // Specify the desired file name
-        const fileName = request.title + ".mp4";
-
-        // Call the saveToDrive function
-        saveToDrive(blob, fileName, sendResponse).then(() => {
-            savedToDrive();
-        });
-    } else {
-        const chunks = [];
-        await chunksStore.iterate((value, key) => {
-            chunks.push(value);
-        });
-
-        // Build the video from chunks
-        let array = [];
-        let lastTimestamp = 0;
-        for (const chunk of chunks) {
-            // Check if chunk timestamp is smaller than last timestamp, if so, skip
-            if (chunk.timestamp < lastTimestamp) {
-                continue;
-            }
-            lastTimestamp = chunk.timestamp;
-            array.push(chunk.chunk);
-        }
-        const blob = new Blob(array, { type: "video/webm" });
-
-        const filename = request.title + ".webm";
-
-        saveToDrive(blob, filename, sendResponse).then(() => {
-            savedToDrive();
-        });
-    }
-};
-
 const desktopCapture = async (request) => {
     const { backup } = await chrome.storage.local.get(["backup"]);
     const { backupSetup } = await chrome.storage.local.get(["backupSetup"]);
@@ -1612,11 +1588,94 @@ const handleSignOutGoDAM = async (sendResponse) => {
                 'godamRefreshToken',
                 'godamTokenExpiration'
             ]);
-            return sendResponse({status: 'success', revokeToken});
+            return sendResponse({ status: 'success', revokeToken });
         }
     }
 
 
+};
+
+// Function to handle uploading screenshot to GoDAM
+const handleUploadScreenshot = async (sendResponse, request) => {
+    try {
+        const { godamToken, godamRefreshToken, godamTokenExpiration, selectedOrg } = await chrome.storage.local.get([
+            "godamToken",
+            "godamRefreshToken",
+            "godamTokenExpiration",
+            "selectedOrg"
+        ]);
+
+        let token = godamToken;
+
+        // Token is not set or expired
+        if (!godamToken || (godamTokenExpiration && Date.now() >= godamTokenExpiration)) {
+            // Try to refresh token
+            try {
+                const refreshResponse = await new Promise((resolve) => {
+                    refreshToken(resolve);
+                });
+                if (refreshResponse.status === "ok") {
+                    token = refreshResponse.token;
+                } else {
+                    throw new Error("Token refresh failed");
+                }
+            } catch (error) {
+                sendResponse({ status: "error", message: "Authentication failed" });
+                return;
+            }
+        }
+
+        if (!selectedOrg) {
+            sendResponse({ status: "error", message: "No organization selected" });
+            return;
+        }
+
+        const fileName = `Screenshot - ${new Date().toLocaleString("en-US", {
+            month: "short",
+            day: "numeric",
+            year: "numeric",
+            hour: "numeric",
+            minute: "numeric",
+            second: "numeric",
+            hour12: true,
+        })}.png`;
+
+        // Convert base64 to blob
+        const blob = base64ToUint8Array(request.base64);
+
+        const formData = new FormData();
+        formData.append('file', blob, fileName);
+
+        const uploadUrl = process.env.GODAM_UPLOAD_URL || 'https://godam-upload.rt.gw';
+        const url = uploadUrl + '/upload-file';
+
+        const uploadResponse = await fetch(url, {
+            method: "POST",
+            headers: {
+                Authorization: `Bearer ${token}`,
+                Organization: selectedOrg
+            },
+            body: formData,
+        });
+
+        if (!uploadResponse.ok) {
+            throw new Error('Upload failed');
+        }
+
+        const responseData = await uploadResponse.json();
+        const uploadedFileName = responseData?.file_informations?.name;
+
+        sendResponse({
+            status: "ok",
+            fileName: uploadedFileName,
+            message: "Screenshot uploaded successfully"
+        });
+    } catch (error) {
+        sendResponse({
+            status: "error",
+            message: error.message || "Failed to upload screenshot"
+        });
+    }
 };
 
 // Function to handle saving to GoDAM
@@ -1660,11 +1719,30 @@ const handleSignInGoDAM = async (sendResponse) => {
     const signInGoDAM = require('./modules/signInGoDAM').default;
     const setOrgList = require('./modules/setOrgList').default;
 
-    const token = await signInGoDAM();
-    await setOrgList();
+    const attemptSignIn = async () => {
+        try {
+            const token = await signInGoDAM();
+            await setOrgList();
 
-    if (token) {
-        sendResponse({ status: "ok", token: token });
+            if (token) {
+                return { success: true, token };
+            }
+            return { success: false, error: "No token received" };
+        } catch (error) {
+            return { success: false, error: error.message };
+        }
+    };
+
+    // Try first attempt
+    let result = await attemptSignIn();
+
+    // Retry once if first attempt failed
+    if (!result.success) {
+        result = await attemptSignIn();
+    }
+
+    if (result.success) {
+        sendResponse({ status: "ok", token: result.token });
     } else {
         sendResponse({ status: "error", message: "Failed to sign in to GoDAM" });
     }
@@ -1766,12 +1844,6 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         handleRecordingComplete();
     } else if (request.type === "check-recording") {
         checkRecording();
-    } else if (request.type === "review-screenity") {
-        createTab(
-            "https://chrome.google.com/webstore/detail/screenity-screen-recorder/kbbdabhdfibnancpjfhlkhafgdilcnji/reviews",
-            false,
-            true
-        );
     } else if (request.type === "open-processing-info") {
         createTab(
             "https://godam.io/docs/godam-screen-recorder/",
@@ -1835,6 +1907,8 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     } else if (request.type === "get-platform-info") {
         getPlatformInfo(sendResponse);
         return true;
+    } else if (request.type === "audio-track-warning") {
+        forwardAudioTrackWarning(request);
     } else if (request.type === "restore-recording") {
         restoreRecording();
     } else if (request.type === "check-restore") {
@@ -1868,12 +1942,6 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         return true;
     } else if (request.type === "is-pinned") {
         isPinned(sendResponse);
-        return true;
-    } else if (request.type === "save-to-drive") {
-        handleSaveToDrive(sendResponse, request, false);
-        return true;
-    } else if (request.type === "save-to-drive-fallback") {
-        handleSaveToDrive(sendResponse, request, true);
         return true;
     } else if (request.type === "request-download") {
         requestDownload(request.base64, request.title);
@@ -1911,6 +1979,33 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         const getOrgList = require('./modules/getOrgList').default;
         getOrgList(sendResponse);
         return true;
+    } else if (request.type === "capture-screenshot") {
+
+        const options = {
+            format: request.format || 'png',
+        }
+
+        if (request.quality && !isNaN(request.quality)) {
+            options.quality = request.quality;
+        }
+
+        if (request.rect) {
+            options.rect = request.rect;
+        }
+
+        // Capture the current tab
+        chrome.tabs.captureVisibleTab(null, options, (dataUrl) => {
+            if (chrome.runtime.lastError) {
+                console.error('Screenshot capture error:', chrome.runtime.lastError);
+                sendResponse(null);
+            } else {
+                sendResponse(dataUrl);
+            }
+        });
+        return true;
+    } else if (request.type === "upload-screenshot") {
+        handleUploadScreenshot(sendResponse, request);
+        return true;
     }
 });
 
@@ -1923,7 +2018,7 @@ chrome.cookies.onChanged.addListener(async (changeInfo) => {
 
     if (!cookie.domain.includes(domain)) return;
 
-    if ( (cookie.name === "sid" || cookie.name === "user_id") && cookie.value === "Guest"  ) {
+    if ((cookie.name === "sid" || cookie.name === "user_id") && cookie.value === "Guest") {
         await chrome.storage.local.remove(["godamToken", "godamRefreshToken", "godamTokenExpiration"]);
     }
 });
