@@ -131,12 +131,6 @@ const PopupContainer = (props) => {
         chrome.storage.local.set({ lastSelectedTab: tab });
     };
 
-    // Helper function to clear saved tab (useful for debugging or reset)
-    const clearSavedTab = () => {
-        chrome.storage.local.remove(['lastSelectedTab']);
-        console.log('Cleared saved tab');
-    };
-
     useEffect(() => {
         // Only set tab from contentState if it's different from current tab
         // This prevents overriding the loaded tab from storage
