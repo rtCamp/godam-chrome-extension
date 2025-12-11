@@ -146,8 +146,7 @@ const ScreenshotTab = ({onScreenshotComplete, shadowRef}) => {
         // Prevent default behavior to avoid text selection
         e.preventDefault();
         document.body.style.userSelect = 'none';
-    
-        const rect = overlayRef.current.getBoundingClientRect();
+
         setIsSelecting(true);
         setSelection({
             startX: e.clientX,
@@ -173,8 +172,7 @@ const ScreenshotTab = ({onScreenshotComplete, shadowRef}) => {
 
     const handleMouseMove = (e) => {
         if (!isSelecting || mode !== 'selecting') return;
-        
-        const rect = overlayRef.current.getBoundingClientRect();
+
         setSelection(prev => ({
             ...prev,
             endX: e.clientX,
