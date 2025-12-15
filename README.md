@@ -16,6 +16,7 @@ With the GoDAM Chrome Extension, you can record your screen, explain clearly usi
 - Record Screen, Tab, or Window - Easily capture your full screen, an app window, or a browser tab — ideal for walkthroughs, bug reports, or tutorials.
 - Draw While Recording - Use annotation tools like pen, highlighter, and shapes to guide attention and explain things visually — no editing needed later.
 - Automatic Upload to GoDAM - Once you're done, your video is automatically uploaded to your secure GoDAM workspace. No need to export or manage files.
+- Capture Screenshots Instantly – Take a screenshot of the current tab or select a custom area within the tab. Ideal for quick highlights, documentation, or visual feedback without starting a recording.
 - One-Click Sharing - From GoDAM Central Media Manager, you can copy and share a link of the recorded video to teammates, clients, or stakeholders.
 - Get Feedback Like a Conversation - The shared video link opens a clean video page with feedback tools — viewers can react with emojis or leave timestamped comments, turning your video into a collaborative space.
 - Organized in Your Media Library - All recordings are saved in your central GoDAM dashboard for easy access, reuse, and sharing.
