@@ -42,7 +42,7 @@ const Warning = () => {
 				10000
 			);
 		}
-	}, []);
+	}, [openWarning]);
 
 	return (
 		<ToastEl.Provider swipeDirection="down" duration={duration}>
