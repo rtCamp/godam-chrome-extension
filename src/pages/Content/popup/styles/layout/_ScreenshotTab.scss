@@ -2,8 +2,16 @@
 
 .screenshot-tab-container {
     padding: 1rem;
-    background-color: #F6F7FB;
+    background-color: $color-light-grey;
     margin-top: 1rem;
+}
+
+.screenshot-tab-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: $color-text-primary;
+    margin-top: 4px;
+    margin-bottom: 20px;
 }
 
 .screenshot-type-selector {
@@ -12,12 +20,48 @@
     gap: 12px;
 
     &--item {
-        padding: 20px;
+        padding: 16px;
         border-radius: 8px;
-        background-color: #f2f2f2;
+        color: $color-text-primary;
         display: flex;
+        flex-direction: column;
+        gap: 4px;
         justify-content: center;
         align-items: center;
         cursor: pointer;
+        background-color: #fff;
+        border: 2px solid transparent;
+        transition: background-color 0.2s, border-color 0.2s;
+
+        &.active {
+            background-color: #f7347f21;
+            border: 2px solid $color-primary;
+        }
     }
+}
+
+.screenshot-button {
+    margin-top: 20px;
+    color: $color-text-contrast;
+}
+
+.screenshot-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: transparent;
+    z-index: 9999999999999;
+    cursor: crosshair;
+}
+
+.screenshot-selection-box {
+    background-color: transparent;
+    position: absolute;
+    border: 1px dashed $color-primary;
+    box-shadow: rgba(0, 0, 0, 0.2) 0px 0px 0px 9999px;
+    box-sizing: border-box;
 }
