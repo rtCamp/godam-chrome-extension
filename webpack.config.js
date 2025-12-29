@@ -98,6 +98,9 @@ var options = {
             loader: "css-loader",
           },
           {
+            loader: "postcss-loader",
+          },
+          {
             loader: "sass-loader",
             options: {
               sourceMap: true,

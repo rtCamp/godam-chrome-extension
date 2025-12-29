@@ -1,5 +1,6 @@
 import React from "react";
 import { render } from "react-dom";
+import "../../styles/tailwind.scss";
 
 import RecorderOffscreen from "./RecorderOffscreen";
 

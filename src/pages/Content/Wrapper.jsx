@@ -18,6 +18,7 @@ import root from "react-shadow";
 // Import styles raw to add into the ShadowDOM
 // dist?
 import styles from "!raw-loader!./styles/app.css";
+import tailwindStyles from "!css-loader?exportType=string!postcss-loader!sass-loader!../../styles/tailwind.scss";
 
 // Utils
 import ZoomContainer from "./utils/ZoomContainer";
@@ -149,10 +150,10 @@ const Wrapper = () => {
                     window.location.href.indexOf(
                       chrome.runtime.getURL("setup.html")
                     ) === -1 &&
-                    window.location.href.indexOf(
-                      chrome.runtime.getURL("playground.html")
-                    ) === -1 &&
-                    !contentState.pendingRecording
+                      window.location.href.indexOf(
+                        chrome.runtime.getURL("playground.html")
+                      ) === -1 &&
+                      !contentState.pendingRecording
                       ? "rgba(0,0,0,0.15)"
                       : "rgba(0,0,0,0)",
                   top: 0,
@@ -216,6 +217,7 @@ const Wrapper = () => {
               )}
             </div>
             <style type="text/css">{styles}</style>
+            <style type="text/css">{tailwindStyles}</style>
           </root.div>
         </div>
       ) : (
