@@ -29,7 +29,7 @@
     "@sentry/browser": "^7.94.1",
     "@tensorflow-models/body-segmentation": "^1.0.2",
     "@tensorflow/tfjs-backend-webgl": "^4.9.0",
-    "@tensorflow/tfjs-converter": "^4.9.0",
+    "@tensorflow/tfjs-converter": "^4.22.0",
     "@tensorflow/tfjs-core": "^4.13.0",
     "@uiw/color-convert": "^1.2.2",
     "@uiw/react-color-wheel": "^2.9.2",
