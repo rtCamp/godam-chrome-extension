@@ -32,7 +32,7 @@
     "@tensorflow/tfjs-converter": "^4.9.0",
     "@tensorflow/tfjs-core": "^4.13.0",
     "@uiw/color-convert": "^1.2.2",
-    "@uiw/react-color-wheel": "^1.2.2",
+    "@uiw/react-color-wheel": "^2.9.2",
     "axios": "^1.6.2",
     "concurrently": "^8.2.0",
     "fabric": "^5.3.0",
