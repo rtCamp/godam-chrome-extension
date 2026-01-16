@@ -22,6 +22,32 @@ localforage.config({
     await initPostHog();
 })();
 
+/**
+ * Securely checks if a URL's hostname is in a blocked list
+ * @param {string} urlString - The URL to check
+ * @returns {boolean} - True if the URL is blocked, false otherwise
+ */
+const isBlockedUrl = (urlString) => {
+    try {
+        const url = new URL(urlString);
+        const blockedHosts = [
+            'stackoverflow.com',
+            'www.stackoverflow.com',
+            'chrome.google.com',
+            'chromewebstore.google.com'
+        ];
+
+        // Check if the hostname matches or is a subdomain of blocked hosts
+        return blockedHosts.some(blockedHost => {
+            return url.hostname === blockedHost ||
+                url.hostname.endsWith('.' + blockedHost);
+        });
+    } catch (e) {
+        // If URL parsing fails, treat it as blocked for safety
+        return true;
+    }
+};
+
 // Get chunks store
 const chunksStore = localforage.createInstance({
     name: "chunks",
@@ -148,9 +174,7 @@ chrome.commands.onCommand.addListener(async (command) => {
                     !activeTab.url.includes("/playground.html") &&
                     !activeTab.url.includes("/setup.html"))
             ) &&
-            !activeTab.url.includes("stackoverflow.com/") &&
-            !activeTab.url.includes("chrome.google.com/webstore") &&
-            !activeTab.url.includes("chromewebstore.google.com")
+            !isBlockedUrl(activeTab.url)
         ) {
             sendMessageTab(activeTab.id, { type: "start-stream" });
         } else {
@@ -635,9 +659,7 @@ chrome.action.onClicked.addListener(async (tab) => {
                     !tab.url.includes("/playground.html") &&
                     !tab.url.includes("/setup.html"))
             ) &&
-            !tab.url.includes("stackoverflow.com/") &&
-            !tab.url.includes("chrome.google.com/webstore") &&
-            !tab.url.includes("chromewebstore.google.com")
+            !isBlockedUrl(tab.url)
         ) {
             sendMessageTab(tab.id, { type: "toggle-popup" });
             chrome.storage.local.set({ activeTab: tab.id });
@@ -744,7 +766,7 @@ const forwardAudioTrackWarning = async ({ source, reason }) => {
             ]);
 
         // Stop recording if surface window or monitor and recording type is screen and not in region mode
-        if (recordingType === "screen" && ( surface === "window" || surface === "monitor" ) ) {
+        if (recordingType === "screen" && (surface === "window" || surface === "monitor")) {
             await sendMessageRecord({ type: "stop-recording-tab" });
             return;
         }
@@ -763,7 +785,7 @@ const forwardAudioTrackWarning = async ({ source, reason }) => {
                     type: "audio-track-warning",
                     source,
                     reason,
-                }).catch(() => {})
+                }).catch(() => { })
             )
         );
     } catch (err) {
