@@ -1,4 +1,4 @@
-import { fabric } from "fabric";
+import * as fabric from "fabric";
 
 const SelectTool = (canvas, toolSettings, setToolSettings) => {
   if (toolSettings.tool === "select") {
