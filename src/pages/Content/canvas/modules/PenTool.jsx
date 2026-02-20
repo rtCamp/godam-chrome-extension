@@ -1,16 +1,26 @@
-import { fabric } from "fabric";
+import * as fabric from "fabric";
 
 const PenTool = (canvas, toolSettings, setToolSettings, saveCanvas) => {
+  const ensureBrush = () => {
+    if (!canvas.freeDrawingBrush) {
+      canvas.freeDrawingBrush = new fabric.PencilBrush(canvas);
+    }
+  };
+
   if (toolSettings.tool === "pen") {
+    ensureBrush();
     canvas.isDrawingMode = true;
-    canvas.freeDrawingBrush.drawStraightLine = false;
     canvas.freeDrawingBrush.width = toolSettings.strokeWidth * 4;
     canvas.freeDrawingBrush.color = toolSettings.color;
-    canvas.freeDrawingBrush.straightLineKey = "none";
+    if ("straightLineKey" in canvas.freeDrawingBrush) {
+      canvas.freeDrawingBrush.straightLineKey = "none";
+    }
   } else if (toolSettings.tool === "highlighter") {
+    ensureBrush();
     canvas.isDrawingMode = true;
-    canvas.freeDrawingBrush.drawStraightLine = false;
-    canvas.freeDrawingBrush.straightLineKey = "none";
+    if ("straightLineKey" in canvas.freeDrawingBrush) {
+      canvas.freeDrawingBrush.straightLineKey = "none";
+    }
     canvas.freeDrawingBrush.width = toolSettings.strokeWidth * 10;
     // Make the highlighter transparent
     canvas.freeDrawingBrush.color = new fabric.Color(toolSettings.color)

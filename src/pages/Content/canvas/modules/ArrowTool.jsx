@@ -1,4 +1,5 @@
-import { fabric } from "fabric";
+import * as fabric from "fabric";
+import { getCanvasPointer } from "./pointer";
 
 const createArrowLine = (x, y, color, toolSettings) => {
   return new fabric.Line([x, y, x, y], {
@@ -86,10 +87,10 @@ const moveArrowCircle = (
   });
   canvas.renderAll();
 
-  canvas.on("mouse:move", (o) => {
+  const onDragMove = (o) => {
     if (!isDown) return;
 
-    const pointer = canvas.getPointer(o.e);
+    const pointer = getCanvasPointer(canvas, o);
     const { x, y } = pointer;
     arrowCircle.set({ left: x - 5, top: y - 5 });
     canvas.renderAll();
@@ -112,12 +113,13 @@ const moveArrowCircle = (
     const yDiff = arrowLine.y2 - arrowLine.y1;
     const angle = (Math.atan2(yDiff, xDiff) * 180) / Math.PI;
     arrowHead.set({ angle: angle + 90, left: arrowLine.x2, top: arrowLine.y2 });
-  });
+  };
 
-  canvas.on("mouse:up", (o) => {
+  const onDragUp = (o) => {
     if (!isDown) return;
     isDown = false;
-    canvas.off("mouse:move");
+    canvas.off("mouse:move", onDragMove);
+    canvas.off("mouse:up", onDragUp);
     arrowLineControl.set({ opacity: 1 });
     const group = new fabric.Group(
       [arrowLine, arrowHead, arrowLineControl, arrowCircle1, arrowCircle2],
@@ -153,7 +155,10 @@ const moveArrowCircle = (
     // Re-select
     canvas.setActiveObject(group);
     canvas.renderAll();
-  });
+  };
+
+  canvas.on("mouse:move", onDragMove);
+  canvas.on("mouse:up", onDragUp);
 };
 
 const ArrowTool = (canvas, toolSettings, setToolSettings, saveCanvas) => {
@@ -172,7 +177,7 @@ const ArrowTool = (canvas, toolSettings, setToolSettings, saveCanvas) => {
     canvas.selection = false;
     canvas.renderAll();
 
-    const pointer = canvas.getPointer(o.e);
+    const pointer = getCanvasPointer(canvas, o);
     const x = pointer.x;
     const y = pointer.y;
 
@@ -203,7 +208,7 @@ const ArrowTool = (canvas, toolSettings, setToolSettings, saveCanvas) => {
     )
       return;
 
-    const pointer = canvas.getPointer(o.e);
+    const pointer = getCanvasPointer(canvas, o);
     const x = pointer.x;
     const y = pointer.y;
 
@@ -285,7 +290,7 @@ const ArrowTool = (canvas, toolSettings, setToolSettings, saveCanvas) => {
     return object;
   };
 
-  canvas.on("mouse:down", function (e) {
+  const onArrowControlMouseDown = (e) => {
     // Check event subtargets if includes element with ID property arrowCircle1 or arrowCircle2
     if (e.subTargets) {
       e.subTargets.forEach((obj) => {
@@ -300,9 +305,9 @@ const ArrowTool = (canvas, toolSettings, setToolSettings, saveCanvas) => {
         }
       });
     }
-  });
+  };
 
-  canvas.on("before:selection:cleared", function (e) {
+  const onBeforeSelectionCleared = () => {
     const activeObject = canvas.getActiveObject();
     if (activeObject && activeObject.id === "arrowGroup") {
       activeObject._objects.forEach((obj) => {
@@ -316,9 +321,9 @@ const ArrowTool = (canvas, toolSettings, setToolSettings, saveCanvas) => {
       });
       canvas.renderAll();
     }
-  });
+  };
 
-  canvas.on("selection:updated", function (e) {
+  const onSelectionUpdatedHide = () => {
     // Set opacity 0 to all arrow circles in the canvas (irrespective of group)
     canvas.getObjects().forEach((obj) => {
       if (obj.type == "group") {
@@ -333,9 +338,9 @@ const ArrowTool = (canvas, toolSettings, setToolSettings, saveCanvas) => {
         });
       }
     });
-  });
+  };
 
-  canvas.on("selection:cleared", function (e) {
+  const onSelectionCleared = () => {
     // Set opacity 0 to all arrow circles in the canvas (irrespective of group)
     canvas.getObjects().forEach((obj) => {
       if (obj.type == "group") {
@@ -350,9 +355,9 @@ const ArrowTool = (canvas, toolSettings, setToolSettings, saveCanvas) => {
         });
       }
     });
-  });
+  };
 
-  canvas.on("selection:created", function (e) {
+  const onSelectionCreated = () => {
     const activeObject = canvas.getActiveObject();
     if (activeObject && activeObject.id === "arrowGroup") {
       activeObject._objects.forEach((obj) => {
@@ -380,9 +385,9 @@ const ArrowTool = (canvas, toolSettings, setToolSettings, saveCanvas) => {
       });
       canvas.renderAll();
     }
-  });
+  };
 
-  canvas.on("selection:updated", function (e) {
+  const onSelectionUpdatedShow = () => {
     const activeObject = canvas.getActiveObject();
     if (activeObject && activeObject.id === "arrowGroup") {
       activeObject._objects.forEach((obj) => {
@@ -396,8 +401,14 @@ const ArrowTool = (canvas, toolSettings, setToolSettings, saveCanvas) => {
       });
       canvas.renderAll();
     }
-  });
+  };
 
+  canvas.on("mouse:down", onArrowControlMouseDown);
+  canvas.on("before:selection:cleared", onBeforeSelectionCleared);
+  canvas.on("selection:updated", onSelectionUpdatedHide);
+  canvas.on("selection:cleared", onSelectionCleared);
+  canvas.on("selection:created", onSelectionCreated);
+  canvas.on("selection:updated", onSelectionUpdatedShow);
   canvas.on("mouse:down", onMouseDown);
   canvas.on("mouse:move", onMouseMove);
   canvas.on("mouse:up", onMouseUp);
@@ -407,9 +418,12 @@ const ArrowTool = (canvas, toolSettings, setToolSettings, saveCanvas) => {
       canvas.off("mouse:down", onMouseDown);
       canvas.off("mouse:move", onMouseMove);
       canvas.off("mouse:up", onMouseUp);
-      canvas.off("before:selection:cleared");
-      canvas.off("selection:cleared");
-      canvas.off("mouse:down");
+      canvas.off("mouse:down", onArrowControlMouseDown);
+      canvas.off("before:selection:cleared", onBeforeSelectionCleared);
+      canvas.off("selection:updated", onSelectionUpdatedHide);
+      canvas.off("selection:cleared", onSelectionCleared);
+      canvas.off("selection:created", onSelectionCreated);
+      canvas.off("selection:updated", onSelectionUpdatedShow);
     },
   };
 };

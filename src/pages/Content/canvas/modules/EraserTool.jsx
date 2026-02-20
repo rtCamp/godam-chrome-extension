@@ -1,6 +1,6 @@
 import React from "react";
 
-import { fabric } from "fabric";
+import * as fabric from "fabric";
 import { saveCanvas } from "./History";
 
 const EraserTool = (canvas, toolSettings, setToolSettings) => {

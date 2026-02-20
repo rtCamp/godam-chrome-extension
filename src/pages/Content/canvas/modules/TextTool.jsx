@@ -1,11 +1,12 @@
-import { fabric } from "fabric";
+import * as fabric from "fabric";
+import { getCanvasPointer } from "./pointer";
 
 const TextTool = (canvas, toolSettings, setToolSettings, saveCanvas) => {
   // Add interactive text on click, start editing
   const onMouseDown = (o) => {
     if (toolSettings.tool !== "text") return;
 
-    const pointer = canvas.getPointer(o.e);
+    const pointer = getCanvasPointer(canvas, o);
     const x = pointer.x;
     const y = pointer.y;
 
@@ -41,16 +42,13 @@ const TextTool = (canvas, toolSettings, setToolSettings, saveCanvas) => {
       tool: "select",
     });
 
-    // When user clicks off of text, save canvas
-    canvas.on("mouse:down", () => {
-      if (canvas.getActiveObject() !== text) {
-        // Check if text is empty, if so, remove it
-        if (text.text === "") {
-          canvas.remove(text);
-        } else {
-          saveCanvas(canvas);
-        }
+    text.on("editing:exited", () => {
+      if (text.text === "") {
+        canvas.remove(text);
+      } else {
+        saveCanvas({ ...toolSettings, canvas, tool: "select" }, setToolSettings);
       }
+      canvas.renderAll();
     });
   };
 
@@ -146,11 +144,8 @@ const TextTool = (canvas, toolSettings, setToolSettings, saveCanvas) => {
     canvas.renderAll();
   };
 
-  canvas.on("mouse:down", onMouseDown);
-  document.addEventListener("keydown", onKeyPress);
-  canvas.on("object:resizing", onResize);
-  canvas.on("mouse:move", function (event) {
-    var pointer = canvas.getPointer(event.e);
+  const onMouseMoveHover = (event) => {
+    var pointer = getCanvasPointer(canvas, event);
     var isHoveringTextbox = false;
 
     canvas.forEachObject(function (obj) {
@@ -167,14 +162,19 @@ const TextTool = (canvas, toolSettings, setToolSettings, saveCanvas) => {
       // Re-enable perPixelTargetFind when mouse leaves the textbox
       canvas.perPixelTargetFind = true;
     }
-  });
+  };
+
+  canvas.on("mouse:down", onMouseDown);
+  document.addEventListener("keydown", onKeyPress);
+  canvas.on("object:resizing", onResize);
+  canvas.on("mouse:move", onMouseMoveHover);
 
   return {
     removeEventListeners: () => {
       canvas.off("mouse:down", onMouseDown);
       document.removeEventListener("keydown", onKeyPress);
       canvas.off("object:resizing", onResize);
-      canvas.off("mouse:move");
+      canvas.off("mouse:move", onMouseMoveHover);
     },
   };
 };
