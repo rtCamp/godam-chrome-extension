@@ -90,6 +90,7 @@
   "overrides": {
     "minimatch": "^10.2.3",
     "rimraf": "^6.0.1",
-    "webpack": "^5.105.2"
+    "webpack": "^5.105.2",
+    "serialize-javascript": "^7.0.3"
   }
 }
