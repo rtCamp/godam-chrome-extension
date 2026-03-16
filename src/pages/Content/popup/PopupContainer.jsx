@@ -88,8 +88,9 @@ const PopupContainer = (props) => {
         }
     }
 
-    useEffect(() => {
-        updateNotice()
+    useEffect(async () => {
+        await chrome.runtime.sendMessage({ type: "set-organizations" })
+        await updateNotice()
     }, []);
 
     // Load the last selected tab from storage when component mounts
@@ -325,8 +326,6 @@ const PopupContainer = (props) => {
         DragRef.current.updatePosition({ x: x, y: y });
 
         handleDrop(null, { x: x, y: y });
-
-        chrome.runtime.sendMessage({ type: "set-organizations" })
     }, []);
 
     return (
