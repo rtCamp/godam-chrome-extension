@@ -55,7 +55,7 @@
     "react-svg": "^16.3.0",
     "sass": "^1.60.0",
     "ssestream": "^1.1.0",
-    "uuid": "^13.0.0",
+    "uuid": "^14.0.0",
     "wavesurfer.js": "^7.4.2",
     "webm-duration-fix": "^1.0.4"
   },
