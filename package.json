@@ -35,7 +35,7 @@
     "@uiw/react-color-wheel": "^2.9.2",
     "axios": "^1.15.0",
     "concurrently": "^8.2.0",
-    "fabric": "^7.2.0",
+    "fabric": "^7.4.0",
     "fix-webm-duration": "^1.0.5",
     "jszip": "^3.10.1",
     "localforage": "^1.10.0",
