@@ -1,4 +1,5 @@
-import { fabric } from "fabric";
+import * as fabric from "fabric";
+import { getCanvasPointer } from "./pointer";
 
 const ImageTool = (canvas, src, toolSettings, setToolSettings, saveCanvas) => {
   // Show image placeholder (semi transparent ghost image following cursor) to allow user to place image on canvas (source is in the image argument), drag to resize
@@ -61,7 +62,7 @@ const ImageTool = (canvas, src, toolSettings, setToolSettings, saveCanvas) => {
 
     //if (!isDown) {
     // Show ghost image following cursor, drag to resize, click to place
-    var pointer = canvas.getPointer(o.e);
+    var pointer = getCanvasPointer(canvas, o);
     fabricImage.set({
       left: pointer.x,
       top: pointer.y,

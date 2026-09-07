@@ -4,7 +4,6 @@ var fileSystem = require("fs-extra");
 var CopyWebpackPlugin = require("copy-webpack-plugin");
 var HtmlWebpackPlugin = require("html-webpack-plugin");
 var TerserPlugin = require("terser-webpack-plugin");
-var { CleanWebpackPlugin } = require("clean-webpack-plugin");
 var { ASSET_PATH, NODE_ENV, GODAM_BASE_URL, GODAM_OAUTH_CLIENT_ID, GODAM_UPLOAD_URL, GODAM_OAUTH_SCOPE, POSTHOG_KEY, POSTHOG_HOST } = require("./utils/env");
 
 var alias = {
@@ -137,7 +136,6 @@ var options = {
       .concat([".js", ".jsx", ".ts", ".tsx", ".css"]),
   },
   plugins: [
-    new CleanWebpackPlugin({ verbose: false }),
     new webpack.ProgressPlugin(),
     // expose and write the allowed env vars on the compiled bundle
     new webpack.EnvironmentPlugin({

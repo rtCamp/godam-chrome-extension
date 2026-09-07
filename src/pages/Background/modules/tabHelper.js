@@ -1,3 +1,37 @@
+/**
+ * Checks if a URL is restricted (cannot receive content script messages)
+ * @param {string} urlString - The URL to check
+ * @returns {boolean} - True if the URL is restricted, false otherwise
+ */
+const isRestrictedUrl = (urlString) => {
+  if (!urlString || urlString === "" || urlString === "about:blank") {
+    return true;
+  }
+
+  // Check for chrome:// URLs
+  if (urlString.startsWith("chrome://")) {
+    return true;
+  }
+
+  // Parse URL and check hostname for Chrome Web Store
+  try {
+    const url = new URL(urlString);
+    const restrictedHosts = [
+      'chromewebstore.google.com',
+      'chrome.google.com'
+    ];
+
+    // Check if hostname matches restricted hosts
+    return restrictedHosts.some(restrictedHost => {
+      return url.hostname === restrictedHost ||
+        url.hostname.endsWith('.' + restrictedHost);
+    });
+  } catch (e) {
+    // If URL parsing fails, treat it as restricted for safety
+    return true;
+  }
+};
+
 const sendMessageTab = async (
   tabId,
   message,
@@ -14,15 +48,7 @@ const sendMessageTab = async (
   try {
     const tab = await chrome.tabs.get(tabId);
 
-    if (
-      !tab ||
-      !tab.url ||
-      tab.url.startsWith("chrome://") ||
-      tab.url.startsWith("chromewebstore.google.com") ||
-      tab.url.startsWith("chrome.google.com/webstore") ||
-      tab.url === "" ||
-      tab.url === "about:blank"
-    ) {
+    if (!tab || isRestrictedUrl(tab.url)) {
       throw new Error("Cannot send message to restricted page (system pages, Chrome Web Store) or tab without valid URL");
     }
 

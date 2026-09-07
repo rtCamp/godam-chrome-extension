@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useContext } from "react";
-import { fabric } from "fabric";
+import * as fabric from "fabric";
 
 // Context
 import { contentStateContext } from "../../context/ContentState";
@@ -51,12 +51,10 @@ const CanvasWrap = (props) => {
     canvas.getContext("2d", { willReadFrequently: true });
 
     // Set width and height of canvas to full size of document
-    canvas.setWidth(window.document.body.offsetWidth);
-
-    // set max height of 2000px
-    //canvas.setHeight(Math.min(window.document.body.offsetHeight, 2500));
-    // set height to viewport
-    canvas.setHeight(window.innerHeight);
+    canvas.setDimensions({
+      width: window.document.body.offsetWidth,
+      height: window.innerHeight,
+    });
 
     canvas.renderAll();
 
@@ -80,8 +78,10 @@ const CanvasWrap = (props) => {
     if (!fabricRef.current) return;
 
     const resizeCanvas = () => {
-      fabricRef.current.setWidth(window.document.body.offsetWidth);
-      fabricRef.current.setHeight(window.innerHeight);
+      fabricRef.current.setDimensions({
+        width: window.document.body.offsetWidth,
+        height: window.innerHeight,
+      });
       fabricRef.current.renderAll();
     };
 

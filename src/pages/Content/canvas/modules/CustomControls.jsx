@@ -1,5 +1,5 @@
 import React from "react";
-import { fabric } from "fabric";
+import * as fabric from "fabric";
 
 import {
   HandleControl,
@@ -10,6 +10,24 @@ import {
 
 // Custom controls for the canvas, with rounded square handles and a circular rotate handle
 const CustomControls = (canvas) => {
+  const ensureControls = (prototype, factory) => {
+    if (!prototype.controls) {
+      prototype.controls =
+        typeof factory === "function"
+          ? factory()
+          : {};
+    }
+  };
+
+  ensureControls(
+    fabric.Object.prototype,
+    fabric.controlsUtils?.createObjectDefaultControls
+  );
+  ensureControls(
+    fabric.Textbox.prototype,
+    fabric.controlsUtils?.createTextboxDefaultControls
+  );
+
   fabric.Object.prototype.set({
     transparentCorners: false,
     borderColor: "#0D99FF",

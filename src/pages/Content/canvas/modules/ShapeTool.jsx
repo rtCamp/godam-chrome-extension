@@ -1,6 +1,7 @@
 import React from "react";
 
-import { fabric } from "fabric";
+import * as fabric from "fabric";
+import { getCanvasPointer } from "./pointer";
 
 const ShapeTool = (canvas, toolSettings, setToolSettings, saveCanvas) => {
   const tool = toolSettings;
@@ -12,7 +13,7 @@ const ShapeTool = (canvas, toolSettings, setToolSettings, saveCanvas) => {
   const onMouseDown = (o) => {
     if (tool.tool !== "shape") return;
     isDown = true;
-    const pointer = canvas.getPointer(o.e);
+    const pointer = getCanvasPointer(canvas, o);
     origX = pointer.x;
     origY = pointer.y;
     if (tool.shape === "rectangle") {
@@ -68,7 +69,7 @@ const ShapeTool = (canvas, toolSettings, setToolSettings, saveCanvas) => {
   const onMouseMove = (o) => {
     if (tool.tool !== "shape") return;
     if (!isDown) return;
-    const pointer = canvas.getPointer(o.e);
+    const pointer = getCanvasPointer(canvas, o);
 
     if (origX > pointer.x) {
       shape.set({ left: Math.abs(pointer.x) });
