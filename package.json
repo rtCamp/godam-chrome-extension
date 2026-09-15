@@ -1,6 +1,6 @@
 {
   "name": "godam-extension",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "GoDAM Chrome Extension",
   "scripts": {
     "build": "node utils/build.js",
