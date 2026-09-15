@@ -4,6 +4,19 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.1] - 2026-09-15
+
+### Fixed
+- Canvas annotation tools (arrow, pen, text, shape, and eraser) updated for fabric.js v6 compatibility, restoring drawing, selection, and history behavior ([#138](https://github.com/rtCamp/godam-chrome-extension/pull/138))
+
+### Changed
+- Added Dependabot configuration for automated dependency updates ([#113](https://github.com/rtCamp/godam-chrome-extension/pull/113))
+- Added CodeQL security scanning workflow ([#128](https://github.com/rtCamp/godam-chrome-extension/pull/128), [#131](https://github.com/rtCamp/godam-chrome-extension/pull/131))
+- Added Copilot code-review runner workflow ([#186](https://github.com/rtCamp/godam-chrome-extension/pull/186))
+
+### Security
+- Resolved multiple Dependabot security alerts and updated dependencies, including axios, follow-redirects, lodash, serialize-javascript, brace-expansion, minimatch, and yaml ([#189](https://github.com/rtCamp/godam-chrome-extension/pull/189))
+
 ## [1.2.0] - 2025-12-11
 
 ### Added
