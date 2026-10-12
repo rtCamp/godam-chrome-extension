@@ -1,0 +1,167 @@
+body {
+	overflow: hidden;
+	margin: 0px;
+}
+
+.setupInfo {
+	margin-top: 20px;
+}
+
+a {
+	text-decoration: none !important;
+	color: #4C7DE2;
+}
+
+.setupBackgroundSVG {
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	width: 100%;
+	height: 100%;
+	background: url('__PATTERN_SVG_URL__') repeat;
+	background-size: 62px 23.5px;
+	animation: moveBackground 138s linear infinite;
+}
+
+@keyframes moveBackground {
+	0% {
+		background-position: 0 0;
+	}
+
+	100% {
+		background-position: 100% 0;
+	}
+}
+
+.setupLogo {
+	position: absolute;
+	bottom: 30px;
+	left: 0px;
+	right: 0px;
+	margin: auto;
+	display: flex;
+	justify-content: center;
+	align-items: end;
+	gap: 10px;
+}
+
+.setupLogo img {
+	max-width: 120px;
+	width: 100%;
+}
+
+.setupLogo span {
+	font-size: 12px;
+	color: #6E7684;
+	line-height: 2;
+}
+
+.setupBackground {
+	background-color: #f5f5f5;
+	height: 100vh;
+	width: 100vw;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.setupContainer {
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	right: 0px;
+	bottom: 0px;
+	margin: auto;
+	z-index: 999;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 60%;
+	height: fit-content;
+	background-color: #fff;
+	border-radius: 30px;
+	padding: 50px 50px;
+	gap: 80px;
+	font-family: 'Satoshi-Medium', sans-serif;
+}
+
+.setupImage {
+	width: 70%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.setupImage img {
+	width: 100%;
+	border-radius: 30px;
+}
+
+.setupText {
+	width: 50%;
+	display: flex;
+	flex-direction: column;
+	justify-content: left;
+	align-items: left;
+	text-align: left;
+}
+
+.setupEmoji {
+	font-size: 20px;
+	margin-bottom: 10px;
+}
+
+.setupTitle {
+	font-size: 20px;
+	font-weight: bold;
+	margin-bottom: 10px;
+	color: #29292F;
+}
+
+.setupDescription {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: left;
+	margin-top: 10px;
+	color: #6E7684;
+	font-size: 14px;
+}
+
+.setupStep {
+	margin-bottom: 10px;
+	vertical-align: middle;
+}
+
+.setupStep span {
+	align-items: center;
+	justify-content: center;
+	text-align: center;
+	width: 20px;
+	height: 20px;
+	padding: 2px;
+	border-radius: 30px;
+	display: inline-flex;
+	vertical-align: middle;
+	margin-left: 3px;
+	margin-right: 3px;
+	background-color: #F4F2F2;
+}
+
+.setupStep img {
+	width: 100%;
+	text-align: center;
+	display: block;
+}
+
+.center {
+	text-align: center !important;
+}
+
+.setupText.center {
+	width: auto !important;
+}
+
+.setupContainer.center {
+	width: 40% !important;
+}

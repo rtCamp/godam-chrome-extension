@@ -23,8 +23,8 @@ const GoDAMVideos = () => {
     const [selectedOrg, setSelectedOrg] = React.useState('');
 
     useEffect(() => {
-        (async()=>{
-            const orgList = await chrome.runtime.sendMessage({type:"get-organisations"})
+        (async () => {
+            const orgList = await chrome.runtime.sendMessage({ type: "get-organisations" })
             const { selectedOrg } = await chrome.storage.local.get(['selectedOrg'])
 
             setOrgList(orgList)
@@ -39,33 +39,13 @@ const GoDAMVideos = () => {
     };
 
     return (
-        <div className="GoDAMVideos" style={{
-            padding: "1rem",
-            backgroundColor: "#F6F7FB", // color-light-gray in variables
-            marginTop: "1rem"
-        }}>
+        <div className="GoDAMVideos">
             <Select.Root value={selectedOrg} onValueChange={handleOrgChange}>
                 <Select.Trigger className="SelectTrigger">
-                    <div className="SelectValue"
-                        style={{
-                            padding: "0rem 1rem",
-                            display: "flex",
-                            justifyContent: "space-between",
-                            alignItems: "space-between"
-                        }}
-                    >
-                        <div
-                            style={{
-                                display: "flex",
-                                alignItems: "center"
-                            }}
-                        >
-
-                            <Select.Icon className="SelectIconDrop" style={{height:"90%"}}>
-                                <Building2 style={{
-                                    width:"1rem",
-                                    height:"1rem",
-                                }} />
+                    <div className="SelectValue GoDAMVideos-select-value">
+                        <div className="GoDAMVideos-select-value-inner">
+                            <Select.Icon className="SelectIconDrop GoDAMVideos-select-icon-drop">
+                                <Building2 className="GoDAMVideos-building-icon" />
                             </Select.Icon>
                             <Select.Value
                                 placeholder={"Placeholder"}
@@ -79,8 +59,8 @@ const GoDAMVideos = () => {
                 <Select.Content position="popper" className="SelectContent">
                     <Select.ScrollUpButton className="SelectScrollButton"></Select.ScrollUpButton>
                     <Select.Viewport className="SelectViewport">
-                        {orgList.map(({name,role}) => (
-                            <SelectItem value={name} key={name} disabled={role.toLowerCase()==="viewer"}>
+                        {orgList.map(({ name, role }) => (
+                            <SelectItem value={name} key={name} disabled={role.toLowerCase() === "viewer"}>
                                 {name}
                             </SelectItem>
                         ))}
@@ -97,7 +77,7 @@ const GoDAMVideos = () => {
                     Go to Dashboard
                 </span>
                 <span className="main-button-shortcut">
-                    <ArrowRight/>
+                    <ArrowRight />
                 </span>
             </a>
         </div>

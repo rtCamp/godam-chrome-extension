@@ -7,8 +7,9 @@ import {
 } from "lucide-react";
 
 import { contentStateContext } from "../../context/ContentState";
+import "../styles/layout/_ScreenshotTab.scss";
 
-const ScreenshotTab = ({onScreenshotComplete, shadowRef}) => {
+const ScreenshotTab = ({ onScreenshotComplete, shadowRef }) => {
     const [contentState, setContentState] = useContext(contentStateContext);
     const [contentStateBackup, setContentStateBackup] = useState(null);
     const [screenshotType, setScreenshotType] = useState('fullscreen');
@@ -58,7 +59,7 @@ const ScreenshotTab = ({onScreenshotComplete, shadowRef}) => {
 
     const captureScreenshot = async () => {
         if (isCapturing) return;
-        
+
         setIsCapturing(true);
 
         try {
@@ -105,7 +106,7 @@ const ScreenshotTab = ({onScreenshotComplete, shadowRef}) => {
             setIsCapturing(false);
 
             // Show popup and toolbar again
-            if ( contentStateBackup ) {
+            if (contentStateBackup) {
                 setContentState(contentStateBackup);
                 setContentStateBackup(null);
             } else {
@@ -117,7 +118,7 @@ const ScreenshotTab = ({onScreenshotComplete, shadowRef}) => {
             }
 
             const screenityUI = document.getElementById('screenity-ui');
-            
+
             if (screenityUI) {
                 screenityUI.style.display = 'unset';
             }
@@ -134,7 +135,7 @@ const ScreenshotTab = ({onScreenshotComplete, shadowRef}) => {
 
     const cancelSelection = () => {
         if (streamRef.current) {
-        streamRef.current.getTracks().forEach(track => track.stop());
+            streamRef.current.getTracks().forEach(track => track.stop());
         }
         setMode(null);
         setIsSelecting(false);
@@ -147,6 +148,7 @@ const ScreenshotTab = ({onScreenshotComplete, shadowRef}) => {
         e.preventDefault();
         document.body.style.userSelect = 'none';
 
+        const rect = overlayRef.current.getBoundingClientRect();
         setIsSelecting(true);
         setSelection({
             startX: e.clientX,
@@ -161,7 +163,7 @@ const ScreenshotTab = ({onScreenshotComplete, shadowRef}) => {
         const y = Math.min(selection.startY, selection.endY);
         const width = Math.abs(selection.endX - selection.startX);
         const height = Math.abs(selection.endY - selection.startY);
-        
+
         return {
             left: `${x}px`,
             top: `${y}px`,
@@ -173,6 +175,7 @@ const ScreenshotTab = ({onScreenshotComplete, shadowRef}) => {
     const handleMouseMove = (e) => {
         if (!isSelecting || mode !== 'selecting') return;
 
+        const rect = overlayRef.current.getBoundingClientRect();
         setSelection(prev => ({
             ...prev,
             endX: e.clientX,
@@ -182,8 +185,8 @@ const ScreenshotTab = ({onScreenshotComplete, shadowRef}) => {
 
     const handleMouseUp = async () => {
         if (!isSelecting || mode !== 'selecting') return;
-        
-        if ( selectionRef.current ) {
+
+        if (selectionRef.current) {
             selectionRef.current.style.display = 'none';
         }
 
@@ -204,7 +207,7 @@ const ScreenshotTab = ({onScreenshotComplete, shadowRef}) => {
         try {
             // Stop selection mode
             setMode('idle');
-            
+
             // Restore UI
             document.body.style.userSelect = '';
 
@@ -229,13 +232,13 @@ const ScreenshotTab = ({onScreenshotComplete, shadowRef}) => {
                 img.onerror = reject;
                 img.src = dataUrl;
             });
-            
+
             // Create canvas to crop the image
             const canvas = document.createElement('canvas');
             canvas.width = width;
             canvas.height = height;
             const ctx = canvas.getContext('2d');
-            
+
             // Draw the cropped portion
             // sx, sy: source x,y coordinates
             // sWidth, sHeight: source width and height
@@ -269,7 +272,7 @@ const ScreenshotTab = ({onScreenshotComplete, shadowRef}) => {
             cancelSelection();
         } finally {
             const screenityUI = document.getElementById('screenity-ui');
-            
+
             if (screenityUI) {
                 screenityUI.style.display = 'unset';
             }
@@ -283,60 +286,22 @@ const ScreenshotTab = ({onScreenshotComplete, shadowRef}) => {
             onScreenshotComplete();
         }
     };
-    
-    
+
+
     return (
         <>
-            <div className="" style={{
-                padding: "1rem",
-                backgroundColor: "#F6F7FB",
-                marginTop: "1rem"
-            }}>
-                <h2 style={{
-                    fontSize: '16px',
-                    fontWeight: '600',
-                    color: '#29292F',
-                    marginTop: '4px',
-                    marginBottom: '20px'
-                }}>Screenshot type</h2>
-                <div className="screenshot-type-selector" style={{
-                    display: "grid",
-                    gridTemplateColumns: "1fr 1fr",
-                    gap: "12px"
-                }}>
-                    <div className="screenshot-type-selector--item custom-area"
-                        style={{
-                            padding: '16px',
-                            borderRadius: '8px',
-                            color: '#29292F',
-                            backgroundColor: screenshotType === 'custom-area' ? '#f7347f21' : '#fff',
-                            display: 'flex',
-                            flexDirection: 'column',
-                            gap: '4px',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                            cursor: 'pointer',
-                            border: screenshotType === 'custom-area' ? '2px solid #ab3a6c' : 'transparent',
-                        }}
+            <div className="screenshot-tab-container">
+                <h2 className="screenshot-tab-title">Screenshot type</h2>
+                <div className="screenshot-type-selector">
+                    <div
+                        className={`screenshot-type-selector--item custom-area ${screenshotType === 'custom-area' ? 'active' : ''}`}
                         onClick={() => setScreenshotType('custom-area')}
                     >
                         <Maximize size={24} />
                         <span>Custom area</span>
                     </div>
-                    <div className="screenshot-type-selector--item fullscreen"
-                        style={{
-                            padding: '16px',
-                            borderRadius: '8px',
-                            color: '#29292F',
-                            backgroundColor: screenshotType === 'fullscreen' ? '#f7347f21' : '#fff',
-                            display: 'flex',
-                            flexDirection: 'column',
-                            gap: '4px',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                            cursor: 'pointer',
-                            border: screenshotType === 'fullscreen' ? '2px solid #ab3a6c' : 'transparent'
-                        }}
+                    <div
+                        className={`screenshot-type-selector--item fullscreen ${screenshotType === 'fullscreen' ? 'active' : ''}`}
                         onClick={() => setScreenshotType('fullscreen')}
                     >
                         <LaptopMinimal size={24} />
@@ -345,11 +310,7 @@ const ScreenshotTab = ({onScreenshotComplete, shadowRef}) => {
                 </div>
 
                 <button
-                    className="main-button recording-button"
-                    style={{
-                        marginTop: '20px',
-                        color: '#fff',
-                    }}
+                    className="main-button recording-button screenshot-button"
                     onClick={() => {
                         const screenityUIBackdrop = document.getElementById('screenity-ui-backdrop');
                         const screenityRootContainer = document.getElementById('screenity-root-container');
@@ -368,8 +329,8 @@ const ScreenshotTab = ({onScreenshotComplete, shadowRef}) => {
                     disabled={isCapturing}
                 >
                     {
-                        isCapturing 
-                            ? 'Capturing...' 
+                        isCapturing
+                            ? 'Capturing...'
                             : screenshotType === 'custom-area' ? 'Select area' : 'Take screenshot'
                     }
                 </button>
@@ -380,31 +341,14 @@ const ScreenshotTab = ({onScreenshotComplete, shadowRef}) => {
                     <div
                         ref={overlayRef}
                         data-screenshot-overlay="true"
-                        style={{
-                            position: 'fixed',
-                            top: 0,
-                            left: 0,
-                            bottom: 0,
-                            right: 0,
-                            width: '100vw',
-                            height: '100vh',
-                            backgroundColor: 'transparent',
-                            zIndex: 9999999999999,
-                            cursor: 'crosshair',
-                        }}
+                        className="screenshot-overlay"
                         onMouseDown={handleMouseDown}
                         onMouseMove={handleMouseMove}
                         onMouseUp={handleMouseUp}
                     >
                         <div
-                            style={{
-                                backgroundColor: 'transparent',
-                                position: 'absolute',
-                                border: '1px dashed #ab3a6c',
-                                boxShadow: 'rgba(0, 0, 0, 0.2) 0px 0px 0px 9999px',
-                                boxSizing: 'border-box',
-                                ...getSelectionStyle(),
-                            }}
+                            className="screenshot-selection-box"
+                            style={getSelectionStyle()}
                             ref={selectionRef}
                         ></div>
                     </div>
@@ -414,13 +358,13 @@ const ScreenshotTab = ({onScreenshotComplete, shadowRef}) => {
     )
 }
 
-const OverlayControl = ( { children } ) => {
-	return ReactDOM.createPortal(
-		<>
-			{ children }
-		</>,
-		document.getElementsByTagName( 'body' )[ 0 ],
-	);
+const OverlayControl = ({ children }) => {
+    return ReactDOM.createPortal(
+        <>
+            {children}
+        </>,
+        document.getElementsByTagName('body')[0],
+    );
 };
 
 export default ScreenshotTab;

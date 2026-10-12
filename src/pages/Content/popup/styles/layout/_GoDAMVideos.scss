@@ -1,0 +1,28 @@
+@use '../../../styles/_variables' as *;
+
+.GoDAMVideos {
+    padding: 1rem;
+    background-color: $color-light-grey;
+    margin-top: 1rem;
+}
+
+.GoDAMVideos-select-value {
+    padding: 0rem 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: space-between;
+}
+
+.GoDAMVideos-select-value-inner {
+    display: flex;
+    align-items: center;
+}
+
+.GoDAMVideos-select-icon-drop {
+    height: 90%;
+}
+
+.GoDAMVideos-building-icon {
+    width: 1rem;
+    height: 1rem;
+}
