@@ -446,7 +446,7 @@ const PopupContainer = (props) => {
                                         >
                                             <div className="TabsTriggerIcon">
                                                 <img
-                                                    style={{ width: "16px", height: "16px", 'position': 'relative', 'bottom': '3px', 'marginRight': '-4px' }}
+                                                    style={{ width: "16px", height: "16px" }}
                                                     src={
                                                         tab === "dashboard"
                                                             ? GoDAMIcon
