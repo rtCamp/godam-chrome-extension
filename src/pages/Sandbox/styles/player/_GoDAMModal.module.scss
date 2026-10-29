@@ -77,7 +77,7 @@
             box-sizing: border-box;
 
             &:focus {
-                border: 1px solid #AB3A6C;
+                border: 1px solid #5D31FF;
             }
         }
     }
@@ -95,14 +95,14 @@
     line-height: 22px;
     letter-spacing: 0px;
     vertical-align: middle;
-    background: linear-gradient(83.85deg, #AB3A6C -9.3%, #E6533A 120.31%);
+    background: #5D31FF;
     color: white;
     border: none;
     text-align: center;
     cursor: pointer;
 
     &:hover {
-        background: #AB3A6C;
+        background: #4A27CC;
     }
 }
 
@@ -156,13 +156,13 @@
             border: none;
             cursor: pointer;
             font-size: 14px;
-            color: #AB3A6C;
+            color: #5D31FF;
             padding-left: 4px; 
         }
     }
 
     a {
-        color: #AB3A6C;
+        color: #5D31FF;
         text-decoration: none;
         margin-top: 8px;
         display: flex;
