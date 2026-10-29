@@ -187,21 +187,15 @@ const ScreenshotTab = ({onScreenshotComplete, shadowRef}) => {
             selectionRef.current.style.display = 'none';
         }
 
-        // Hide the whole selection overlay (dashed border + dimming) so it is
-        // not included in the captured screenshot.
-        if ( overlayRef.current ) {
-            overlayRef.current.style.display = 'none';
-        }
-
         setIsSelecting(false);
         setMode('ideal');
 
         const dpr = window.devicePixelRatio;
 
         // The selection box has a 1px dashed border drawn inside its bounds
-        // (box-sizing: border-box). Inset the crop past that border (plus a
-        // small anti-aliasing margin) so the guide never appears in the capture.
-        const borderInset = Math.ceil(dpr) + 1;
+        // (box-sizing: border-box). Crop just inside that border so the guide is
+        // never captured, regardless of when the overlay is torn down.
+        const borderInset = Math.ceil(dpr);
 
         const x = Math.min(selection.startX, selection.endX) * dpr + borderInset;
         const y = Math.min(selection.startY, selection.endY) * dpr + borderInset;
@@ -220,12 +214,6 @@ const ScreenshotTab = ({onScreenshotComplete, shadowRef}) => {
             
             // Restore UI
             document.body.style.userSelect = '';
-
-            // Wait for the browser to paint the hidden overlay before capturing,
-            // otherwise the dashed selection border bleeds into the screenshot.
-            await new Promise((resolve) =>
-                requestAnimationFrame(() => requestAnimationFrame(resolve))
-            );
 
             // Capture screenshot of selected area
             const dataUrl = await chrome.runtime.sendMessage({
