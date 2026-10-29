@@ -187,6 +187,12 @@ const ScreenshotTab = ({onScreenshotComplete, shadowRef}) => {
             selectionRef.current.style.display = 'none';
         }
 
+        // Hide the whole selection overlay (dashed border + dimming) so it is
+        // not included in the captured screenshot.
+        if ( overlayRef.current ) {
+            overlayRef.current.style.display = 'none';
+        }
+
         setIsSelecting(false);
         setMode('ideal');
 
@@ -207,6 +213,12 @@ const ScreenshotTab = ({onScreenshotComplete, shadowRef}) => {
             
             // Restore UI
             document.body.style.userSelect = '';
+
+            // Wait for the browser to paint the hidden overlay before capturing,
+            // otherwise the dashed selection border bleeds into the screenshot.
+            await new Promise((resolve) =>
+                requestAnimationFrame(() => requestAnimationFrame(resolve))
+            );
 
             // Capture screenshot of selected area
             const dataUrl = await chrome.runtime.sendMessage({
