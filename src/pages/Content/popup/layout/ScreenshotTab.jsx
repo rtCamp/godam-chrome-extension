@@ -196,10 +196,17 @@ const ScreenshotTab = ({onScreenshotComplete, shadowRef}) => {
         setIsSelecting(false);
         setMode('ideal');
 
-        const x = Math.min(selection.startX, selection.endX) * window.devicePixelRatio;
-        const y = Math.min(selection.startY, selection.endY) * window.devicePixelRatio;
-        const width = Math.abs(selection.endX - selection.startX) * window.devicePixelRatio;
-        const height = Math.abs(selection.endY - selection.startY) * window.devicePixelRatio;
+        const dpr = window.devicePixelRatio;
+
+        // The selection box has a 1px dashed border drawn inside its bounds
+        // (box-sizing: border-box). Inset the crop past that border (plus a
+        // small anti-aliasing margin) so the guide never appears in the capture.
+        const borderInset = Math.ceil(dpr) + 1;
+
+        const x = Math.min(selection.startX, selection.endX) * dpr + borderInset;
+        const y = Math.min(selection.startY, selection.endY) * dpr + borderInset;
+        const width = Math.abs(selection.endX - selection.startX) * dpr - borderInset * 2;
+        const height = Math.abs(selection.endY - selection.startY) * dpr - borderInset * 2;
 
         if (width < 10 || height < 10) {
             cancelSelection();
