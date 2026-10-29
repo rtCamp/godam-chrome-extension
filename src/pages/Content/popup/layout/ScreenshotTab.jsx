@@ -362,7 +362,11 @@ const ScreenshotTab = ({onScreenshotComplete, shadowRef}) => {
                         const screenityRootContainer = document.getElementById('screenity-root-container');
 
                         if (screenityRootContainer) {
-                            screenityUIBackdrop.style.background = 'none';
+                            // The backdrop is not rendered while drawing/annotation
+                            // mode is active, so guard against it being absent.
+                            if (screenityUIBackdrop) {
+                                screenityUIBackdrop.style.background = 'none';
+                            }
                             screenityRootContainer.style.display = 'none';
                         }
 
