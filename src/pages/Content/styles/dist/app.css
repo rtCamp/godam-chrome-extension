@@ -41,7 +41,7 @@ iframe {
   box-sizing: border-box;
   width: 100%;
   height: 100%;
-  border: 10px solid #ab3a6c;
+  border: 10px solid #5d31ff;
   pointer-events: none;
   transform: scale(1.2);
   opacity: 0;
@@ -265,7 +265,7 @@ iframe {
 .ToolbarLink:focus-visible,
 .ToolbarButton:focus-visible {
   position: relative;
-  box-shadow: 0px 0px 0px 2px rgba(48, 128, 248, 0.5);
+  box-shadow: 0px 0px 0px 2px rgba(93, 49, 255, 0.5);
 }
 
 .ToolbarModeItemSingle {
@@ -322,7 +322,7 @@ iframe {
   background: rgba(56, 126, 247, 0.1);
 }
 .ToolbarModeItem[data-state=on] svg {
-  color: #ab3a6c;
+  color: #5d31ff;
 }
 .ToolbarModeItem[data-state=on]::before {
   transform: translateY(0px) scale(1) !important;
@@ -352,7 +352,7 @@ iframe {
   margin-left: 0;
 }
 .ToolbarToggleItem[data-state=on] {
-  background: linear-gradient(83.85deg,#ab3a6c -9.3%,#e6533a 120.31%);
+  background: #5d31ff;
   color: #FFF;
 }
 .ToolbarToggleItem[data-state=on] svg {
@@ -681,7 +681,7 @@ body {
 }
 
 .eye-active {
-  background-color: #ab3a6c !important;
+  background-color: #5d31ff !important;
 }
 .eye-active svg {
   color: #FFF !important;
@@ -753,7 +753,7 @@ body {
 }
 .radial-menu-item-child:focus-visible {
   outline: none;
-  box-shadow: 0px 0px 0px 2px rgba(48, 128, 248, 0.5);
+  box-shadow: 0px 0px 0px 2px rgba(93, 49, 255, 0.5);
 }
 
 .radial-menu[data-state=open] .radial-menu-item-child {
@@ -1093,7 +1093,7 @@ body {
   display: block;
 }
 .stroke-width-item div[data-state=on] {
-  background: #ab3a6c !important;
+  background: #5d31ff !important;
 }
 .stroke-width-item div[data-state=on] svg {
   color: #FFF !important;
@@ -1350,7 +1350,7 @@ body {
   margin-bottom: 0.5rem;
 }
 .popup-warning .popup-warning-right {
-  color: #ab3a6c;
+  color: #5d31ff;
   font-family: "Satoshi-Medium", sans-serif;
   width: 90px;
 }
@@ -1364,7 +1364,7 @@ body {
   justify-content: center;
 }
 .popup-warning-left svg, .popup-warning-right svg {
-  color: #ab3a6c;
+  color: #5d31ff;
 }
 
 .popup-warning-right {
@@ -1385,9 +1385,9 @@ body {
 }
 
 .permission-button {
-  background: rgba(48, 128, 248, 0.1);
+  background: rgba(93, 49, 255, 0.1);
   border-radius: 30px;
-  color: #ab3a6c;
+  color: #5d31ff;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1404,11 +1404,11 @@ body {
   margin-bottom: 4px !important;
 }
 .permission-button:hover {
-  background: rgba(48, 128, 248, 0.15);
+  background: rgba(93, 49, 255, 0.15);
   cursor: pointer;
 }
 .permission-button svg {
-  color: #ab3a6c;
+  color: #5d31ff;
 }
 
 .CollapsibleTrigger {
@@ -1426,7 +1426,7 @@ body {
 }
 
 .CollapsibleTrigger:focus-visible {
-  box-shadow: 0px 0px 0px 2px rgba(48, 128, 248, 0.5);
+  box-shadow: 0px 0px 0px 2px rgba(93, 49, 255, 0.5);
 }
 
 .CollapsibleLabel {
@@ -1563,7 +1563,7 @@ button {
 }
 
 .SelectTrigger:focus {
-  box-shadow: 0px 0px 0px 2px rgba(48, 128, 248, 0.5) !important;
+  box-shadow: 0px 0px 0px 2px rgba(93, 49, 255, 0.5) !important;
 }
 
 .SelectTrigger[data-placeholder] {
@@ -1571,7 +1571,7 @@ button {
 }
 
 .SelectTrigger[data-state=open] {
-  box-shadow: 0px 0px 0px 2px rgba(48, 128, 248, 0.5);
+  box-shadow: 0px 0px 0px 2px rgba(93, 49, 255, 0.5);
 }
 
 .SelectValue {
@@ -1666,7 +1666,7 @@ button {
   right: 12px;
   width: 24px;
   height: 24px;
-  background: #ab3a6c;
+  background: #5d31ff;
   border-radius: 50%;
   display: inline-flex;
   align-items: center;
@@ -1745,7 +1745,7 @@ input {
 
 .TabsTrigger:focus-visible {
   position: relative;
-  box-shadow: 0px 0px 0px 2px rgba(48, 128, 248, 0.5) !important;
+  box-shadow: 0px 0px 0px 2px rgba(93, 49, 255, 0.5) !important;
 }
 
 /* Content of the Radix tabs */
@@ -1762,7 +1762,7 @@ input {
 }
 
 .TabsContent:focus-visible {
-  box-shadow: inset 0px 0px 0px 2px rgba(48, 128, 248, 0.5);
+  box-shadow: inset 0px 0px 0px 2px rgba(93, 49, 255, 0.5);
 }
 
 .TabsContent[data-state=inactive] {
@@ -1889,7 +1889,7 @@ input {
   margin: auto;
   height: 2px;
   border-radius: 30px;
-  background: #ab3a6c;
+  background: #5d31ff;
 }
 .recording-ui .TabsTrigger[data-state=active] > .TabsTriggerLabel {
   color: #29292F !important;
@@ -1976,7 +1976,7 @@ input {
   margin: auto;
   height: 2px;
   border-radius: 30px;
-  background: #ab3a6c;
+  background: #5d31ff;
 }
 .video-ui .TabsTrigger[data-state=active] > .TabsTriggerLabel {
   color: #29292F !important;
@@ -2016,7 +2016,7 @@ input {
   margin-left: 8px;
 }
 .video-ui .TabsSort:focus-visible {
-  box-shadow: 0px 0px 0px 2px rgba(48, 128, 248, 0.5);
+  box-shadow: 0px 0px 0px 2px rgba(93, 49, 255, 0.5);
   outline: none !important;
 }
 
@@ -2043,11 +2043,11 @@ button {
 }
 
 .SwitchRoot:focus {
-  box-shadow: 0px 0px 0px 2px rgba(48, 128, 248, 0.5);
+  box-shadow: 0px 0px 0px 2px rgba(93, 49, 255, 0.5);
 }
 
 .SwitchRoot[data-state=checked] {
-  background-color: #ab3a6c;
+  background-color: #5d31ff;
 }
 
 .SwitchRoot:hover {
@@ -2078,7 +2078,7 @@ button {
 .ExperimentalLabel {
   color: #FFF;
   font-size: 12px;
-  background-color: #ab3a6c;
+  background-color: #5d31ff;
   border-radius: 15px;
   padding: 2px 8px;
   display: inline-block;
@@ -2142,7 +2142,7 @@ button {
 }
 
 .video-item-root:focus-visible {
-  box-shadow: 0px 0px 0px 2px rgba(48, 128, 248, 0.5);
+  box-shadow: 0px 0px 0px 2px rgba(93, 49, 255, 0.5);
   outline: none !important;
 }
 
@@ -2171,7 +2171,7 @@ button {
   margin-right: 4px;
 }
 .video-item-right .copy-link:focus-visible {
-  box-shadow: 0px 0px 0px 2px rgba(48, 128, 248, 0.5);
+  box-shadow: 0px 0px 0px 2px rgba(93, 49, 255, 0.5);
   outline: none !important;
 }
 .video-item-right .more-actions {
@@ -2185,7 +2185,7 @@ button {
   justify-content: center;
 }
 .video-item-right .more-actions:focus-visible {
-  box-shadow: 0px 0px 0px 2px rgba(48, 128, 248, 0.5);
+  box-shadow: 0px 0px 0px 2px rgba(93, 49, 255, 0.5);
   outline: none !important;
 }
 
@@ -2230,7 +2230,7 @@ button {
 }
 
 .main-button:focus {
-  box-shadow: 0px 0px 0px 2px rgba(48, 128, 248, 0.5) !important;
+  box-shadow: 0px 0px 0px 2px rgba(93, 49, 255, 0.5) !important;
 }
 
 @property --x {
@@ -2247,8 +2247,8 @@ button {
   --x: 35.44%;
   --y: 0%;
   margin-top: 8px;
-  filter: drop-shadow(0px 4px 20px rgba(247, 52, 127, 0.25));
-  background: linear-gradient(83.85deg,#ab3a6c -9.3%,#e6533a 120.31%)!important;
+  filter: drop-shadow(0px 4px 20px rgba(93, 49, 255, 0.25));
+  background: #5d31ff!important;
   transition: --x 0.2s ease-in-out, --y 0.2s ease-in-out;
   animation: 0;
   animation: gradient-animation 15s linear infinite;
@@ -2275,21 +2275,21 @@ button {
 }
 
 .recording-button:hover:before {
-  box-shadow: 0px 0px 0px 4px rgba(247, 52, 127, 0.25);
+  box-shadow: 0px 0px 0px 4px rgba(93, 49, 255, 0.25);
 }
 
 @keyframes pulse-animation {
   0% {
-    box-shadow: 0px 0px 0px 2px rgba(247, 52, 127, 0.25);
+    box-shadow: 0px 0px 0px 2px rgba(93, 49, 255, 0.25);
   }
   25% {
-    box-shadow: 0px 0px 0px 6px rgba(247, 52, 127, 0.25);
+    box-shadow: 0px 0px 0px 6px rgba(93, 49, 255, 0.25);
   }
   50% {
-    box-shadow: 0px 0px 0px 2px rgba(247, 52, 127, 0.25);
+    box-shadow: 0px 0px 0px 2px rgba(93, 49, 255, 0.25);
   }
   100% {
-    box-shadow: 0px 0px 0px 2px rgba(247, 52, 127, 0.25);
+    box-shadow: 0px 0px 0px 2px rgba(93, 49, 255, 0.25);
   }
 }
 @keyframes gradient-animation {
@@ -2383,7 +2383,7 @@ button {
   width: 46px;
   height: 46px;
   position: absolute;
-  border: 2px solid #ab3a6c;
+  border: 2px solid #5d31ff;
   box-sizing: border-box;
 }
 .background-effect img {
@@ -2404,12 +2404,12 @@ button {
   width: 46px;
   height: 46px;
   position: absolute;
-  border: 2px solid #ab3a6c;
+  border: 2px solid #5d31ff;
   opacity: 0.5;
   box-sizing: border-box;
 }
 .background-effect:focus-visible {
-  box-shadow: 0px 0px 0px 2px rgba(48, 128, 248, 0.5);
+  box-shadow: 0px 0px 0px 2px rgba(93, 49, 255, 0.5);
 }
 
 .region-dimensions {
@@ -2438,7 +2438,7 @@ button {
 }
 .region-input input:focus-visible {
   outline: none;
-  box-shadow: 0px 0px 0px 2px rgba(48, 128, 248, 0.5);
+  box-shadow: 0px 0px 0px 2px rgba(93, 49, 255, 0.5);
 }
 .region-input span {
   color: #6E7684;
@@ -2479,7 +2479,7 @@ button {
 }
 .time-set-input input:focus-visible {
   outline: none;
-  box-shadow: 0px 0px 0px 2px rgba(48, 128, 248, 0.5);
+  box-shadow: 0px 0px 0px 2px rgba(93, 49, 255, 0.5);
 }
 .time-set-input span {
   color: #6E7684;
@@ -2615,7 +2615,7 @@ button {
 
 .CameraToggleItem:focus-visible, .CameraToggleButton:focus-visible {
   position: relative;
-  box-shadow: 0px 0px 0px 2px rgba(48, 128, 248, 0.5);
+  box-shadow: 0px 0px 0px 2px rgba(93, 49, 255, 0.5);
 }
 
 .CameraToggleGroup {
@@ -2876,7 +2876,7 @@ button {
 }
 
 .Button.red:focus {
-  box-shadow: 0px 0px 0px 2px rgba(48, 128, 248, 0.5);
+  box-shadow: 0px 0px 0px 2px rgba(93, 49, 255, 0.5);
 }
 
 .Button.grey {
@@ -2890,7 +2890,7 @@ button {
 }
 
 .Button.grey:focus {
-  box-shadow: 0px 0px 0px 2px rgba(48, 128, 248, 0.5);
+  box-shadow: 0px 0px 0px 2px rgba(93, 49, 255, 0.5);
 }
 
 @keyframes overlayShow {

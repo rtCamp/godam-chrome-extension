@@ -309,14 +309,14 @@ const ScreenshotTab = ({onScreenshotComplete, shadowRef}) => {
                             padding: '16px',
                             borderRadius: '8px',
                             color: '#29292F',
-                            backgroundColor: screenshotType === 'custom-area' ? '#f7347f21' : '#fff',
+                            backgroundColor: screenshotType === 'custom-area' ? '#5d31ff21' : '#fff',
                             display: 'flex',
                             flexDirection: 'column',
                             gap: '4px',
                             justifyContent: 'center',
                             alignItems: 'center',
                             cursor: 'pointer',
-                            border: screenshotType === 'custom-area' ? '2px solid #ab3a6c' : 'transparent',
+                            border: screenshotType === 'custom-area' ? '2px solid #5d31ff' : 'transparent',
                         }}
                         onClick={() => setScreenshotType('custom-area')}
                     >
@@ -328,14 +328,14 @@ const ScreenshotTab = ({onScreenshotComplete, shadowRef}) => {
                             padding: '16px',
                             borderRadius: '8px',
                             color: '#29292F',
-                            backgroundColor: screenshotType === 'fullscreen' ? '#f7347f21' : '#fff',
+                            backgroundColor: screenshotType === 'fullscreen' ? '#5d31ff21' : '#fff',
                             display: 'flex',
                             flexDirection: 'column',
                             gap: '4px',
                             justifyContent: 'center',
                             alignItems: 'center',
                             cursor: 'pointer',
-                            border: screenshotType === 'fullscreen' ? '2px solid #ab3a6c' : 'transparent'
+                            border: screenshotType === 'fullscreen' ? '2px solid #5d31ff' : 'transparent'
                         }}
                         onClick={() => setScreenshotType('fullscreen')}
                     >
@@ -400,7 +400,7 @@ const ScreenshotTab = ({onScreenshotComplete, shadowRef}) => {
                             style={{
                                 backgroundColor: 'transparent',
                                 position: 'absolute',
-                                border: '1px dashed #ab3a6c',
+                                border: '1px dashed #5d31ff',
                                 boxShadow: 'rgba(0, 0, 0, 0.2) 0px 0px 0px 9999px',
                                 boxSizing: 'border-box',
                                 ...getSelectionStyle(),

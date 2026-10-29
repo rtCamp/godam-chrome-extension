@@ -260,7 +260,7 @@ const Sandbox = () => {
 	position: absolute!important;
 	top: 0px!important;
 	left: 0px!important;
-	background-color: #ab3a6c!important;
+	background-color: #5d31ff!important;
 	color: #FFF!important;
 	font-family: "Satoshi-Medium"!important;
 	z-index: 99999999999!important;

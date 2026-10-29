@@ -242,7 +242,7 @@
   }
 }
 .permission-button {
-  background: rgba(48, 128, 248, 0.1);
+  background: rgba(93, 49, 255, 0.1);
   border-radius: $container-border-radius;
   color: $color-primary;
   display: flex;
@@ -261,7 +261,7 @@
     margin-bottom: $spacing-02 !important;
   }
   &:hover {
-    background: rgba(48, 128, 248, 0.15);
+    background: rgba(93, 49, 255, 0.15);
     cursor: pointer;
   }
 

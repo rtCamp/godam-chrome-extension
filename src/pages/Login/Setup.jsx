@@ -213,7 +213,7 @@ const Setup = () => {
         }
 
         .getGodamButton {
-          background-color: #ab3a6c;
+          background-color: #5d31ff;
           color: #fff;
           border: none;
           padding: 0.75rem 1.25rem;
@@ -283,7 +283,7 @@ const Setup = () => {
         }
         
         .noAccount a {
-          color: #ab3a6c;
+          color: #5d31ff;
         }
         
         .noAccount a:hover {
