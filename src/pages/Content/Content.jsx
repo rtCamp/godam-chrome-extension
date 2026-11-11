@@ -26,7 +26,7 @@ const Content = () => {
 			.screenity-outline {
 				position: absolute;
 				z-index: 99999999999;
-				border: 2px solid #ab3a6c;
+				border: 2px solid #5d31ff;
 				outline-offset: -2px;
 				pointer-events: none;
 				border-radius: 5px!important;
@@ -185,7 +185,7 @@ const Content = () => {
   right: 12px; 
   width: 18px;
   height: 18px;
-  background: #ab3a6c;
+  background: #5d31ff;
   border-radius: 50%;
   display: inline-flex;
   align-items: center;

@@ -433,7 +433,7 @@ const PopupContainer = (props) => {
                                         >
                                             <div className="TabsTriggerIcon">
                                                 {
-                                                    tab === "screenshot" ? <Camera fill="#ab3a6c" strokeWidth={1} stroke="#f6f7fb" size={18} /> : <Camera color="gray" size={16} />
+                                                    tab === "screenshot" ? <Camera fill="#5d31ff" strokeWidth={1} stroke="#f6f7fb" size={18} /> : <Camera color="gray" size={16} />
                                                 }
                                             </div>
                                             Screenshot
@@ -446,7 +446,7 @@ const PopupContainer = (props) => {
                                         >
                                             <div className="TabsTriggerIcon">
                                                 <img
-                                                    style={{ width: "16px", height: "16px", 'position': 'relative', 'bottom': '3px', 'marginRight': '-4px' }}
+                                                    style={{ width: "16px", height: "16px" }}
                                                     src={
                                                         tab === "dashboard"
                                                             ? GoDAMIcon

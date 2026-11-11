@@ -98,7 +98,7 @@ body {
   }
 
   &.godamButton {
-    color: #ab3a6c;
+    color: #5d31ff;
   }
 
   &.blackButton {
@@ -268,11 +268,11 @@ button {
   height: 35px;
 }
 .Button.blue {
-  background-color: rgba(48, 128, 248, 0.1);
+  background-color: rgba(93, 49, 255, 0.1);
   color: $color-primary;
 
   &:hover {
-    background-color: rgba(48, 128, 248, 0.15);
+    background-color: rgba(93, 49, 255, 0.15);
     cursor: pointer;
   }
   &:focus {

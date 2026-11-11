@@ -190,10 +190,17 @@ const ScreenshotTab = ({onScreenshotComplete, shadowRef}) => {
         setIsSelecting(false);
         setMode('ideal');
 
-        const x = Math.min(selection.startX, selection.endX) * window.devicePixelRatio;
-        const y = Math.min(selection.startY, selection.endY) * window.devicePixelRatio;
-        const width = Math.abs(selection.endX - selection.startX) * window.devicePixelRatio;
-        const height = Math.abs(selection.endY - selection.startY) * window.devicePixelRatio;
+        const dpr = window.devicePixelRatio;
+
+        // The selection box has a 1px dashed border drawn inside its bounds
+        // (box-sizing: border-box). Crop just inside that border so the guide is
+        // never captured, regardless of when the overlay is torn down.
+        const borderInset = Math.ceil(dpr);
+
+        const x = Math.min(selection.startX, selection.endX) * dpr + borderInset;
+        const y = Math.min(selection.startY, selection.endY) * dpr + borderInset;
+        const width = Math.abs(selection.endX - selection.startX) * dpr - borderInset * 2;
+        const height = Math.abs(selection.endY - selection.startY) * dpr - borderInset * 2;
 
         if (width < 10 || height < 10) {
             cancelSelection();
@@ -309,14 +316,14 @@ const ScreenshotTab = ({onScreenshotComplete, shadowRef}) => {
                             padding: '16px',
                             borderRadius: '8px',
                             color: '#29292F',
-                            backgroundColor: screenshotType === 'custom-area' ? '#f7347f21' : '#fff',
+                            backgroundColor: screenshotType === 'custom-area' ? '#5d31ff21' : '#fff',
                             display: 'flex',
                             flexDirection: 'column',
                             gap: '4px',
                             justifyContent: 'center',
                             alignItems: 'center',
                             cursor: 'pointer',
-                            border: screenshotType === 'custom-area' ? '2px solid #ab3a6c' : 'transparent',
+                            border: screenshotType === 'custom-area' ? '2px solid #5d31ff' : 'transparent',
                         }}
                         onClick={() => setScreenshotType('custom-area')}
                     >
@@ -328,14 +335,14 @@ const ScreenshotTab = ({onScreenshotComplete, shadowRef}) => {
                             padding: '16px',
                             borderRadius: '8px',
                             color: '#29292F',
-                            backgroundColor: screenshotType === 'fullscreen' ? '#f7347f21' : '#fff',
+                            backgroundColor: screenshotType === 'fullscreen' ? '#5d31ff21' : '#fff',
                             display: 'flex',
                             flexDirection: 'column',
                             gap: '4px',
                             justifyContent: 'center',
                             alignItems: 'center',
                             cursor: 'pointer',
-                            border: screenshotType === 'fullscreen' ? '2px solid #ab3a6c' : 'transparent'
+                            border: screenshotType === 'fullscreen' ? '2px solid #5d31ff' : 'transparent'
                         }}
                         onClick={() => setScreenshotType('fullscreen')}
                     >
@@ -355,7 +362,11 @@ const ScreenshotTab = ({onScreenshotComplete, shadowRef}) => {
                         const screenityRootContainer = document.getElementById('screenity-root-container');
 
                         if (screenityRootContainer) {
-                            screenityUIBackdrop.style.background = 'none';
+                            // The backdrop is not rendered while drawing/annotation
+                            // mode is active, so guard against it being absent.
+                            if (screenityUIBackdrop) {
+                                screenityUIBackdrop.style.background = 'none';
+                            }
                             screenityRootContainer.style.display = 'none';
                         }
 
@@ -400,7 +411,7 @@ const ScreenshotTab = ({onScreenshotComplete, shadowRef}) => {
                             style={{
                                 backgroundColor: 'transparent',
                                 position: 'absolute',
-                                border: '1px dashed #ab3a6c',
+                                border: '1px dashed #5d31ff',
                                 boxShadow: 'rgba(0, 0, 0, 0.2) 0px 0px 0px 9999px',
                                 boxSizing: 'border-box',
                                 ...getSelectionStyle(),
